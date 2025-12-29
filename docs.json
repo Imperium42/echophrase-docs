@@ -1,0 +1,35 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Echophrase",
+  "colors": {
+    "primary": "#A855F7",
+    "light": "#06B6D4",
+    "dark": "#D946EF"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "quickstart", "download"]
+    },
+    {
+      "group": "Features",
+      "pages": ["features/transcription", "features/hotkeys", "features/modes"]
+    },
+    {
+      "group": "Configuration",
+      "pages": ["config/settings", "config/models", "config/gpu"]
+    },
+    {
+      "group": "Troubleshooting",
+      "pages": ["troubleshooting/common-issues", "troubleshooting/gpu", "troubleshooting/audio"]
+    }
+  ],
+  "footer": {
+    "socials": {
+      "github": "https://github.com/dylanh724/echophrase",
+      "x": "https://x.com/echophrase"
+    }
+  }
+}

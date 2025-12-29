@@ -1,0 +1,60 @@
+---
+title: GPU Troubleshooting
+description: Fix NVIDIA CUDA and GPU acceleration issues
+---
+
+# GPU Troubleshooting
+
+Solutions for GPU acceleration problems.
+
+## GPU Not Detected
+
+### Check NVIDIA Drivers
+
+```bash
+# Windows (PowerShell)
+nvidia-smi
+
+# Linux
+nvidia-smi
+```
+
+If this command fails, install or update your NVIDIA drivers.
+
+### Verify CUDA Installation
+
+```bash
+nvcc --version
+```
+
+Expected output should show CUDA 12.x or later.
+
+### Check cuDNN
+
+cuDNN must be installed separately:
+
+1. Download from [NVIDIA cuDNN](https://developer.nvidia.com/cudnn)
+2. Extract to your CUDA installation directory
+3. Restart Echophrase
+
+## GPU Detected But Not Used
+
+1. Open Echophrase Settings → System Info
+2. Ensure "Use GPU" is enabled
+3. Check that CUDA version matches requirements (12.0+)
+
+## Out of Memory Errors
+
+If you see "CUDA out of memory":
+
+1. Use a smaller model (Tiny or Base)
+2. Close other GPU-intensive applications
+3. Restart Echophrase to free GPU memory
+
+## Performance Issues
+
+If GPU transcription is slow:
+
+1. Check GPU utilization with `nvidia-smi`
+2. Ensure you're not thermal throttling
+3. Try a smaller model for faster results

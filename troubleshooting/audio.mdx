@@ -1,0 +1,55 @@
+---
+title: Audio Troubleshooting
+description: Fix microphone and audio input issues
+---
+
+# Audio Troubleshooting
+
+Solutions for microphone and audio problems.
+
+## Microphone Not Detected
+
+### Check System Permissions
+
+**Windows:**
+1. Settings → Privacy → Microphone
+2. Ensure "Allow apps to access your microphone" is ON
+3. Scroll down and enable Echophrase specifically
+
+**macOS:**
+1. System Preferences → Security & Privacy → Privacy
+2. Select Microphone
+3. Check the box next to Echophrase
+
+**Linux:**
+1. Check PulseAudio/PipeWire settings
+2. Ensure your user is in the `audio` group
+3. Try: `sudo usermod -aG audio $USER` then log out/in
+
+### Verify in Echophrase
+
+1. Open Settings → Audio
+2. Check the Input Device dropdown
+3. Select your microphone manually if needed
+
+## Poor Audio Quality
+
+### Reduce Background Noise
+
+1. Enable noise suppression in Settings → Audio
+2. Use a headset or directional microphone
+3. Move away from fans, AC units, etc.
+
+### Improve Recognition
+
+1. Speak clearly and at a moderate pace
+2. Position the microphone 6-12 inches from your mouth
+3. Avoid speaking while typing or moving
+
+## No Sound Feedback
+
+If you don't hear start/stop sounds:
+
+1. Check Settings → General → Sound Feedback is enabled
+2. Verify your system volume is up
+3. Check your default audio output device

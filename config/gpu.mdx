@@ -1,0 +1,50 @@
+---
+title: GPU Acceleration
+description: Enable NVIDIA CUDA for faster transcription
+---
+
+# GPU Acceleration
+
+Speed up transcription 5-10x with NVIDIA GPU acceleration.
+
+## Requirements
+
+- NVIDIA GPU (GTX 1060 or newer recommended)
+- CUDA 12.0 or later
+- cuDNN 9.5.1 or later
+
+## Installation
+
+### Windows
+
+1. Download [CUDA Toolkit 12.x](https://developer.nvidia.com/cuda-downloads)
+2. Run the installer and follow the prompts
+3. Restart your computer
+4. Echophrase will automatically detect and use your GPU
+
+### Linux
+
+```bash
+# Ubuntu/Debian
+sudo apt install nvidia-cuda-toolkit
+
+# Or download from NVIDIA
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt update
+sudo apt install cuda
+```
+
+## Verifying GPU Usage
+
+1. Open Echophrase settings
+2. Check **System Info** — it should show your GPU model
+3. Look for "CUDA" in the acceleration status
+
+## Troubleshooting
+
+If GPU acceleration isn't working:
+
+- Ensure your NVIDIA drivers are up to date
+- Verify CUDA is installed: `nvcc --version`
+- Check [GPU Troubleshooting](/troubleshooting/gpu) for more help
