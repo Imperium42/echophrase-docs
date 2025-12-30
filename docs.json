@@ -40,7 +40,14 @@
   "footer": {
     "socials": {
       "github": "https://github.com/dylanh724/echophrase",
-      "x": "https://x.com/echophrase"
+      "x": "https://x.com/echophrase",
+      "linkedin": "https://www.linkedin.com/company/imperium42",
+      "discord": "https://discord.com/invite/Er6NUcx",
+      "website": "https://echophrase.com"
     }
-  }
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "description": "AI Voice-to-Text"
 }
