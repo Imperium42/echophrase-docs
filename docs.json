@@ -47,7 +47,12 @@
     }
   },
   "background": {
-    "decoration": "gradient"
+    "style": "gradient",
+    "gradient": {
+      "from": "#000000",
+      "to": "#6B21A8",
+      "angle": 135
+    }
   },
   "description": "AI Voice-to-Text"
 }
