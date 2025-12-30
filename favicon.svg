@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!--
+    Echophrase Icon - Single Source of Truth
+    Aspect ratio and bar spacing MUST remain locked.
+    Bar spacing: 8px between each bar
+    Bar width: 4px
+    Gradient: cyan -> violet -> pink (bottom to top)
+  -->
+  <defs>
+    <linearGradient id="soundwave-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+  <!-- Soundwave bars - 5 bars, 8px spacing, centered in 48x48 -->
+  <rect x="6" y="19" width="4" height="10" rx="2" fill="url(#soundwave-gradient)" />
+  <rect x="14" y="15" width="4" height="18" rx="2" fill="url(#soundwave-gradient)" />
+  <rect x="22" y="10" width="4" height="28" rx="2" fill="url(#soundwave-gradient)" />
+  <rect x="30" y="13" width="4" height="22" rx="2" fill="url(#soundwave-gradient)" />
+  <rect x="38" y="17" width="4" height="14" rx="2" fill="url(#soundwave-gradient)" />
+</svg>

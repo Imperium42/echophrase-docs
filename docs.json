@@ -8,6 +8,10 @@
     "dark": "#D946EF"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "dark": "/echophrase-logo.svg",
+    "light": "/echophrase-logo.svg"
+  },
   "navigation": {
     "tabs": [
       {
