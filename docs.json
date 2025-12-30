@@ -54,5 +54,8 @@
       "angle": 135
     }
   },
-  "description": "AI Voice-to-Text"
+  "description": "AI Voice-to-Text",
+  "appearance": {
+    "default": "system"
+  }
 }
