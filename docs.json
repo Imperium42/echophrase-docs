@@ -19,7 +19,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["introduction", "quickstart", "download"]
+            "pages": ["introduction", "quickstart", "download", "beta"]
           },
           {
             "group": "Features",
