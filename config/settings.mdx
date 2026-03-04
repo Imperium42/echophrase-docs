@@ -5,22 +5,81 @@ description: Configure Echophrase to your preferences
 
 # Settings
 
-Customize Echophrase to fit your workflow.
+Open settings from the gear icon in the main window. Settings are organized into the following sections.
 
-## General Settings
+## Language
 
-- **Start on boot**: Launch Echophrase when your computer starts
-- **Minimize to tray**: Keep Echophrase running in the system tray
-- **Sound feedback**: Play sounds when recording starts/stops
+Choose the UI language. Currently supported: **English** and **Traditional Chinese**.
 
-## Output Settings
+## Account
 
-- **Auto-punctuation**: Automatically add punctuation to transcriptions
-- **Auto-capitalize**: Capitalize the first letter of sentences
-- **Typing speed**: Control how fast text is typed out
+View your email, linked providers (Google, email), and current plan tier. You can enter a license key, link additional sign-in providers, or sign out.
 
-## Audio Settings
+## Voice Model
 
-- **Input device**: Select your microphone
-- **Noise suppression**: Filter out background noise
-- **Voice activity detection**: Automatically detect when you stop speaking
+View and change the active transcription model. Shows your GPU/device info, current model name, size, and quality rating. Click **Change** to browse and download other models.
+
+<Note>Available models depend on your tier. See the [beta page](/beta) for a comparison.</Note>
+
+## GPU Acceleration
+
+Configure the execution provider for inference:
+
+- **Windows**: DirectML (default), CUDA, or CPU
+- **Linux/WSL**: CUDA (requires NVIDIA GPU), or CPU
+- **macOS**: CoreML, or CPU
+
+If using CUDA, you can configure the CUDA library path here.
+
+## Transform Model
+
+Enable an optional post-processing step that applies grammar correction to transcriptions. Uses a lightweight T5 model (~35 MB). You can write custom transformation rules or use the default grammar correction.
+
+## Output
+
+Control what happens after a transcription completes.
+
+- **Format**: Plain Text (all tiers), Markdown (authenticated), JSON with custom metadata template <sup>Pro</sup>
+- **Post-record actions** (choose one or more):
+  - Copy to Clipboard (default)
+  - Paste at Cursor <sup>Pro</sup>
+  - Save as File <sup>Pro</sup> — configure an auto-save directory
+
+## Audio Input
+
+Select your microphone input device and adjust the **voice threshold** (0–100%) that determines when speech is detected. Use the **Test** button to see a live audio meter.
+
+## Recording
+
+- **Max duration**: 5–60 seconds per recording (tier-dependent)
+- **Remove filler words**: Filter out "umm", "uh", "like", etc. <sup>Pro</sup>
+- **Normalize numbers to digits**: Convert "three" → "3" <sup>Pro</sup>
+
+## Hotkeys
+
+Set the global hotkey for toggling recording. Default: **Ctrl+Shift+R**. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
+
+<Note>ESC and Spacebar also work as recording toggles when the app window is focused.</Note>
+
+## Customize
+
+Toggle visibility of UI elements <sup>Pro</sup>:
+
+- Hotkey changer
+- Transcription preview
+- Output confirmations (toast notifications)
+- Copy last button
+- Input (mic) selector
+- Model switcher
+- Transcription speed display
+
+## Data
+
+- **Telemetry**: Toggle anonymous crash reports and usage stats (no audio or text is ever collected)
+- **Get Data**: GDPR data export (once per 30 days)
+- **Delete Account**: Anonymizes your account data and signs you out
+- **Legal**: Links to Terms of Service and Privacy Policy
+
+## About
+
+View the current app version, check for updates, and access quick links to the website, support, docs, and Discord.

@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Current date context:** It's 2026. When searching for packages, docs, or solutions, search 2025/2026 (never earlier).
+
 ## What This Is
 
 Mintlify documentation site for [Echophrase](https://github.com/dylanh724/echophrase), a privacy-first desktop speech-to-text application. This is a git submodule of the echophrase-mono monorepo.
