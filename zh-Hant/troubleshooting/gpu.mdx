@@ -1,0 +1,60 @@
+---
+title: GPU 疑難排解
+description: 修復 NVIDIA CUDA 和 GPU 加速問題
+---
+
+# GPU 疑難排解
+
+GPU 加速問題的解決方案。
+
+## GPU 未偵測到
+
+### 檢查 NVIDIA 驅動程式
+
+```bash
+# Windows (PowerShell)
+nvidia-smi
+
+# Linux
+nvidia-smi
+```
+
+如果此指令失敗，請安裝或更新您的 NVIDIA 驅動程式。
+
+### 驗證 CUDA 安裝
+
+```bash
+nvcc --version
+```
+
+預期輸出應顯示 CUDA 12.x 或更新版本。
+
+### 檢查 cuDNN
+
+cuDNN 必須單獨安裝：
+
+1. 從 [NVIDIA cuDNN](https://developer.nvidia.com/cudnn) 下載
+2. 解壓縮到您的 CUDA 安裝目錄
+3. 重新啟動 Echophrase
+
+## GPU 已偵測但未使用
+
+1. 開啟 Echophrase 設定 → 系統資訊
+2. 確保「使用 GPU」已啟用
+3. 確認 CUDA 版本符合需求（12.0+）
+
+## 記憶體不足錯誤
+
+如果您看到「CUDA out of memory」：
+
+1. 使用較小的模型（Tiny 或 Base）
+2. 關閉其他 GPU 密集型應用程式
+3. 重新啟動 Echophrase 以釋放 GPU 記憶體
+
+## 效能問題
+
+如果 GPU 轉錄速度很慢：
+
+1. 使用 `nvidia-smi` 檢查 GPU 使用率
+2. 確保沒有發生熱節流
+3. 嘗試使用較小的模型以獲得更快的結果

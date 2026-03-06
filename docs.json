@@ -13,25 +13,56 @@
     "light": "/echophrase-logo.svg"
   },
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Documentation",
-        "groups": [
+        "language": "en",
+        "tabs": [
           {
-            "group": "Getting Started",
-            "pages": ["introduction", "quickstart", "download", "beta"]
-          },
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": ["introduction", "quickstart", "download", "beta"]
+              },
+              {
+                "group": "Features",
+                "pages": ["features/transcription", "features/hotkeys", "features/modes"]
+              },
+              {
+                "group": "Configuration",
+                "pages": ["config/settings", "config/models", "config/gpu"]
+              },
+              {
+                "group": "Troubleshooting",
+                "pages": ["troubleshooting/common-issues", "troubleshooting/gpu", "troubleshooting/audio"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "zh-Hant",
+        "tabs": [
           {
-            "group": "Features",
-            "pages": ["features/transcription", "features/hotkeys", "features/modes"]
-          },
-          {
-            "group": "Configuration",
-            "pages": ["config/settings", "config/models", "config/gpu"]
-          },
-          {
-            "group": "Troubleshooting",
-            "pages": ["troubleshooting/common-issues", "troubleshooting/gpu", "troubleshooting/audio"]
+            "tab": "文件",
+            "groups": [
+              {
+                "group": "開始使用",
+                "pages": ["zh-Hant/introduction", "zh-Hant/quickstart", "zh-Hant/download", "zh-Hant/beta"]
+              },
+              {
+                "group": "功能",
+                "pages": ["zh-Hant/features/transcription", "zh-Hant/features/hotkeys", "zh-Hant/features/modes"]
+              },
+              {
+                "group": "設定",
+                "pages": ["zh-Hant/config/settings", "zh-Hant/config/models", "zh-Hant/config/gpu"]
+              },
+              {
+                "group": "疑難排解",
+                "pages": ["zh-Hant/troubleshooting/common-issues", "zh-Hant/troubleshooting/gpu", "zh-Hant/troubleshooting/audio"]
+              }
+            ]
           }
         ]
       }

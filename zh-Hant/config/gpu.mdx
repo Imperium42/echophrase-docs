@@ -1,0 +1,50 @@
+---
+title: GPU 加速
+description: 啟用 NVIDIA CUDA 以加快轉錄速度
+---
+
+# GPU 加速
+
+使用 NVIDIA GPU 加速，將轉錄速度提升 5-10 倍。
+
+## 需求
+
+- NVIDIA GPU（建議 GTX 1060 或更新）
+- CUDA 12.0 或更新版本
+- cuDNN 9.5.1 或更新版本
+
+## 安裝
+
+### Windows
+
+1. 下載 [CUDA Toolkit 12.x](https://developer.nvidia.com/cuda-downloads)
+2. 執行安裝程式並按照提示操作
+3. 重新啟動電腦
+4. Echophrase 會自動偵測並使用您的 GPU
+
+### Linux
+
+```bash
+# Ubuntu/Debian
+sudo apt install nvidia-cuda-toolkit
+
+# 或從 NVIDIA 下載
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt update
+sudo apt install cuda
+```
+
+## 驗證 GPU 使用
+
+1. 開啟 Echophrase 設定
+2. 查看**系統資訊** — 應會顯示您的 GPU 型號
+3. 在加速狀態中尋找「CUDA」
+
+## 疑難排解
+
+如果 GPU 加速無法運作：
+
+- 確保您的 NVIDIA 驅動程式已更新至最新版本
+- 驗證 CUDA 是否已安裝：`nvcc --version`
+- 查看 [GPU 疑難排解](/zh-Hant/troubleshooting/gpu)以獲得更多協助
