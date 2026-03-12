@@ -35,6 +35,10 @@
               {
                 "group": "Troubleshooting",
                 "pages": ["troubleshooting/common-issues", "troubleshooting/gpu", "troubleshooting/audio"]
+              },
+              {
+                "group": "Legal",
+                "pages": ["privacy"]
               }
             ]
           }
