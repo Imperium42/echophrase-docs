@@ -1,50 +1,76 @@
 ---
 title: GPU 加速
-description: 啟用 NVIDIA CUDA 以加快轉錄速度
+description: Echophrase 如何為轉錄選擇最快的裝置
 ---
 
 # GPU 加速
 
-使用 NVIDIA GPU 加速，將轉錄速度提升 5-10 倍。
+Echophrase 使用 ONNX Runtime 的自動裝置選擇功能，在執行時選擇最快的可用硬體
+進行轉錄。**您無需進行任何設定** - 應用程式會在首次啟動時偵測您的 GPU 並
+自動使用它。
 
-## 需求
+## 支援的硬體
 
-- NVIDIA GPU（建議 GTX 1060 或更新）
-- CUDA 12.0 或更新版本
-- cuDNN 9.5.1 或更新版本
+| 平台 | 預設加速器 | 系統需求 |
+|---|---|---|
+| Windows（NVIDIA） | CUDA 或 DirectML | CUDA 需要 12.8+ 和 cuDNN 9.19+；DirectML 支援任何 DirectX 12 GPU |
+| Windows（AMD/Intel） | DirectML | 任何 DirectX 12 GPU - 無需額外安裝 |
+| Windows（Copilot+ PC） | NPU | Snapdragon X 或 Intel Core Ultra - 自動選擇 |
+| Linux / WSL | CUDA | NVIDIA GPU + CUDA 12.8+ + cuDNN 9.19+ |
+| macOS | CoreML（Metal） | Apple Silicon（M1 或更新），macOS 13.3+ |
 
 ## 安裝
 
-### Windows
+### Windows（DirectML - 開箱即用）
 
-1. 下載 [CUDA Toolkit 12.x](https://developer.nvidia.com/cuda-downloads)
-2. 執行安裝程式並按照提示操作
-3. 重新啟動電腦
-4. Echophrase 會自動偵測並使用您的 GPU
+無需安裝任何東西。DirectML 已內建於 Windows 10 及更新版本。任何現代 GPU
+（NVIDIA、AMD、Intel）都會自動被使用。
 
-### Linux
+### Windows（CUDA - NVIDIA 的選用速度提升）
+
+如果您有 NVIDIA GPU 並想要最快的轉錄速度：
+
+1. 安裝 [CUDA Toolkit 12.8 或更新版本](https://developer.nvidia.com/cuda-downloads)
+2. 安裝 [cuDNN 9.19 或更新版本](https://developer.nvidia.com/cudnn)
+3. 重新啟動 Echophrase
+4. 在「設定 > GPU 加速」中選擇 **CUDA**（或保持「自動」讓 Echophrase
+   自動優先選擇 CUDA 而非 DirectML）
+
+### Linux / WSL
 
 ```bash
-# Ubuntu/Debian
-sudo apt install nvidia-cuda-toolkit
+# Ubuntu 24.04 / Debian
+sudo apt install nvidia-cuda-toolkit libcudnn9-cuda-12
 
-# 或從 NVIDIA 下載
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+# 或直接從 NVIDIA 安裝較新版本
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
 sudo dpkg -i cuda-keyring_1.1-1_all.deb
 sudo apt update
-sudo apt install cuda
+sudo apt install cuda-toolkit-12-8 libcudnn9-cuda-12
 ```
+
+WSL2 使用者可從 Windows 主機取得 GPU 直通存取 - 無需在 WSL 端安裝額外驅動程式。
+
+### macOS
+
+無需安裝任何東西。Apple Silicon Mac 在 macOS 13.3 或更新版本上會自動使用
+Metal GPU 加速。
 
 ## 驗證 GPU 使用
 
 1. 開啟 Echophrase 設定
-2. 查看**系統資訊** — 應會顯示您的 GPU 型號
-3. 在加速狀態中尋找「CUDA」
+2. 查看 **GPU 加速** - 最上方會顯示目前使用的裝置
+   （例如：「目前使用：Using CUDA (NVIDIA GeForce RTX 3090)」）
+3. 轉錄一個片段並確認轉錄速度很快
+
+如果目前使用的裝置顯示「Using CPU」但您有安裝相容的 GPU，請查看
+[GPU 疑難排解](/zh-Hant/troubleshooting/gpu)。
 
 ## 疑難排解
 
 如果 GPU 加速無法運作：
 
-- 確保您的 NVIDIA 驅動程式已更新至最新版本
-- 驗證 CUDA 是否已安裝：`nvcc --version`
-- 查看 [GPU 疑難排解](/zh-Hant/troubleshooting/gpu)以獲得更多協助
+- 確保您的 NVIDIA 驅動程式已更新至最新版本（CUDA 12 需要驅動程式 525+）
+- 驗證 CUDA 是否已安裝：`nvcc --version` 應該顯示 12.8 或更新版本
+- 驗證 cuDNN：在 Linux 上，`ldconfig -p | grep cudnn` 應列出 `libcudnn.so.9`
+- 查看 [GPU 疑難排解](/zh-Hant/troubleshooting/gpu) 以獲得特定平台的協助

@@ -9,17 +9,19 @@ Solutions for GPU acceleration problems.
 
 ## GPU Not Detected
 
+Echophrase auto-detects the fastest available GPU at runtime. If Settings >
+GPU Acceleration shows "Using CPU" on a machine with a compatible GPU, work
+through the checks below.
+
 ### Check NVIDIA Drivers
 
 ```bash
-# Windows (PowerShell)
-nvidia-smi
-
-# Linux
+# Windows (PowerShell) and Linux/WSL
 nvidia-smi
 ```
 
-If this command fails, install or update your NVIDIA drivers.
+If this command fails, install or update your NVIDIA drivers (driver version
+525 or later is required for CUDA 12).
 
 ### Verify CUDA Installation
 
@@ -27,21 +29,48 @@ If this command fails, install or update your NVIDIA drivers.
 nvcc --version
 ```
 
-Expected output should show CUDA 12.x or later.
+Expected output should show **CUDA 12.8 or later**. Earlier versions are no
+longer compatible with the bundled ONNX Runtime.
 
 ### Check cuDNN
 
-cuDNN must be installed separately:
+cuDNN 9.19 or later must be installed on your system. The easiest install path:
 
-1. Download from [NVIDIA cuDNN](https://developer.nvidia.com/cudnn)
-2. Extract to your CUDA installation directory
-3. Restart Echophrase
+**Ubuntu/Debian:**
+```bash
+sudo apt install libcudnn9-cuda-12
+```
+
+**Windows:**
+1. Download [cuDNN 9.19+ from NVIDIA](https://developer.nvidia.com/cudnn)
+   (requires a free developer account)
+2. Run the installer - it will integrate automatically with your existing
+   CUDA Toolkit
+
+**Verify on Linux:**
+```bash
+ldconfig -p | grep cudnn
+# Should list libcudnn.so.9
+```
+
+Restart Echophrase after installing or upgrading cuDNN.
 
 ## GPU Detected But Not Used
 
-1. Open Echophrase Settings → System Info
-2. Ensure "Use GPU" is enabled
-3. Check that CUDA version matches requirements (12.0+)
+Open **Settings > GPU Acceleration** and confirm:
+
+1. **Auto (Recommended)** is selected - this lets Echophrase pick the fastest
+   device at session start
+2. The inline status at the top shows your GPU (for example: "Active: Using
+   CUDA (NVIDIA GeForce RTX 3090)")
+
+If the status shows "Using CPU" despite a compatible GPU being installed,
+the bundled ONNX Runtime couldn't find the CUDA libraries at runtime. This
+usually means:
+
+- Your driver version is older than the CUDA toolkit major version
+- cuDNN is missing or a version older than 9.19
+- You have multiple CUDA versions installed and the wrong one is active
 
 ## Out of Memory Errors
 
@@ -55,6 +84,6 @@ If you see "CUDA out of memory":
 
 If GPU transcription is slow:
 
-1. Check GPU utilization with `nvidia-smi`
+1. Check GPU utilization with `nvidia-smi` during a transcription
 2. Ensure you're not thermal throttling
 3. Try a smaller model for faster results

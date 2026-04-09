@@ -33,9 +33,16 @@ Get the latest version for your platform.
 
 ## GPU Acceleration (Optional)
 
-For faster transcription, install NVIDIA CUDA:
+Echophrase auto-detects the fastest available device on first launch - you
+don't need to configure anything. For NVIDIA users who want the absolute
+fastest transcription, install:
 
-- **CUDA**: 12.0 or later
-- **cuDNN**: 9.5.1 or later
+- **CUDA Toolkit**: 12.8 or later
+- **cuDNN**: 9.19 or later
 
-See [GPU Setup](/config/gpu) for detailed instructions.
+Windows users without NVIDIA hardware get DirectML acceleration automatically
+(no extra install). Apple Silicon Macs use Metal via CoreML on macOS 13.3+.
+Copilot+ PCs (Qualcomm Snapdragon X, Intel Core Ultra) get NPU acceleration
+for free.
+
+See [GPU Setup](/config/gpu) for detailed platform-specific instructions.

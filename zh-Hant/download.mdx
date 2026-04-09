@@ -33,9 +33,14 @@ description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
 
 ## GPU 加速（選用）
 
-如需更快的轉錄速度，請安裝 NVIDIA CUDA：
+Echophrase 會在首次啟動時自動偵測最快的可用裝置 - 您無需進行任何設定。
+想要最快轉錄速度的 NVIDIA 使用者可以安裝：
 
-- **CUDA**：12.0 或更新版本
-- **cuDNN**：9.5.1 或更新版本
+- **CUDA Toolkit**：12.8 或更新版本
+- **cuDNN**：9.19 或更新版本
 
-詳細說明請參閱 [GPU 設定](/zh-Hant/config/gpu)。
+沒有 NVIDIA 硬體的 Windows 使用者會自動取得 DirectML 加速（無需額外安裝）。
+Apple Silicon Mac 在 macOS 13.3+ 上透過 CoreML 使用 Metal 加速。Copilot+ PC
+（Qualcomm Snapdragon X、Intel Core Ultra）可免費取得 NPU 加速。
+
+詳細的特定平台說明請參閱 [GPU 設定](/zh-Hant/config/gpu)。
