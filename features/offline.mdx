@@ -1,0 +1,83 @@
+---
+title: Working Offline
+description: How Echophrase behaves without an internet connection
+---
+
+# Working Offline
+
+Echophrase is built to work offline. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
+
+## What Works Offline
+
+<CardGroup cols={2}>
+  <Card title="All Transcription" icon="microphone">
+    Every transcription feature - global hotkey, clipboard copy, paste-at-cursor, model switching - works fully offline.
+  </Card>
+  <Card title="Local Models" icon="cube">
+    Once a model is downloaded, it runs entirely on your device. No round-trip to a server.
+  </Card>
+  <Card title="Settings & Hotkeys" icon="gear">
+    All app settings, hotkeys, and audio device selection work without any connection.
+  </Card>
+  <Card title="No Voice Upload" icon="shield-check">
+    Your audio never reaches our servers. Ever. Even when online, transcription is local.
+  </Card>
+</CardGroup>
+
+## Periodic Re-Authentication
+
+To verify your subscription tier, your device must reconnect to our authentication server **at least once every 30 days**. We call this the **offline grace period**.
+
+<Note>
+  Reconnecting takes a fraction of a second. You don't need to do anything manually - the app does it in the background whenever it detects an internet connection.
+</Note>
+
+### What Happens At The 30-Day Mark
+
+| Tier | Online | Offline ≤ 30 days | Offline > 30 days |
+|------|--------|-------------------|-------------------|
+| **Anonymous** | 2 min/day, 20 lifetime transcriptions | Same limits, applied locally | Same limits, applied locally |
+| **Free** | 5 min/day | Same limits, applied locally | Same limits, applied locally |
+| **Pro / Enterprise** | Unlimited | Unlimited | Temporarily downgraded to Free tier limits (5 min/day) |
+
+<Tip>
+  Reconnecting and signing in restores your paid entitlements **immediately** - no waiting, no re-purchase, no support ticket.
+</Tip>
+
+## What You Won't Lose
+
+<Warning>
+  Going past the 30-day grace period **never** deletes your data, locks you out, or wipes your settings.
+</Warning>
+
+- Your transcriptions and any local content remain intact
+- Your account stays active
+- Your subscription is not cancelled
+- Your settings, hotkeys, and downloaded models are untouched
+
+The only thing that changes is which daily usage limits apply, and that change reverses the moment you sign in again.
+
+## Why The 30-Day Window?
+
+We don't want to ping our servers constantly - that would defeat the privacy-first design. But we also need a way to verify you're still a paying subscriber so we can fairly serve free users. Thirty days is long enough to handle most travel, network outages, and air-gapped scenarios without inconvenience, while short enough to keep entitlement state honest.
+
+## Cloud-Only Features
+
+A few features intentionally require a connection because they sync with our servers:
+
+- Cloud sync of transcription history (Pro / Enterprise, opt-in)
+- Account management and billing
+- Subscription tier upgrades / downgrades
+
+These will simply be unavailable when offline. They do not affect transcription itself.
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Privacy Policy" icon="lock" href="/privacy">
+    Full details on what data we do and don't collect.
+  </Card>
+  <Card title="Models" icon="cube" href="/config/models">
+    How model downloads work and where they're stored locally.
+  </Card>
+</CardGroup>

@@ -26,7 +26,7 @@
               },
               {
                 "group": "Features",
-                "pages": ["features/transcription", "features/hotkeys", "features/modes"]
+                "pages": ["features/transcription", "features/hotkeys", "features/modes", "features/offline"]
               },
               {
                 "group": "Configuration",
@@ -56,7 +56,7 @@
               },
               {
                 "group": "功能",
-                "pages": ["zh-Hant/features/transcription", "zh-Hant/features/hotkeys", "zh-Hant/features/modes"]
+                "pages": ["zh-Hant/features/transcription", "zh-Hant/features/hotkeys", "zh-Hant/features/modes", "zh-Hant/features/offline"]
               },
               {
                 "group": "設定",
