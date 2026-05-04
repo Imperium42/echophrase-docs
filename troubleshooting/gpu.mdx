@@ -1,6 +1,6 @@
 ---
 title: GPU Troubleshooting
-description: Fix NVIDIA CUDA and GPU acceleration issues
+description: Fix DirectML and GPU acceleration issues
 ---
 
 # GPU Troubleshooting
@@ -9,74 +9,53 @@ Solutions for GPU acceleration problems.
 
 ## GPU Not Detected
 
-Echophrase auto-detects the fastest available GPU at runtime. If Settings >
-GPU Acceleration shows "Using CPU" on a machine with a compatible GPU, work
-through the checks below.
+Echophrase auto-detects the fastest available GPU at runtime. If
+**Settings → GPU Acceleration** shows "Using CPU" on a machine with a
+DirectX 12 GPU, work through the checks below.
 
-### Check NVIDIA Drivers
+### Update your GPU drivers
 
-```bash
-# Windows (PowerShell) and Linux/WSL
-nvidia-smi
-```
+Most GPU detection problems come down to outdated drivers. Install the
+latest from your vendor:
 
-If this command fails, install or update your NVIDIA drivers (driver version
-525 or later is required for CUDA 12).
+- **NVIDIA**: [GeForce / Studio drivers](https://www.nvidia.com/Download/index.aspx)
+- **AMD**: [Adrenalin](https://www.amd.com/en/support)
+- **Intel**: [Arc / Iris drivers](https://www.intel.com/content/www/us/en/download-center/home.html)
 
-### Verify CUDA Installation
+After updating, restart your machine and relaunch Echophrase.
 
-```bash
-nvcc --version
-```
+### Confirm DirectX 12 support
 
-Expected output should show **CUDA 12.8 or later**. Earlier versions are no
-longer compatible with the bundled ONNX Runtime.
+DirectML requires DirectX 12. Press **Win + R**, type `dxdiag`, and check
+the **Display** tab — under "Drivers" the **Feature Levels** line should
+include `12_0` or higher. Any GPU released since ~2015 should qualify.
 
-### Check cuDNN
+### Already on CUDA?
 
-cuDNN 9.19 or later must be installed on your system. The easiest install path:
-
-**Ubuntu/Debian:**
-```bash
-sudo apt install libcudnn9-cuda-12
-```
-
-**Windows:**
-1. Download [cuDNN 9.19+ from NVIDIA](https://developer.nvidia.com/cudnn)
-   (requires a free developer account)
-2. Run the installer - it will integrate automatically with your existing
-   CUDA Toolkit
-
-**Verify on Linux:**
-```bash
-ldconfig -p | grep cudnn
-# Should list libcudnn.so.9
-```
-
-Restart Echophrase after installing or upgrading cuDNN.
+CUDA support was removed in favor of DirectML — Echophrase no longer
+ships CUDA at all. If you arrived here from older docs about installing
+CUDA Toolkit or cuDNN: you can uninstall those if they were installed
+purely for Echophrase. Update to the latest Echophrase build and the
+GPU should be picked up automatically via DirectML.
 
 ## GPU Detected But Not Used
 
-Open **Settings > GPU Acceleration** and confirm:
+Open **Settings → GPU Acceleration** and confirm:
 
-1. **Auto (Recommended)** is selected - this lets Echophrase pick the fastest
-   device at session start
-2. The inline status at the top shows your GPU (for example: "Active: Using
-   CUDA (NVIDIA GeForce RTX 3090)")
+1. **Auto (Recommended)** is selected — this lets Echophrase pick the
+   fastest device at session start.
+2. The inline status at the top shows your GPU (for example:
+   "Active: Using DirectML (NVIDIA GeForce RTX 3080)").
 
-If the status shows "Using CPU" despite a compatible GPU being installed,
-the bundled ONNX Runtime couldn't find the CUDA libraries at runtime. This
-usually means:
-
-- Your driver version is older than the CUDA toolkit major version
-- cuDNN is missing or a version older than 9.19
-- You have multiple CUDA versions installed and the wrong one is active
+If the status still shows "Using CPU", restart the app after a driver
+update. The execution provider is selected once at session start.
 
 ## Out of Memory Errors
 
-If you see "CUDA out of memory":
+If you see GPU out-of-memory errors:
 
-1. Use a smaller model (Tiny or Base)
+1. Use a smaller model — switch from **Parakeet-TDT 0.6B** to **Parakeet
+   Lite** (see [Requirements](/requirements) for the full matrix)
 2. Close other GPU-intensive applications
 3. Restart Echophrase to free GPU memory
 
@@ -84,6 +63,6 @@ If you see "CUDA out of memory":
 
 If GPU transcription is slow:
 
-1. Check GPU utilization with `nvidia-smi` during a transcription
-2. Ensure you're not thermal throttling
-3. Try a smaller model for faster results
+1. Confirm the active provider is DirectML (or NPU on Copilot+ PCs), not CPU
+2. Make sure your GPU isn't thermal throttling under load
+3. Try Parakeet Lite for faster results on lower-end hardware

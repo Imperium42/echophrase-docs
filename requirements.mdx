@@ -1,0 +1,64 @@
+---
+title: Requirements
+description: System requirements, GPU support, and the models Echophrase ships with
+---
+
+# Requirements
+
+Echophrase runs on a wide range of hardware. The default model is tuned to feel
+fast on a mid-range gaming GPU; a smaller "Lite" variant runs on machines with
+no dedicated GPU at all.
+
+## System
+
+| Resource | Minimum | Recommended |
+|----------|---------|-------------|
+| **OS** | Windows 10 (22H2) | Windows 11 |
+| **OS (macOS)** | macOS 13 (Apple Silicon) — *Metal in testing* | macOS 14+ |
+| **OS (Linux)** | Ubuntu 22.04 (CPU only) | Ubuntu 24.04 |
+| **RAM** | 4 GB | 8 GB+ |
+| **Disk** | 2 GB free | 4 GB free |
+| **GPU** | None — CPU works | DirectX 12 GPU on Windows |
+
+## GPU acceleration
+
+Echophrase auto-detects the fastest available device on first launch — there
+is nothing to configure.
+
+| Platform | Acceleration | What you need |
+|----------|--------------|---------------|
+| **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm) |
+| **macOS** | Metal *(in testing)* | Apple Silicon, macOS 13.3+ |
+| **Linux** | CPU | GPU acceleration on the roadmap |
+
+<Note>
+We dropped CUDA support to escape "requirements hell" — matching the right
+NVIDIA driver, the right CUDA Toolkit version, and the right cuDNN version
+turned every install into a multi-step yak-shave. DirectML is built into
+Windows, runs on every modern GPU regardless of vendor, and gives us the
+same wins for transcription workloads with none of the install pain. Native
+CPU and Apple Metal cover the rest.
+</Note>
+
+## Supported models
+
+Pulled directly from the desktop app's model registry — these are the exact
+models that ship today.
+
+| Model | Parameters | Min VRAM | Recommended GPU | Realtime speed |
+|-------|------------|----------|-----------------|----------------|
+| **Parakeet-TDT 0.6B** *(default)* | 0.6B | 6 GB | RTX 3080 or better | 12× |
+| **Parakeet Lite** | 120M | None (GPU optional) | Any modern GPU, even integrated | 2–5× |
+| **T5-Mini Grammar** *(post-process)* | Mini | — | Any GPU | — |
+
+### Recommended NVIDIA card
+
+For the **default Parakeet-TDT** model we recommend an **RTX 3080 or better**.
+**Parakeet Lite** runs comfortably on integrated graphics or any older NVIDIA
+card — you do not need a dedicated GPU to use Echophrase.
+
+<Tip>
+**More models on the way.** We're evaluating additional Whisper variants and
+multilingual voice models. Want to vote on what ships next?
+[Join the Discord](https://discord.com/invite/Er6NUcx).
+</Tip>

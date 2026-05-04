@@ -22,7 +22,7 @@
             "groups": [
               {
                 "group": "Getting Started",
-                "pages": ["introduction", "quickstart", "download", "beta"]
+                "pages": ["introduction", "quickstart", "download", "requirements", "beta"]
               },
               {
                 "group": "Features",
@@ -52,7 +52,7 @@
             "groups": [
               {
                 "group": "開始使用",
-                "pages": ["zh-Hant/introduction", "zh-Hant/quickstart", "zh-Hant/download", "zh-Hant/beta"]
+                "pages": ["zh-Hant/introduction", "zh-Hant/quickstart", "zh-Hant/download", "zh-Hant/requirements", "zh-Hant/beta"]
               },
               {
                 "group": "功能",

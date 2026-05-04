@@ -1,6 +1,6 @@
 ---
 title: GPU 疑難排解
-description: 修復 NVIDIA CUDA 和 GPU 加速問題
+description: 修復 DirectML 與 GPU 加速問題
 ---
 
 # GPU 疑難排解
@@ -9,70 +9,50 @@ GPU 加速問題的解決方案。
 
 ## GPU 未偵測到
 
-Echophrase 會在執行時自動偵測最快的可用 GPU。如果「設定 > GPU 加速」在
-有相容 GPU 的機器上顯示「Using CPU」，請按以下步驟檢查。
+Echophrase 會在執行時自動偵測最快的可用 GPU。如果**設定 → GPU 加速**在
+有 DirectX 12 GPU 的機器上顯示「Using CPU」，請按以下步驟檢查。
 
-### 檢查 NVIDIA 驅動程式
+### 更新顯示卡驅動程式
 
-```bash
-# Windows (PowerShell) 和 Linux/WSL
-nvidia-smi
-```
+大多數 GPU 偵測問題都源自過時的驅動程式。請從顯示卡供應商安裝最新版本：
 
-如果此指令失敗，請安裝或更新您的 NVIDIA 驅動程式（CUDA 12 需要驅動程式
-525 或更新版本）。
+- **NVIDIA**：[GeForce / Studio 驅動程式](https://www.nvidia.com/Download/index.aspx)
+- **AMD**：[Adrenalin](https://www.amd.com/en/support)
+- **Intel**：[Arc / Iris 驅動程式](https://www.intel.com/content/www/us/en/download-center/home.html)
 
-### 驗證 CUDA 安裝
+更新後請重新啟動電腦並重新啟動 Echophrase。
 
-```bash
-nvcc --version
-```
+### 確認 DirectX 12 支援
 
-預期輸出應顯示 **CUDA 12.8 或更新版本**。更早的版本已不再相容於內建的
-ONNX Runtime。
+DirectML 需要 DirectX 12。按 **Win + R**，輸入 `dxdiag`，然後查看
+**顯示**標籤頁 — 在「驅動程式」項目下，**功能等級**這一行應包含 `12_0`
+或更高。約 2015 年後推出的任何 GPU 都應符合條件。
 
-### 檢查 cuDNN
+### 之前在用 CUDA？
 
-您的系統上必須安裝 cuDNN 9.19 或更新版本。最簡單的安裝方式：
-
-**Ubuntu/Debian：**
-```bash
-sudo apt install libcudnn9-cuda-12
-```
-
-**Windows：**
-1. 從 [NVIDIA 下載 cuDNN 9.19+](https://developer.nvidia.com/cudnn)
-   （需要免費的開發者帳戶）
-2. 執行安裝程式 - 它會自動與您現有的 CUDA Toolkit 整合
-
-**在 Linux 上驗證：**
-```bash
-ldconfig -p | grep cudnn
-# 應列出 libcudnn.so.9
-```
-
-安裝或升級 cuDNN 後請重新啟動 Echophrase。
+我們已以 DirectML 取代 CUDA，Echophrase 也不再內含 CUDA。如果您是
+從舊版文件中得知需要安裝 CUDA Toolkit 或 cuDNN — 若這些只是為 Echophrase
+而安裝，現在可以解除安裝。請更新至最新版的 Echophrase，GPU 將透過 DirectML
+自動被識別。
 
 ## GPU 已偵測但未使用
 
-開啟「**設定 > GPU 加速**」並確認：
+開啟「**設定 → GPU 加速**」並確認：
 
-1. 已選擇「**自動（推薦）**」- 這讓 Echophrase 在工作階段開始時選擇最快的裝置
-2. 頂部的內嵌狀態顯示您的 GPU（例如：「目前使用：Using CUDA
-   (NVIDIA GeForce RTX 3090)」）
+1. 已選擇「**自動（推薦）**」 — 這讓 Echophrase 在工作階段開始時選擇最快
+   的裝置。
+2. 頂部的內嵌狀態顯示您的 GPU（例如：「目前使用：Using DirectML
+   (NVIDIA GeForce RTX 3080)」）。
 
-如果安裝了相容的 GPU 但狀態仍顯示「Using CPU」，則表示內建的 ONNX Runtime
-無法在執行時找到 CUDA 函式庫。通常是因為：
-
-- 您的驅動程式版本比 CUDA toolkit 主要版本舊
-- cuDNN 缺失或版本比 9.19 舊
-- 您有多個 CUDA 版本安裝而錯誤的版本處於使用中
+如果狀態仍顯示「Using CPU」，更新驅動程式後重新啟動應用程式。執行提供者
+是在工作階段啟動時選擇一次。
 
 ## 記憶體不足錯誤
 
-如果您看到「CUDA out of memory」：
+如果出現 GPU 記憶體不足的錯誤：
 
-1. 使用較小的模型（Tiny 或 Base）
+1. 改用較小的模型 — 從 **Parakeet-TDT 0.6B** 切換為
+   **Parakeet Lite**（完整對照表請見[系統需求](/zh-Hant/requirements)）
 2. 關閉其他 GPU 密集型應用程式
 3. 重新啟動 Echophrase 以釋放 GPU 記憶體
 
@@ -80,6 +60,6 @@ ldconfig -p | grep cudnn
 
 如果 GPU 轉錄速度很慢：
 
-1. 在轉錄期間使用 `nvidia-smi` 檢查 GPU 使用率
-2. 確保沒有發生熱節流
-3. 嘗試使用較小的模型以獲得更快的結果
+1. 確認目前使用的提供者是 DirectML（在 Copilot+ PC 上則為 NPU），而非 CPU
+2. 確保 GPU 在高負載下沒有發生熱節流
+3. 在較低階硬體上嘗試使用 Parakeet Lite，以獲得更快的結果

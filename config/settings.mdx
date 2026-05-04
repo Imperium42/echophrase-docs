@@ -25,16 +25,20 @@ View and change the active transcription model. Shows your GPU/device info, curr
 
 Echophrase auto-detects the fastest available execution provider at runtime.
 The **Auto (Recommended)** option picks the best device for your hardware:
-CUDA on NVIDIA GPUs, DirectML on any Windows GPU, CoreML on Apple Silicon,
-or NPU on Copilot+ PCs. CPU is the fallback when nothing else is available.
+DirectML on any Windows DirectX 12 GPU, CoreML on Apple Silicon
+*(in testing)*, or NPU on Copilot+ PCs. CPU is the fallback when nothing
+else is available.
 
 You can force a specific provider if you need to:
 
 - **Auto (Recommended)**: Let Echophrase pick the fastest device at session start
-- **CUDA**: Force NVIDIA CUDA (NVIDIA GPU with CUDA 12.8+ and cuDNN 9.19+ required)
 - **DirectML**: Force Windows DirectML (any DirectX 12 GPU)
-- **CoreML**: Force Apple Metal (macOS 13.3+ on Apple Silicon)
-- **CPU**: Force CPU - useful for battery savings or when the GPU is busy elsewhere
+- **CoreML**: Force Apple Metal (macOS 13.3+ on Apple Silicon — *in testing*)
+- **CPU**: Force CPU — useful for battery savings or when the GPU is busy elsewhere
+
+<Note>CUDA support was removed; DirectML covers NVIDIA GPUs on Windows with
+no driver/toolkit version juggling. See [GPU Acceleration](/config/gpu) for
+the rationale.</Note>
 
 <Note>Changing the active provider requires restarting Echophrase to take effect. The settings UI shows a "Restart to apply" banner when a change needs a relaunch.</Note>
 

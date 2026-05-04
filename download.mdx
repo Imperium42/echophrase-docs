@@ -15,7 +15,7 @@ Get the latest version for your platform.
 | **macOS** | macOS 12+ | macOS 14+ |
 | **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
 | **RAM** | 4 GB | 8 GB+ |
-| **GPU** | - | NVIDIA with CUDA 12+ |
+| **GPU** | None (CPU works) | DirectX 12 GPU on Windows; Apple Silicon (Metal — *in testing*) on macOS |
 
 ## Downloads
 
@@ -37,18 +37,17 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
 Echophrase is currently in beta. The Windows installer above resolves to the latest beta build via CrabNebula Cloud's CDN.
 </Note>
 
-## GPU Acceleration (Optional)
+## GPU Acceleration
 
-Echophrase auto-detects the fastest available device on first launch - you
-don't need to configure anything. For NVIDIA users who want the absolute
-fastest transcription, install:
+Echophrase auto-detects the fastest available device on first launch — you
+don't need to configure anything, and there's no driver setup to do.
 
-- **CUDA Toolkit**: 12.8 or later
-- **cuDNN**: 9.19 or later
+- **Windows**: DirectML on any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm).
+  Built into Windows, no install required.
+- **macOS**: Metal acceleration on Apple Silicon, macOS 13.3+ — currently
+  **in testing**.
+- **Linux**: CPU. GPU acceleration on the roadmap.
 
-Windows users without NVIDIA hardware get DirectML acceleration automatically
-(no extra install). Apple Silicon Macs use Metal via CoreML on macOS 13.3+.
-Copilot+ PCs (Qualcomm Snapdragon X, Intel Core Ultra) get NPU acceleration
-for free.
-
-See [GPU Setup](/config/gpu) for detailed platform-specific instructions.
+See [Requirements](/requirements) for hardware recommendations and the model
+support matrix. CUDA is no longer supported — see the note on that page for
+why we made the switch.

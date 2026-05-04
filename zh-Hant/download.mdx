@@ -15,7 +15,7 @@ description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
 | **macOS** | macOS 12+ | macOS 14+ |
 | **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
 | **記憶體** | 4 GB | 8 GB+ |
-| **GPU** | - | NVIDIA（支援 CUDA 12+） |
+| **GPU** | 無（CPU 即可） | Windows 上的 DirectX 12 GPU；macOS 上的 Apple Silicon（Metal — *測試中*） |
 
 ## 下載連結
 
@@ -37,16 +37,16 @@ description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
 Echophrase 目前處於 Beta 階段。上方的 Windows 安裝程式會透過 CrabNebula Cloud 的 CDN 解析至最新 Beta 版本。
 </Note>
 
-## GPU 加速（選用）
+## GPU 加速
 
-Echophrase 會在首次啟動時自動偵測最快的可用裝置 - 您無需進行任何設定。
-想要最快轉錄速度的 NVIDIA 使用者可以安裝：
+Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 您無需進行任何設定，
+也不需要安裝任何驅動程式。
 
-- **CUDA Toolkit**：12.8 或更新版本
-- **cuDNN**：9.19 或更新版本
+- **Windows**：在任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm）上
+  使用 DirectML。內建於 Windows，無需安裝。
+- **macOS**：在 Apple Silicon、macOS 13.3+ 上使用 Metal 加速 — 目前
+  **測試中**。
+- **Linux**：CPU。GPU 加速已列入規劃。
 
-沒有 NVIDIA 硬體的 Windows 使用者會自動取得 DirectML 加速（無需額外安裝）。
-Apple Silicon Mac 在 macOS 13.3+ 上透過 CoreML 使用 Metal 加速。Copilot+ PC
-（Qualcomm Snapdragon X、Intel Core Ultra）可免費取得 NPU 加速。
-
-詳細的特定平台說明請參閱 [GPU 設定](/zh-Hant/config/gpu)。
+請參閱[系統需求](/zh-Hant/requirements)以查看硬體建議與模型支援表格。
+我們已不再支援 CUDA — 該頁面說明了我們做出此決定的原因。

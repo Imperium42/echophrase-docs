@@ -7,70 +7,41 @@ description: How Echophrase picks the fastest device for transcription
 
 Echophrase uses ONNX Runtime's automatic device selection to pick the fastest
 available hardware for transcription at runtime. **You don't need to configure
-anything** - the app detects your GPU on first launch and uses it automatically.
+anything** — the app detects your GPU on first launch and uses it
+automatically.
 
 ## Supported Hardware
 
-| Platform | Default Accelerator | System Requirements |
+| Platform | Default Accelerator | What you need |
 |---|---|---|
-| Windows (NVIDIA) | CUDA or DirectML | CUDA 12.8+ + cuDNN 9.19+ for CUDA, or any DirectX 12 GPU for DirectML |
-| Windows (AMD/Intel) | DirectML | Any DirectX 12 GPU - no extra install |
-| Windows (Copilot+ PC) | NPU | Snapdragon X or Intel Core Ultra - auto-selected |
-| Linux / WSL | CUDA | NVIDIA GPU + CUDA 12.8+ + cuDNN 9.19+ |
-| macOS | CoreML (Metal) | Apple Silicon (M1 or newer), macOS 13.3+ |
+| **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel) — no install |
+| **Windows (Copilot+ PC)** | NPU | Snapdragon X or Intel Core Ultra — auto-selected |
+| **macOS** *(in testing)* | CoreML (Metal) | Apple Silicon (M1+), macOS 13.3+ |
+| **Linux / WSL** | CPU | GPU acceleration on the roadmap |
 
-## Installation
+## Why no CUDA?
 
-### Windows (DirectML - works out of the box)
-
-Nothing to install. DirectML is built into Windows 10 and later. Any modern
-GPU (NVIDIA, AMD, Intel) will be used automatically.
-
-### Windows (CUDA - optional speed boost for NVIDIA)
-
-If you have an NVIDIA GPU and want the absolute fastest transcription:
-
-1. Install [CUDA Toolkit 12.8 or later](https://developer.nvidia.com/cuda-downloads)
-2. Install [cuDNN 9.19 or later](https://developer.nvidia.com/cudnn)
-3. Restart Echophrase
-4. In Settings > GPU Acceleration, select **CUDA** (or leave on Auto and
-   Echophrase will prefer CUDA over DirectML automatically)
-
-### Linux / WSL
-
-```bash
-# Ubuntu 24.04 / Debian
-sudo apt install nvidia-cuda-toolkit libcudnn9-cuda-12
-
-# Or install from NVIDIA directly for newer versions
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
-sudo apt update
-sudo apt install cuda-toolkit-12-8 libcudnn9-cuda-12
-```
-
-WSL2 users get GPU passthrough from the Windows host - no extra WSL-side driver needed.
-
-### macOS
-
-Nothing to install. Apple Silicon Macs use Metal GPU acceleration automatically
-on macOS 13.3 or later.
+CUDA support was removed in favor of DirectML. The short version: keeping
+NVIDIA driver, CUDA Toolkit, and cuDNN versions in sync was a constant source
+of "works on my machine" support tickets. DirectML ships with Windows, runs
+on every modern GPU regardless of vendor, and delivers comparable performance
+for the speech models we run. For the rare workload where CUDA still wins,
+the right path is the underlying ONNX Runtime — not Echophrase.
 
 ## Verifying GPU Usage
 
 1. Open Echophrase Settings
-2. Look at **GPU Acceleration** - the top line shows the active device
-   (for example: "Active: Using CUDA (NVIDIA GeForce RTX 3090)")
+2. Look at **GPU Acceleration** — the top line shows the active device
+   (for example: "Active: Using DirectML (NVIDIA GeForce RTX 3080)")
 3. Transcribe a clip and confirm the transcription is fast
 
-If the active device says "Using CPU" but you have a compatible GPU installed,
-see [GPU Troubleshooting](/troubleshooting/gpu).
+If the active device says "Using CPU" but you have a DirectX 12 GPU
+installed, see [GPU Troubleshooting](/troubleshooting/gpu).
 
 ## Troubleshooting
 
 If GPU acceleration isn't working:
 
-- Ensure your NVIDIA drivers are up to date (driver 525+ for CUDA 12)
-- Verify CUDA is installed: `nvcc --version` should report 12.8 or later
-- Verify cuDNN: on Linux, `ldconfig -p | grep cudnn` should list `libcudnn.so.9`
+- Update your GPU drivers to the latest from the vendor (NVIDIA / AMD / Intel)
+- Confirm your GPU supports DirectX 12 (most cards from 2015 onwards do)
 - Check [GPU Troubleshooting](/troubleshooting/gpu) for platform-specific help
