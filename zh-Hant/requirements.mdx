@@ -1,0 +1,60 @@
+---
+title: 系統需求
+description: 系統需求、GPU 支援以及 Echophrase 內建的模型
+---
+
+# 系統需求
+
+Echophrase 可在多種硬體上執行。預設模型針對中階遊戲 GPU 調校；另有更輕量的
+「Lite」變體，可在沒有獨立 GPU 的裝置上順暢運作。
+
+## 系統
+
+| 資源 | 最低需求 | 建議配備 |
+|------|---------|---------|
+| **作業系統** | Windows 10 (22H2) | Windows 11 |
+| **macOS** | macOS 13（Apple Silicon）— *Metal 測試中* | macOS 14+ |
+| **Linux** | Ubuntu 22.04（僅 CPU） | Ubuntu 24.04 |
+| **記憶體** | 4 GB | 8 GB+ |
+| **磁碟空間** | 2 GB 可用 | 4 GB 可用 |
+| **GPU** | 無 — CPU 即可 | Windows 上的 DirectX 12 GPU |
+
+## GPU 加速
+
+Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 無需任何設定。
+
+| 平台 | 加速方式 | 所需條件 |
+|------|---------|---------|
+| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm） |
+| **macOS** | Metal *（測試中）* | Apple Silicon，macOS 13.3+ |
+| **Linux** | CPU | GPU 加速已列入規劃 |
+
+<Note>
+我們移除了 CUDA 支援以擺脫「相依性地獄」— 必須將 NVIDIA 驅動程式版本、
+CUDA Toolkit 版本以及 cuDNN 版本全部對齊，每次安裝都變成繁瑣的多步驟工程。
+DirectML 內建於 Windows，可在所有現代 GPU（不分品牌）上執行，並在語音轉錄
+工作上提供同等的效能 — 卻沒有任何安裝麻煩。原生 CPU 與 Apple Metal 則涵蓋
+其餘平台。
+</Note>
+
+## 支援的模型
+
+以下資料直接來自桌面應用程式的模型登錄表 — 這就是目前實際出貨的模型。
+
+| 模型 | 參數量 | 最低 VRAM | 建議 GPU | 即時速度 |
+|------|--------|----------|----------|---------|
+| **Parakeet-TDT 0.6B** *（預設）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
+| **Parakeet Lite** | 120M | 無（GPU 可選） | 任何現代 GPU，內建顯卡亦可 | 2–5× |
+| **T5-Mini Grammar** *（後處理）* | Mini | — | 任何 GPU | — |
+
+### 建議的 NVIDIA 顯示卡
+
+對於**預設的 Parakeet-TDT** 模型，我們建議使用 **RTX 3080 或更佳**。
+**Parakeet Lite** 在內建顯示卡或較舊的 NVIDIA 顯示卡上即可順暢執行 —
+您不需要獨立 GPU 才能使用 Echophrase。
+
+<Tip>
+**更多模型即將推出。** 我們正在評估其他 Whisper 變體與多語言語音模型。
+想投票決定下一個推出的模型嗎？
+[加入我們的 Discord](https://discord.com/invite/Er6NUcx)。
+</Tip>

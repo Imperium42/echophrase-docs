@@ -15,40 +15,49 @@ Get the latest version for your platform.
 | **macOS** | macOS 12+ | macOS 14+ |
 | **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
 | **RAM** | 4 GB | 8 GB+ |
-| **GPU** | - | NVIDIA with CUDA 12+ |
+| **GPU** | None (CPU works) | DirectX 12 GPU on Windows; Apple Silicon (Metal — *in testing*) on macOS |
 
 ## Downloads
 
 The latest builds are available at [echophrase.com/download](https://echophrase.com/download), which auto-detects your platform.
 
 <CardGroup cols={3}>
-  <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
+  <Card title="Windows (Beta)" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
     Windows 10/11 (x64)
   </Card>
-  <Card title="macOS" icon="apple" href="https://echophrase.com/download">
+  <Card title="macOS (Alpha)" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/macos-aarch64?channel=beta">
     macOS 12+ (Apple Silicon)
   </Card>
-  <Card title="Linux" icon="linux" href="https://github.com/dylanh724/echophrase/releases/latest">
-    AppImage / .deb
+  <Card title="Linux (Alpha)" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64?channel=beta">
+    AppImage (x64)
   </Card>
 </CardGroup>
 
 <Note>
-Echophrase is currently in beta. The Windows installer above resolves to the latest beta build via CrabNebula Cloud's CDN.
+Windows is in **Beta**. macOS and Linux builds are in **Alpha** - functional but rough around the edges, and not yet code-signed. All downloads resolve to the latest beta-channel build via CrabNebula Cloud's CDN.
 </Note>
 
-## GPU Acceleration (Optional)
+<Warning>
+**macOS users:** the Alpha build is not yet notarized with Apple, so macOS will say Echophrase is "damaged" on first launch. After dragging to Applications, run this in Terminal to clear Apple's quarantine flag:
 
-Echophrase auto-detects the fastest available device on first launch - you
-don't need to configure anything. For NVIDIA users who want the absolute
-fastest transcription, install:
+```bash
+xattr -cr /Applications/Echophrase.app
+```
 
-- **CUDA Toolkit**: 12.8 or later
-- **cuDNN**: 9.19 or later
+Notarized builds will land once our Developer ID enrollment finishes.
+</Warning>
 
-Windows users without NVIDIA hardware get DirectML acceleration automatically
-(no extra install). Apple Silicon Macs use Metal via CoreML on macOS 13.3+.
-Copilot+ PCs (Qualcomm Snapdragon X, Intel Core Ultra) get NPU acceleration
-for free.
+## GPU Acceleration
 
-See [GPU Setup](/config/gpu) for detailed platform-specific instructions.
+Echophrase auto-detects the fastest available device on first launch — you
+don't need to configure anything, and there's no driver setup to do.
+
+- **Windows**: DirectML on any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm).
+  Built into Windows, no install required.
+- **macOS**: Metal acceleration on Apple Silicon, macOS 13.3+ — currently
+  **in testing**.
+- **Linux**: CPU. GPU acceleration on the roadmap.
+
+See [Requirements](/requirements) for hardware recommendations and the model
+support matrix. CUDA is no longer supported — see the note on that page for
+why we made the switch.

@@ -22,7 +22,7 @@
             "groups": [
               {
                 "group": "Getting Started",
-                "pages": ["introduction", "quickstart", "download", "beta"]
+                "pages": ["introduction", "quickstart", "download", "requirements", "beta"]
               },
               {
                 "group": "Features",
@@ -52,7 +52,7 @@
             "groups": [
               {
                 "group": "開始使用",
-                "pages": ["zh-Hant/introduction", "zh-Hant/quickstart", "zh-Hant/download", "zh-Hant/beta"]
+                "pages": ["zh-Hant/introduction", "zh-Hant/quickstart", "zh-Hant/download", "zh-Hant/requirements", "zh-Hant/beta"]
               },
               {
                 "group": "功能",
@@ -77,7 +77,7 @@
       "x": "https://x.com/imperium42",
       "linkedin": "https://www.linkedin.com/company/imperium42",
       "discord": "https://discord.com/invite/Er6NUcx",
-      "website": "https://beta.echophrase.com"
+      "website": "https://echophrase.com"
     }
   },
   "background": {
