@@ -25,7 +25,7 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
   <Card title="Windows (Beta)" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
     Windows 10/11 (x64)
   </Card>
-  <Card title="macOS (Alpha)" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/macos-aarch64?channel=beta">
+  <Card title="macOS (Beta)" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/macos-aarch64?channel=beta">
     macOS 12+ (Apple Silicon)
   </Card>
   <Card title="Linux (Alpha)" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64?channel=beta">
@@ -34,11 +34,11 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
 </CardGroup>
 
 <Note>
-Windows is in **Beta**. macOS and Linux builds are in **Alpha** - functional but rough around the edges, and not yet code-signed. All downloads resolve to the latest beta-channel build via CrabNebula Cloud's CDN.
+Windows and macOS are in **Beta**. The Linux build is in **Alpha** - functional but rough around the edges (CPU-only), and not yet code-signed. All downloads resolve to the latest beta-channel build via CrabNebula Cloud's CDN.
 </Note>
 
 <Warning>
-**macOS users:** the Alpha build is not yet notarized with Apple, so macOS will say Echophrase is "damaged" on first launch. After dragging to Applications, run this in Terminal to clear Apple's quarantine flag:
+**macOS users:** the macOS Beta build is not yet notarized with Apple, so macOS will say Echophrase is "damaged" on first launch. After dragging to Applications, run this in Terminal to clear Apple's quarantine flag:
 
 ```bash
 xattr -cr /Applications/Echophrase.app
