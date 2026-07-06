@@ -1,0 +1,80 @@
+---
+title: Benchmarks
+description: Measured resource usage - install size, RAM, GPU power, and VRAM - with full methodology
+---
+
+# Benchmarks
+
+Echophrase is built on **Tauri + Rust** instead of Electron, and we measured
+exactly what that buys you. These are first-party numbers, but they're honest
+ones: where a figure is an estimate or a comparison is indirect, we say so.
+
+## TL;DR
+
+Measured 2026-07-06 on an NVIDIA GeForce RTX 5080 with **NVIDIA Parakeet-TDT
+0.6B** (the default model) loaded:
+
+| Phase | GPU Power | GPU VRAM | RAM | CPU |
+|-------|-----------|----------|-----|-----|
+| GPU idle (app closed) | ~21.9 W | 2690 MiB | — | — |
+| App + model loaded, ready | ~35.6 W | 5217 MiB | 226.6 MB | 0% |
+| Transcribing one phrase (marginal peak) | **+7.8 W** | **+31 MiB** | **+4.3 MB** | 5% peak |
+
+A single transcription is a marginal blip - a fraction of a watt-second and a
+few megabytes - then everything settles back to the ready state.
+
+## Install size
+
+The extracted Windows app is **34.2 MB**. For context: any Electron-based app
+carries a **~200 MB runtime** (bundled Chromium + Node + V8) before a single
+line of app code is added - Echophrase's entire install is roughly **6x
+smaller than that empty floor**. Real Electron apps commonly land at
+300-500 MB installed.
+
+Sources for the Electron runtime figures (independent 2026 framework
+comparisons, not our own measurements):
+[Tech Insider](https://tech-insider.org/tauri-vs-electron-2026/),
+[Hopp](https://www.gethopp.app/blog/tauri-vs-electron),
+[codenote.net](https://codenote.net/en/posts/famous-electron-apps-2026-research/).
+
+## Memory behavior: not a leak
+
+RAM and VRAM rise after the first couple of transcriptions (226.6 → 390.7 MB
+RAM), which can look leak-like. We stress-tested it: after ~5 more
+back-to-back utterances with no restart, RAM moved from 385.31 MB to just
+385.48 MB and VRAM held flat.
+
+| | RAM | GPU VRAM |
+|---|-----|----------|
+| Before the batch | 385.31 MB | ~5343 MiB |
+| After ~5 more utterances | 385.48 MB | 5332 MiB |
+
+The initial rise is a **one-time warm-up buffer/cache** that plateaus and
+stays flat regardless of how many phrases follow - a sustainable, always-ready
+footprint rather than one that degrades over a session.
+
+## Methodology
+
+<Note>
+**Hardware:** NVIDIA GeForce RTX 5080. **Model:** NVIDIA Parakeet-TDT 0.6B.
+GPU power/VRAM/utilization sampled via one long-lived
+`nvidia-smi --query-gpu ... -lms` process; RAM/CPU via PowerShell
+`Get-Process`, with %CPU computed Task-Manager-style (delta CPU-seconds ÷
+delta wall-seconds ÷ logical cores). Sampler overhead is small but not zero -
+treat these as close estimates, not lab-isolated numbers. The GPU idle floor
+also drifts between sessions with unrelated system activity, so each run
+captures a fresh baseline.
+</Note>
+
+## How this compares
+
+To our knowledge, **no other app in this category publishes a controlled
+GPU-watt or per-utterance VRAM benchmark**, so there is no like-for-like
+public comparison for those numbers - we simply measured what nobody else
+reports. Where independent data does exist (the Electron runtime and install
+sizes above), we cite it; where it doesn't, we say so rather than overclaim.
+
+<Tip>
+Questions about the numbers, or want them run on different hardware?
+[Join the Discord](https://discord.com/invite/Er6NUcx).
+</Tip>
