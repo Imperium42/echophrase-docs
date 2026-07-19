@@ -14,14 +14,33 @@ pick from in Settings.
 | Model | Parameters | Min VRAM | Recommended GPU | Realtime speed |
 |-------|------------|----------|-----------------|----------------|
 | **Parakeet-TDT 0.6B** *(default)* | 0.6B | 6 GB | RTX 3080 or better | 12× |
+| **Qwen3-ASR 0.6B** *(international)* | 0.6B | 4 GB | RTX 3060 or better | 2–6× |
 | **Parakeet Lite** | 120M | None (GPU optional) | Any modern GPU, even integrated | 2–5× |
 | **T5-Mini Grammar** *(post-process)* | Mini | — | Any GPU | — |
+
+### Language coverage
+
+- **Parakeet-TDT 0.6B**: 25 European languages with automatic detection
+- **Qwen3-ASR 0.6B**: **52 languages** including Chinese (Mandarin, Cantonese,
+  and 20+ dialects), Japanese, Korean, Arabic, Hindi, Thai, Vietnamese, and
+  the major European languages — with strong mixed English/Chinese
+  code-switching in a single sentence
+- **Parakeet Lite**: English only
+
+<Tip>
+**Speak Chinese, Japanese, Korean, or another non-European language?** Pick
+**Qwen3-ASR 0.6B** — it's the only model in the registry that covers Eastern
+languages. Echophrase auto-recommends it on non-English systems with a capable
+GPU, and pairs it with an optional Simplified ↔ Traditional Chinese output
+toggle (Settings → Voice Model → Chinese script).
+</Tip>
 
 ## Recommendations
 
 - **CPU only**: Parakeet Lite
 - **Modern GPU (DirectX 12)**: Parakeet-TDT 0.6B for best quality, or Lite
   if you want lower memory use
+- **Non-English or multilingual dictation**: Qwen3-ASR 0.6B (4 GB+ GPU)
 - **Older / integrated GPU**: Parakeet Lite
 
 ## Changing Models
