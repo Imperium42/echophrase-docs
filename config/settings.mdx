@@ -25,16 +25,15 @@ View and change the active transcription model. Shows your GPU/device info, curr
 
 Echophrase auto-detects the fastest available execution provider at runtime.
 The **Auto (Recommended)** option picks the best device for your hardware:
-DirectML on any Windows DirectX 12 GPU, CoreML on Apple Silicon
-*(in testing)*, or NPU on Copilot+ PCs. CPU is the fallback when nothing
-else is available.
+DirectML on any Windows DirectX 12 GPU, CoreML on Apple Silicon, or NPU on
+Copilot+ PCs. CPU is the fallback when nothing else is available.
 
 You can force a specific provider if you need to:
 
 - **Auto (Recommended)**: Let Echophrase pick the fastest device at session start
 - **DirectML**: Force Windows DirectML (any DirectX 12 GPU)
-- **CoreML**: Force Apple Metal (macOS 13.3+ on Apple Silicon — *in testing*)
-- **CPU**: Force CPU — useful for battery savings or when the GPU is busy elsewhere
+- **CoreML**: Force Apple Metal (macOS 13.3+ on Apple Silicon)
+- **CPU**: Force CPU - useful for battery savings or when the GPU is busy elsewhere
 
 <Note>CUDA support was removed; DirectML covers NVIDIA GPUs on Windows with
 no driver/toolkit version juggling. See [GPU Acceleration](/config/gpu) for
@@ -42,9 +41,9 @@ the rationale.</Note>
 
 <Note>Changing the active provider requires restarting Echophrase to take effect. The settings UI shows a "Restart to apply" banner when a change needs a relaunch.</Note>
 
-## Transform Model
+## Transform Model <sup>Pro</sup>
 
-Enable an optional post-processing step that applies grammar correction to transcriptions. Uses a lightweight T5 model (~35 MB). You can write custom transformation rules or use the default grammar correction.
+Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses a lightweight T5 model (~35 MB). You can write custom transformation rules or use the default grammar correction.
 
 ## Output
 
@@ -54,7 +53,7 @@ Control what happens after a transcription completes.
 - **Post-record actions** (choose one or more):
   - Copy to Clipboard (default)
   - Paste at Cursor <sup>Pro</sup>
-  - Save as File <sup>Pro</sup> - configure an auto-save directory
+  - Save as File <sup>Pro</sup> - configure an auto-save directory and export transcripts, including JSON with custom metadata <sup>Pro</sup>
 
 ## Audio Input
 

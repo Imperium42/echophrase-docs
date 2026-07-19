@@ -13,7 +13,7 @@ Echophrase 可在多種硬體上執行。預設模型針對中階遊戲 GPU 調�
 | 資源 | 最低需求 | 建議配備 |
 |------|---------|---------|
 | **作業系統** | Windows 10 (22H2) | Windows 11 |
-| **macOS** | macOS 13（Apple Silicon）— *Metal 測試中* | macOS 14+ |
+| **macOS** | macOS 13（僅限 Apple Silicon） | macOS 14+ |
 | **Linux** | Ubuntu 22.04（僅 CPU） | Ubuntu 24.04 |
 | **記憶體** | 4 GB | 8 GB+ |
 | **磁碟空間** | 2 GB 可用 | 4 GB 可用 |
@@ -26,7 +26,7 @@ Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 無需任�
 | 平台 | 加速方式 | 所需條件 |
 |------|---------|---------|
 | **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm） |
-| **macOS** | Metal *（測試中）* | Apple Silicon，macOS 13.3+ |
+| **macOS** | Metal | Apple Silicon，macOS 13.3+ |
 | **Linux** | CPU | GPU 加速已列入規劃 |
 
 <Note>
@@ -54,7 +54,7 @@ DirectML 內建於 Windows，可在所有現代 GPU（不分品牌）上執行�
 您不需要獨立 GPU 才能使用 Echophrase。
 
 <Tip>
-**更多模型即將推出。** 我們正在評估其他 Whisper 變體與多語言語音模型。
+**更多模型即將推出。** Echophrase 採模型無關架構，因此新增後端無需重寫。我們正在評估更多多語言語音模型。
 想投票決定下一個推出的模型嗎？
 [加入我們的 Discord](https://discord.com/invite/Er6NUcx)。
 </Tip>

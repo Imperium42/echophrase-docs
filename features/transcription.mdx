@@ -5,15 +5,15 @@ description: Core transcription features and capabilities
 
 # Transcription
 
-Echophrase uses OpenAI's Whisper model to convert your speech to text with high accuracy.
+Echophrase is model-agnostic: transcription backends are swappable, and the app ships with NVIDIA Parakeet-TDT 0.6B v3 as the default engine for fast, accurate speech-to-text. Whisper and Distil-Whisper are also supported as alternate backends.
 
 ## How It Works
 
-Echophrase captures audio from your microphone, processes it locally using the Whisper AI model, and types the transcribed text wherever your cursor is positioned.
+Echophrase captures audio from your microphone, processes it locally using the active transcription model, and types the transcribed text wherever your cursor is positioned.
 
 ## Supported Languages
 
-Whisper supports 99+ languages including:
+The default Parakeet model and Whisper-family backends together cover 99+ languages including:
 
 - English, Spanish, French, German, Italian, Portuguese
 - Chinese, Japanese, Korean

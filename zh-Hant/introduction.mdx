@@ -13,16 +13,30 @@ Echophrase 是一款**隱私優先的桌面應用程式**，使用最先進的 A
   <Card title="100% 隱私" icon="lock">
     您的語音永遠不會離開您的電腦。沒有雲端處理，沒有資料收集。
   </Card>
+  <Card title="更換引擎，應用程式不變" icon="microphone">
+    基於特徵介面（trait）的可替換轉錄後端，預設搭載 **NVIDIA Parakeet-TDT 0.6B v3**，同時也支援 Whisper、Distil-Whisper 等其他模型。
+  </Card>
+  <Card title="快速、原生、跨平台" icon="feather">
+    以 Tauri + Rust 打造，而非 Electron 封裝，在 Windows、macOS、Linux 上都是輕量、快速的原生應用程式。
+  </Card>
   <Card title="GPU 加速" icon="bolt">
-    在 Windows 上透過 DirectML 提供快速的本地轉錄；macOS 支援 Metal（測試中），其他平台則回退至 CPU。
+    在 Windows 上透過 DirectML、在 macOS 上透過 Metal 提供快速的本地轉錄，其他情況則回退至 CPU。
   </Card>
   <Card title="隨處可用" icon="keyboard">
     在任何應用程式中輸入 - 瀏覽器、編輯器、聊天軟體，無所不能。
   </Card>
-  <Card title="Whisper 驅動" icon="microphone">
-    基於 OpenAI 的 Whisper 模型，提供精準的多語言轉錄。
+  <Card title="文法與標點自動校正（Pro）" icon="wand-magic-sparkles">
+    選用的轉換模型會自動修正文法與標點，這是許多競品缺乏的功能。
+  </Card>
+  <Card title="儲存為檔案與 JSON 匯出（Pro）" icon="file-export">
+    自動將轉錄結果儲存為檔案，或匯出為帶有自訂中繼資料的 JSON，方便串接後續工具。
+  </Card>
+  <Card title="自助式隱私保護" icon="shield-check">
+    完全自助符合 GDPR：您可以隨時自行匯出資料或刪除帳號，無需提交客服工單。
   </Card>
 </CardGroup>
+
+還有大量貼心的客製化選項，從快捷鍵到贅詞過濾、數字正規化，詳見[設定](/zh-Hant/config/settings)。
 
 ## 運作方式
 

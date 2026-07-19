@@ -5,15 +5,15 @@ description: 核心轉錄功能與特性
 
 # 轉錄
 
-Echophrase 使用 OpenAI 的 Whisper 模型，將您的語音高精度地轉換為文字。
+Echophrase 採模型無關架構：轉錄後端可自由替換，預設搭載 NVIDIA Parakeet-TDT 0.6B v3 以提供快速準確的語音轉文字。Whisper 與 Distil-Whisper 也是支援的替代後端。
 
 ## 運作方式
 
-Echophrase 從您的麥克風擷取音訊，使用 Whisper AI 模型在本地處理，並將轉錄的文字輸入到游標所在位置。
+Echophrase 從您的麥克風擷取音訊，使用目前啟用的轉錄模型在本地處理，並將轉錄的文字輸入到游標所在位置。
 
 ## 支援語言
 
-Whisper 支援 99 種以上的語言，包括：
+預設的 Parakeet 模型與 Whisper 系列後端合計支援 99 種以上的語言，包括：
 
 - 英語、西班牙語、法語、德語、義大利語、葡萄牙語
 - 中文、日語、韓語

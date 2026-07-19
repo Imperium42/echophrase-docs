@@ -14,7 +14,7 @@ no dedicated GPU at all.
 | Resource | Minimum | Recommended |
 |----------|---------|-------------|
 | **OS** | Windows 10 (22H2) | Windows 11 |
-| **OS (macOS)** | macOS 13 (Apple Silicon) — *Metal in testing* | macOS 14+ |
+| **OS (macOS)** | macOS 13 (Apple Silicon only) | macOS 14+ |
 | **OS (Linux)** | Ubuntu 22.04 (CPU only) | Ubuntu 24.04 |
 | **RAM** | 4 GB | 8 GB+ |
 | **Disk** | 2 GB free | 4 GB free |
@@ -28,7 +28,7 @@ is nothing to configure.
 | Platform | Acceleration | What you need |
 |----------|--------------|---------------|
 | **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm) |
-| **macOS** | Metal *(in testing)* | Apple Silicon, macOS 13.3+ |
+| **macOS** | Metal | Apple Silicon, macOS 13.3+ |
 | **Linux** | CPU | GPU acceleration on the roadmap |
 
 <Note>
@@ -58,7 +58,8 @@ For the **default Parakeet-TDT** model we recommend an **RTX 3080 or better**.
 card — you do not need a dedicated GPU to use Echophrase.
 
 <Tip>
-**More models on the way.** We're evaluating additional Whisper variants and
-multilingual voice models. Want to vote on what ships next?
+**More models on the way.** Echophrase is model-agnostic, so new backends can
+be added without a rewrite. We're evaluating additional multilingual voice
+models. Want to vote on what ships next?
 [Join the Discord](https://discord.com/invite/Er6NUcx).
 </Tip>

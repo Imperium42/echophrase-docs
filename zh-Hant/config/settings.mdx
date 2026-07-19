@@ -25,15 +25,15 @@ description: 依照您的偏好設定 Echophrase
 
 Echophrase 會在執行時自動偵測最快的可用執行提供者。**自動（推薦）**選項
 會為您的硬體選擇最佳裝置：任何 Windows DirectX 12 GPU 上的 DirectML、
-Apple Silicon 上的 CoreML *（測試中）*，或 Copilot+ PC 上的 NPU。當沒有
+Apple Silicon 上的 CoreML，或 Copilot+ PC 上的 NPU。當沒有
 其他選項可用時，CPU 是後備方案。
 
 如有需要，您可以強制使用特定的提供者：
 
 - **自動（推薦）**：讓 Echophrase 在工作階段開始時選擇最快的裝置
 - **DirectML**：強制使用 Windows DirectML（任何 DirectX 12 GPU）
-- **CoreML**：強制使用 Apple Metal（Apple Silicon 上的 macOS 13.3+ — *測試中*）
-- **CPU**：強制使用 CPU — 適合節省電力或 GPU 忙於其他工作時
+- **CoreML**：強制使用 Apple Metal（Apple Silicon 上的 macOS 13.3+）
+- **CPU**：強制使用 CPU - 適合節省電力或 GPU 忙於其他工作時
 
 <Note>CUDA 支援已被移除；DirectML 在 Windows 上涵蓋 NVIDIA GPU，無需手動
 對齊驅動程式 / Toolkit 版本。詳細原因請參閱
@@ -41,9 +41,9 @@ Apple Silicon 上的 CoreML *（測試中）*，或 Copilot+ PC 上的 NPU。當
 
 <Note>變更使用中的提供者需要重新啟動 Echophrase 才會生效。當變更需要重新啟動時，設定介面會顯示「重新啟動以套用」橫幅。</Note>
 
-## 轉換模型
+## 轉換模型 <sup>Pro</sup>
 
-啟用可選的後處理步驟，對轉錄結果進行文法校正。使用輕量級 T5 模型（約 35 MB）。您可以撰寫自訂轉換規則，或使用預設的文法校正。
+啟用可選的後處理步驟，對轉錄結果進行文法與標點校正。使用輕量級 T5 模型（約 35 MB）。您可以撰寫自訂轉換規則，或使用預設的文法校正。
 
 ## 輸出
 
@@ -53,7 +53,7 @@ Apple Silicon 上的 CoreML *（測試中）*，或 Copilot+ PC 上的 NPU。當
 - **錄音後動作**（可選擇一或多項）：
   - 複製到剪貼簿（預設）
   - 貼在游標處 <sup>Pro</sup>
-  - 儲存為檔案 <sup>Pro</sup> - 設定自動儲存目錄
+  - 儲存為檔案 <sup>Pro</sup> - 設定自動儲存目錄並匯出轉錄結果，包括帶自訂中繼資料的 JSON <sup>Pro</sup>
 
 ## 音訊輸入
 

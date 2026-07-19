@@ -15,17 +15,17 @@ Get the latest version for your platform.
 | **macOS** | macOS 12+ | macOS 14+ |
 | **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
 | **RAM** | 4 GB | 8 GB+ |
-| **GPU** | None (CPU works) | DirectX 12 GPU on Windows; Apple Silicon (Metal — *in testing*) on macOS |
+| **GPU** | None (CPU works) | DirectX 12 GPU on Windows; Apple Silicon (Metal) on macOS |
 
 ## Downloads
 
 The latest builds are available at [echophrase.com/download](https://echophrase.com/download), which auto-detects your platform.
 
 <CardGroup cols={3}>
-  <Card title="Windows (Beta)" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
+  <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
     Windows 10/11 (x64)
   </Card>
-  <Card title="macOS (Beta)" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/macos-aarch64?channel=beta">
+  <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/macos-aarch64?channel=beta">
     macOS 12+ (Apple Silicon)
   </Card>
   <Card title="Linux (Alpha)" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64?channel=beta">
@@ -34,11 +34,11 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
 </CardGroup>
 
 <Note>
-Windows and macOS are in **Beta**. The Linux build is in **Alpha** - functional but rough around the edges (CPU-only), and not yet code-signed. All downloads resolve to the latest beta-channel build via CrabNebula Cloud's CDN.
+The Linux build is in **Alpha** - functional but rough around the edges (CPU-only), and not yet code-signed. Windows and macOS builds are fully supported. All downloads resolve to the latest beta-channel build via CrabNebula Cloud's CDN.
 </Note>
 
 <Warning>
-**macOS users:** the macOS Beta build is not yet notarized with Apple, so macOS will say Echophrase is "damaged" on first launch. After dragging to Applications, run this in Terminal to clear Apple's quarantine flag:
+**macOS users:** the macOS build is not yet notarized with Apple, so macOS will say Echophrase is "damaged" on first launch. After dragging to Applications, run this in Terminal to clear Apple's quarantine flag:
 
 ```bash
 xattr -cr /Applications/Echophrase.app
@@ -54,8 +54,7 @@ don't need to configure anything, and there's no driver setup to do.
 
 - **Windows**: DirectML on any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm).
   Built into Windows, no install required.
-- **macOS**: Metal acceleration on Apple Silicon, macOS 13.3+ — currently
-  **in testing**.
+- **macOS**: Metal acceleration on Apple Silicon, macOS 13.3+.
 - **Linux**: CPU. GPU acceleration on the roadmap.
 
 See [Requirements](/requirements) for hardware recommendations and the model
