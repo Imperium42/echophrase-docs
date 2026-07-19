@@ -5,7 +5,7 @@ description: How Echophrase behaves without an internet connection
 
 # Working Offline
 
-Echophrase is built to work offline. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
+Echophrase is built to work offline. The **Free tier is 100% offline and unlimited** - no account, no internet connection, no server round-trip, ever. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
 
 ## What Works Offline
 
@@ -24,21 +24,22 @@ Echophrase is built to work offline. Transcription itself never needs the intern
   </Card>
 </CardGroup>
 
-## Periodic Re-Authentication
+## Periodic Re-Authentication (Pro Only)
 
-To verify your subscription tier, your device must reconnect to our authentication server **at least once every 30 days**. We call this the **offline grace period**.
+This section applies **only if you've signed in for Pro**. The Free tier never talks to our servers and has no re-authentication requirement at all.
+
+To verify your **Pro subscription**, your device must reconnect to our authentication server **at least once every 90 days**. We call this the **Pro offline grace period**.
 
 <Note>
   Reconnecting takes a fraction of a second. You don't need to do anything manually - the app does it in the background whenever it detects an internet connection.
 </Note>
 
-### What Happens At The 30-Day Mark
+### What Happens At The 90-Day Mark (Pro Only)
 
-| Tier | Online | Offline ≤ 30 days | Offline > 30 days |
+| Tier | Online | Offline ≤ 90 days | Offline > 90 days |
 |------|--------|-------------------|-------------------|
-| **Anonymous** | 2 min/day, 20 lifetime transcriptions | Same limits, applied locally | Same limits, applied locally |
-| **Free** | Unlimited transcription time | Same, applied locally | Same, applied locally |
-| **Pro / Enterprise** | Unlimited | Unlimited | Temporarily downgraded to the Free tier feature set (unlimited time, but no Pro-only features) |
+| **Free** (no account) | Unlimited, 100% offline | Unlimited, 100% offline | Unlimited, 100% offline - nothing changes, ever |
+| **Pro / Enterprise** | Unlimited + Pro features | Unlimited + Pro features | Temporarily downgraded to the Free tier feature set (still unlimited, but no Pro-only features) |
 
 <Tip>
   Reconnecting and signing in restores your paid entitlements **immediately** - no waiting, no re-purchase, no support ticket.
@@ -47,7 +48,7 @@ To verify your subscription tier, your device must reconnect to our authenticati
 ## What You Won't Lose
 
 <Warning>
-  Going past the 30-day grace period **never** deletes your data, locks you out, or wipes your settings.
+  Going past the 90-day Pro grace period **never** deletes your data, locks you out, or wipes your settings.
 </Warning>
 
 - Your transcriptions and any local content remain intact
@@ -55,11 +56,11 @@ To verify your subscription tier, your device must reconnect to our authenticati
 - Your subscription is not cancelled
 - Your settings, hotkeys, and downloaded models are untouched
 
-The only thing that changes is which feature limits apply, and that change reverses the moment you sign in again.
+The only thing that changes is which Pro-only feature limits apply, and that change reverses the moment you sign in again. Free-tier users are never affected, since the Free tier has no account and no grace period to begin with.
 
-## Why The 30-Day Window?
+## Why The 90-Day Window?
 
-We don't want to ping our servers constantly - that would defeat the privacy-first design. But we also need a way to verify you're still a paying subscriber so we can fairly serve free users. Thirty days is long enough to handle most travel, network outages, and air-gapped scenarios without inconvenience, while short enough to keep entitlement state honest.
+We don't want to ping our servers constantly - that would defeat the privacy-first design. But we also need a way to verify a Pro subscriber's entitlement is still active. Ninety days is long enough to handle most travel, network outages, and air-gapped scenarios without inconvenience, while short enough to keep entitlement state honest. This window only applies to Pro; the Free tier is unaffected because it's offline by design.
 
 ## Cloud-Only Features
 
