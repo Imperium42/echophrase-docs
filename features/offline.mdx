@@ -24,28 +24,19 @@ Echophrase is built to work offline. The **Free tier is 100% offline and unlimit
   </Card>
 </CardGroup>
 
-## Periodic Re-Authentication (Pro Only)
+There is nothing to verify, ever: the Free tier has no account, no login, no grace period, and no expiry. It never contacts our servers, so there is no online requirement to fall out of compliance with. If you never sign in, this entire page could be one sentence: **it just works, offline, forever.**
 
-This section applies **only if you've signed in for Pro**. The Free tier never talks to our servers and has no re-authentication requirement at all.
+## Pro Subscriptions & Offline (Pro Only)
 
-To verify your **Pro subscription**, your device must reconnect to our authentication server **at least once every 90 days**. We call this the **Pro offline grace period**.
-
-<Note>
-  Reconnecting takes a fraction of a second. You don't need to do anything manually - the app does it in the background whenever it detects an internet connection.
-</Note>
-
-### What Happens At The 90-Day Mark (Pro Only)
-
-| Tier | Online | Offline ≤ 90 days | Offline > 90 days |
-|------|--------|-------------------|-------------------|
-| **Free** (no account) | Unlimited, 100% offline | Unlimited, 100% offline | Unlimited, 100% offline - nothing changes, ever |
-| **Pro / Enterprise** | Unlimited + Pro features | Unlimited + Pro features | Temporarily downgraded to the Free tier feature set (still unlimited, but no Pro-only features) |
+If you've signed in for **Pro**, the app refreshes your entitlements online roughly once a day, silently in the background. If your device stays fully offline, Pro features keep working for a **90-day offline grace period**. Past that, the app simply runs as the (still unlimited) Free tier until you reconnect - nothing is deleted, your account stays active, and your subscription is not cancelled. Why 90 days? It's long enough for travel, outages, and air-gapped setups, while keeping entitlement state honest - and it applies only to Pro.
 
 <Tip>
   Reconnecting and signing in restores your paid entitlements **immediately** - no waiting, no re-purchase, no support ticket.
 </Tip>
 
 ## What You Won't Lose
+
+**On the Free tier: nothing - there is no account or server dependency to lose.** For Pro subscribers past the 90-day grace period:
 
 <Warning>
   Going past the 90-day Pro grace period **never** deletes your data, locks you out, or wipes your settings.
@@ -56,11 +47,7 @@ To verify your **Pro subscription**, your device must reconnect to our authentic
 - Your subscription is not cancelled
 - Your settings, hotkeys, and downloaded models are untouched
 
-The only thing that changes is which Pro-only feature limits apply, and that change reverses the moment you sign in again. Free-tier users are never affected, since the Free tier has no account and no grace period to begin with.
-
-## Why The 90-Day Window?
-
-We don't want to ping our servers constantly - that would defeat the privacy-first design. But we also need a way to verify a Pro subscriber's entitlement is still active. Ninety days is long enough to handle most travel, network outages, and air-gapped scenarios without inconvenience, while short enough to keep entitlement state honest. This window only applies to Pro; the Free tier is unaffected because it's offline by design.
+The only thing that changes is which Pro-only features are available, and that reverses the moment you sign in again.
 
 ## Cloud-Only Features
 
