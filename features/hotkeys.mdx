@@ -13,9 +13,11 @@ Control Echophrase with customizable keyboard shortcuts.
 
 | Action | Default Shortcut |
 |--------|------------------|
-| **Push-to-talk** | `Ctrl+Shift+Space` |
-| **Toggle recording** | `Ctrl+Shift+R` |
+| **Start / stop recording** | `Ctrl+Shift+Space` |
 | **Cancel recording** | `Escape` |
+
+Echophrase binds a single global recording hotkey. It starts recording on the
+first press and stops (and transcribes) on the second.
 
 ### macOS
 
@@ -24,7 +26,7 @@ key with the microphone icon (F5 on most Apple keyboards).
 
 | Action | Default Shortcut |
 |--------|------------------|
-| **Record (push-to-talk / toggle)** | Dictation key (mic icon, shown as `F5`) |
+| **Start / stop recording** | Dictation key (mic icon, shown as `F5`) |
 | **Cancel recording** | `Escape` |
 
 <Note>
@@ -44,5 +46,6 @@ hotkey to something else, the Dictation key reverts to its normal macOS behavior
 ## Tips
 
 - Choose shortcuts that don't conflict with your other applications
-- Push-to-talk is recommended for most users
-- Toggle mode is useful for longer dictation sessions
+- Push-to-Talk is recommended for most users; switch to Open Mic under
+  Settings -> Audio Input for longer hands-free sessions
+- `Escape` and `Space` also toggle recording when the app window is focused

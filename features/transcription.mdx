@@ -5,7 +5,7 @@ description: Core transcription features and capabilities
 
 # Transcription
 
-Echophrase is model-agnostic: transcription backends are swappable, and the app ships with NVIDIA Parakeet-TDT 0.6B v3 as the default engine for fast, accurate speech-to-text. Whisper and Distil-Whisper are also supported as alternate backends.
+Echophrase is model-agnostic: transcription backends are swappable, and the app ships with NVIDIA Parakeet-TDT 0.6B v3 as the default engine for fast, accurate speech-to-text. Qwen3-ASR 0.6B and Parakeet Lite 120M are also bundled.
 
 ## How It Works
 
@@ -20,9 +20,9 @@ Language coverage depends on the active model:
   Thai, Vietnamese, Russian, and the major European languages. It also handles
   mixed English/Chinese within a single sentence, and can convert its Chinese
   output between Simplified and Traditional characters.
-- **Parakeet-TDT 0.6B** *(default)* — 25 European languages with automatic
+- **Parakeet-TDT 0.6B v3** *(default)* — 25 European languages with automatic
   detection.
-- **Whisper-family backends** — up to 99 languages (alternate backends).
+- **Parakeet Lite 120M** — English only.
 
 <Tip>
 Dictating in Chinese, Japanese, Korean, or another Eastern language? Switch to

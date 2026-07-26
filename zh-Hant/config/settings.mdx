@@ -33,17 +33,19 @@ Apple Silicon 上的 CoreML，或 Copilot+ PC 上的 NPU。當沒有
 - **自動（推薦）**：讓 Echophrase 在工作階段開始時選擇最快的裝置
 - **DirectML**：強制使用 Windows DirectML（任何 DirectX 12 GPU）
 - **CoreML**：強制使用 Apple Metal（Apple Silicon 上的 macOS 13.3+）
+- **CUDA**（Windows、NVIDIA、選用）：下載 CUDA 外掛並強制使用 CUDA 提供者 - 需要 CUDA Toolkit 13.0+ 與 cuDNN 9.19+，並須重新啟動
 - **CPU**：強制使用 CPU - 適合節省電力或 GPU 忙於其他工作時
 
-<Note>CUDA 支援已被移除；DirectML 在 Windows 上涵蓋 NVIDIA GPU，無需手動
-對齊驅動程式 / Toolkit 版本。詳細原因請參閱
+<Note>DirectML 在 Windows 上涵蓋 NVIDIA GPU，無需手動對齊驅動程式 /
+Toolkit 版本，因此為預設值。已安裝 CUDA 13.0+ 與 cuDNN 9.19+ 的 NVIDIA
+使用者，可在此選擇下載並啟用 CUDA 外掛。詳見
 [GPU 加速](/zh-Hant/config/gpu)。</Note>
 
 <Note>變更使用中的提供者需要重新啟動 Echophrase 才會生效。當變更需要重新啟動時，設定介面會顯示「重新啟動以套用」橫幅。</Note>
 
 ## 轉換模型 <sup>Pro</sup>
 
-啟用可選的後處理步驟，對轉錄結果進行文法與標點校正。使用輕量級 T5 模型（約 35 MB）。您可以撰寫自訂轉換規則，或使用預設的文法校正。
+啟用可選的後處理步驟，對轉錄結果進行文法與標點校正。使用輕量級的 **T5-Mini Grammar** 模型（約 60 MB），依需求下載並完全在裝置上執行。此為 **Pro 專屬**功能，免費方案的開關為鎖定狀態。您可以撰寫自訂轉換規則，或使用預設的文法校正。
 
 ## 輸出
 
@@ -68,7 +70,7 @@ Apple Silicon 上的 CoreML，或 Copilot+ PC 上的 NPU。當沒有
 
 ## 快捷鍵
 
-設定切換錄音的全域快捷鍵。預設：在 Windows/Linux 上為 **Ctrl+Shift+R**，在 macOS 上為**聽寫鍵**（麥克風圖示，顯示為 F5）。點擊綁定進入擷取模式，然後按下您想要的組合鍵。ESC 取消。
+設定切換錄音的全域快捷鍵。預設：在 Windows/Linux 上為 **Ctrl+Shift+Space**，在 macOS 上為**聽寫鍵**（麥克風圖示，顯示為 F5）。點擊綁定進入擷取模式，然後按下您想要的組合鍵。ESC 取消。
 
 <Note>當應用程式視窗處於焦點時，ESC 和空白鍵也可作為錄音切換鍵。</Note>
 

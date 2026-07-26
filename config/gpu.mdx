@@ -19,14 +19,18 @@ automatically.
 | **macOS** | CoreML (Metal) | Apple Silicon (M1+), macOS 13.3+ |
 | **Linux / WSL** | CPU | GPU acceleration on the roadmap |
 
-## Why no CUDA?
+## CUDA (optional, Windows + NVIDIA)
 
-CUDA support was removed in favor of DirectML. The short version: keeping
-NVIDIA driver, CUDA Toolkit, and cuDNN versions in sync was a constant source
-of "works on my machine" support tickets. DirectML ships with Windows, runs
-on every modern GPU regardless of vendor, and delivers comparable performance
-for the speech models we run. For the rare workload where CUDA still wins,
-the right path is the underlying ONNX Runtime — not Echophrase.
+DirectML is the default on Windows because it ships with the OS and works on
+every modern GPU regardless of vendor - no driver/toolkit version juggling.
+
+If you already have the **CUDA Toolkit 13.0+** and **cuDNN 9.19+** installed,
+you can opt in to the CUDA execution provider from **Settings -> GPU
+Acceleration**. Echophrase downloads the CUDA runtime as a separate plugin
+(~650 MB) and activates it after a restart. It is entirely optional: leaving it
+alone keeps you on DirectML.
+
+The published Linux build is CPU-only.
 
 ## Verifying GPU Usage
 

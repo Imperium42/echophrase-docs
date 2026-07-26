@@ -11,8 +11,8 @@ ones: where a figure is an estimate or a comparison is indirect, we say so.
 
 ## TL;DR
 
-Measured 2026-07-06 on an NVIDIA GeForce RTX 5080 with **NVIDIA Parakeet-TDT
-0.6B** (the default model) loaded:
+Measured 2026-07-06 with **NVIDIA Parakeet-TDT 0.6B v3** (the default model)
+loaded:
 
 | Phase | GPU Power | GPU VRAM | RAM | CPU |
 |-------|-----------|----------|-----|-----|
@@ -56,7 +56,7 @@ footprint rather than one that degrades over a session.
 ## Methodology
 
 <Note>
-**Hardware:** NVIDIA GeForce RTX 5080. **Model:** NVIDIA Parakeet-TDT 0.6B.
+**Hardware:** NVIDIA GeForce RTX 5080. **Model:** NVIDIA Parakeet-TDT 0.6B v3.
 GPU power/VRAM/utilization sampled via one long-lived
 `nvidia-smi --query-gpu ... -lms` process; RAM/CPU via PowerShell
 `Get-Process`, with %CPU computed Task-Manager-style (delta CPU-seconds ÷
@@ -65,14 +65,6 @@ treat these as close estimates, not lab-isolated numbers. The GPU idle floor
 also drifts between sessions with unrelated system activity, so each run
 captures a fresh baseline.
 </Note>
-
-## How this compares
-
-To our knowledge, **no other app in this category publishes a controlled
-GPU-watt or per-utterance VRAM benchmark**, so there is no like-for-like
-public comparison for those numbers - we simply measured what nobody else
-reports. Where independent data does exist (the Electron runtime and install
-sizes above), we cite it; where it doesn't, we say so rather than overclaim.
 
 <Tip>
 Questions about the numbers, or want them run on different hardware?

@@ -12,7 +12,7 @@ Get the latest version for your platform.
 | Platform | Minimum | Recommended |
 |----------|---------|-------------|
 | **Windows** | Windows 10+ | Windows 11 |
-| **macOS** | macOS 12+ | macOS 14+ |
+| **macOS** | macOS 13.3+ (Apple Silicon only) | macOS 14+ |
 | **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
 | **RAM** | 4 GB | 8 GB+ |
 | **GPU** | None (CPU works) | DirectX 12 GPU on Windows; Apple Silicon (Metal) on macOS |
@@ -25,8 +25,8 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
   <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
     Windows 10/11 (x64)
   </Card>
-  <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/macos-aarch64?channel=beta">
-    macOS 12+ (Apple Silicon)
+  <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/dmg-aarch64?channel=beta">
+    macOS 13.3+ (Apple Silicon)
   </Card>
   <Card title="Linux (Alpha)" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64?channel=beta">
     AppImage (x64)
@@ -34,18 +34,12 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
 </CardGroup>
 
 <Note>
-The Linux build is in **Alpha** - functional but rough around the edges (CPU-only), and not yet code-signed. Windows and macOS builds are fully supported. All downloads resolve to the latest beta-channel build via CrabNebula Cloud's CDN.
+**Windows and macOS are in Beta. Linux is in Alpha** - functional but rough around
+the edges (CPU-only) and not yet code-signed. The Windows and macOS builds are
+code-signed, and macOS builds are notarized with Apple, so they install without
+Gatekeeper or SmartScreen workarounds. All downloads resolve to the latest
+beta-channel build via CrabNebula Cloud's CDN.
 </Note>
-
-<Warning>
-**macOS users:** the macOS build is not yet notarized with Apple, so macOS will say Echophrase is "damaged" on first launch. After dragging to Applications, run this in Terminal to clear Apple's quarantine flag:
-
-```bash
-xattr -cr /Applications/Echophrase.app
-```
-
-Notarized builds will land once our Developer ID enrollment finishes.
-</Warning>
 
 ## GPU Acceleration
 
@@ -57,6 +51,12 @@ don't need to configure anything, and there's no driver setup to do.
 - **macOS**: Metal acceleration on Apple Silicon, macOS 13.3+.
 - **Linux**: CPU. GPU acceleration on the roadmap.
 
+### Linux limitations
+
+- **CPU only** - GPU (CUDA) acceleration will arrive in a later release.
+- **Global hotkey bindings are not yet available** - use Open Mic mode instead
+  (Settings -> Audio Input).
+
 See [Requirements](/requirements) for hardware recommendations and the model
-support matrix. CUDA is no longer supported — see the note on that page for
-why we made the switch.
+support matrix. NVIDIA users on Windows can optionally enable CUDA from
+Settings -> GPU Acceleration.

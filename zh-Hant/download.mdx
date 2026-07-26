@@ -12,7 +12,7 @@ description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
 | 平台 | 最低需求 | 建議配備 |
 |------|---------|---------|
 | **Windows** | Windows 10+ | Windows 11 |
-| **macOS** | macOS 12+ | macOS 14+ |
+| **macOS** | macOS 13.3+（僅 Apple Silicon） | macOS 14+ |
 | **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
 | **記憶體** | 4 GB | 8 GB+ |
 | **GPU** | 無（CPU 即可） | Windows 上的 DirectX 12 GPU；macOS 上的 Apple Silicon（Metal） |
@@ -25,16 +25,19 @@ description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
   <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64?channel=beta">
     Windows 10/11 (x64)
   </Card>
-  <Card title="macOS" icon="apple" href="https://echophrase.com/download">
-    macOS 12+（Apple Silicon）
+  <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/dmg-aarch64?channel=beta">
+    macOS 13.3+（Apple Silicon）
   </Card>
-  <Card title="Linux" icon="linux" href="https://github.com/dylanh724/echophrase/releases/latest">
-    AppImage / .deb
+  <Card title="Linux（Alpha）" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64?channel=beta">
+    AppImage (x64)
   </Card>
 </CardGroup>
 
 <Note>
-Echophrase 目前處於 Beta 階段。上方的 Windows 安裝程式會透過 CrabNebula Cloud 的 CDN 解析至最新 Beta 版本。
+**Windows 與 macOS 目前處於 Beta 階段，Linux 為 Alpha 階段** - 功能可用但仍有粗糙之處
+（僅支援 CPU），且尚未進行程式碼簽署。Windows 與 macOS 版本皆已完成程式碼簽署，
+macOS 版本並已通過 Apple 公證，因此安裝時無需任何 Gatekeeper 或 SmartScreen 的
+繞過步驟。所有下載連結皆透過 CrabNebula Cloud 的 CDN 解析至最新 Beta 版本。
 </Note>
 
 ## GPU 加速
@@ -47,5 +50,10 @@ Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 您無需�
 - **macOS**：在 Apple Silicon、macOS 13.3+ 上使用 Metal 加速。
 - **Linux**：CPU。GPU 加速已列入規劃。
 
+### Linux 目前限制
+
+- **僅支援 CPU** - GPU（CUDA）加速將於日後版本推出。
+- **尚未支援全域快捷鍵綁定** - 請改用「開放麥克風」模式（設定 → 音訊輸入）。
+
 請參閱[系統需求](/zh-Hant/requirements)以查看硬體建議與模型支援表格。
-我們已不再支援 CUDA — 該頁面說明了我們做出此決定的原因。
+Windows 上的 NVIDIA 使用者可於「設定 → GPU 加速」選擇啟用 CUDA。

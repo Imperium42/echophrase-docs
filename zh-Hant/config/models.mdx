@@ -12,14 +12,14 @@ Echophrase 內建一個經過篩選的模型登錄表。下方資料直接對應
 
 | 模型 | 參數量 | 最低 VRAM | 建議 GPU | 即時速度 |
 |------|--------|----------|----------|---------|
-| **Parakeet-TDT 0.6B** *（預設）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
+| **Parakeet-TDT 0.6B v3** *（預設）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
 | **Qwen3-ASR 0.6B** *（國際多語言）* | 0.6B | 4 GB | RTX 3060 或更佳 | 2–6× |
 | **Parakeet Lite** | 120M | 無（GPU 可選） | 任何現代 GPU，內建顯卡亦可 | 2–5× |
 | **T5-Mini Grammar** *（後處理）* | Mini | — | 任何 GPU | — |
 
 ### 語言涵蓋範圍
 
-- **Parakeet-TDT 0.6B**：25 種歐洲語言，自動偵測
+- **Parakeet-TDT 0.6B v3**：25 種歐洲語言，自動偵測
 - **Qwen3-ASR 0.6B**：**52 種語言**，包括中文（普通話、粵語及 20 多種方言）、
   日語、韓語、阿拉伯語、印地語、泰語、越南語及主要歐洲語言 — 並支援同一句話中
   的中英夾雜（code-switching）
@@ -34,7 +34,7 @@ Echophrase 內建一個經過篩選的模型登錄表。下方資料直接對應
 ## 建議
 
 - **僅 CPU**：Parakeet Lite
-- **現代 GPU（DirectX 12）**：Parakeet-TDT 0.6B 提供最佳品質；若希望降低記憶體
+- **現代 GPU（DirectX 12）**：Parakeet-TDT 0.6B v3 提供最佳品質；若希望降低記憶體
   使用，亦可選擇 Lite
 - **非英語或多語言聽寫**：Qwen3-ASR 0.6B（4 GB 以上 GPU）
 - **較舊 / 內建 GPU**：Parakeet Lite

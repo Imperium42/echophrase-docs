@@ -30,11 +30,10 @@ Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 無需任�
 | **Linux** | CPU | GPU 加速已列入規劃 |
 
 <Note>
-我們移除了 CUDA 支援以擺脫「相依性地獄」— 必須將 NVIDIA 驅動程式版本、
-CUDA Toolkit 版本以及 cuDNN 版本全部對齊，每次安裝都變成繁瑣的多步驟工程。
-DirectML 內建於 Windows，可在所有現代 GPU（不分品牌）上執行，並在語音轉錄
-工作上提供同等的效能 — 卻沒有任何安裝麻煩。原生 CPU 與 Apple Metal 則涵蓋
-其餘平台。
+**對我們使用的模型而言，CUDA 帶來的效能提升微乎其微，因此不值得讓您陷入
+相依性地獄。** Windows 上預設使用 DirectML：內建於作業系統、不分 GPU 品牌皆可運作、
+無需對齊驅動程式 / Toolkit / cuDNN 版本。已安裝 CUDA 13.0+ 與 cuDNN 9.19+ 的
+NVIDIA 使用者，可於「設定 → GPU 加速」選擇啟用，詳見 [GPU 加速](/zh-Hant/config/gpu)。
 </Note>
 
 ## 支援的模型
@@ -43,16 +42,10 @@ DirectML 內建於 Windows，可在所有現代 GPU（不分品牌）上執行�
 
 | 模型 | 參數量 | 最低 VRAM | 建議 GPU | 即時速度 |
 |------|--------|----------|----------|---------|
-| **Parakeet-TDT 0.6B** *（預設）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
+| **Parakeet-TDT 0.6B v3** *（預設）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
 | **Qwen3-ASR 0.6B** *（國際多語言，52 種語言）* | 0.6B | 4 GB | RTX 3060 或更佳 | 2–6× |
 | **Parakeet Lite** | 120M | 無（GPU 可選） | 任何現代 GPU，內建顯卡亦可 | 2–5× |
 | **T5-Mini Grammar** *（後處理）* | Mini | — | 任何 GPU | — |
-
-### 建議的 NVIDIA 顯示卡
-
-對於**預設的 Parakeet-TDT** 模型，我們建議使用 **RTX 3080 或更佳**。
-**Parakeet Lite** 在內建顯示卡或較舊的 NVIDIA 顯示卡上即可順暢執行 —
-您不需要獨立 GPU 才能使用 Echophrase。
 
 <Tip>
 **更多模型即將推出。** Echophrase 採模型無關架構，因此新增後端無需重寫。我們正在評估更多多語言語音模型。

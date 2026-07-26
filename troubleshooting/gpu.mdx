@@ -30,13 +30,13 @@ DirectML requires DirectX 12. Press **Win + R**, type `dxdiag`, and check
 the **Display** tab — under "Drivers" the **Feature Levels** line should
 include `12_0` or higher. Any GPU released since ~2015 should qualify.
 
-### Already on CUDA?
+### Want to use CUDA?
 
-CUDA support was removed in favor of DirectML — Echophrase no longer
-ships CUDA at all. If you arrived here from older docs about installing
-CUDA Toolkit or cuDNN: you can uninstall those if they were installed
-purely for Echophrase. Update to the latest Echophrase build and the
-GPU should be picked up automatically via DirectML.
+DirectML is the default on Windows and needs no setup. If you already have
+**CUDA Toolkit 13.0+** and **cuDNN 9.19+** installed, you can opt in to the
+CUDA execution provider from **Settings -> GPU Acceleration**: Echophrase
+downloads the CUDA runtime as a plugin (~650 MB) and activates it after a
+restart. You do not need CUDA to get GPU acceleration.
 
 ## GPU Detected But Not Used
 

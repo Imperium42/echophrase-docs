@@ -14,7 +14,7 @@ no dedicated GPU at all.
 | Resource | Minimum | Recommended |
 |----------|---------|-------------|
 | **OS** | Windows 10 (22H2) | Windows 11 |
-| **OS (macOS)** | macOS 13 (Apple Silicon only) | macOS 14+ |
+| **OS (macOS)** | macOS 13.3 (Apple Silicon only) | macOS 14+ |
 | **OS (Linux)** | Ubuntu 22.04 (CPU only) | Ubuntu 24.04 |
 | **RAM** | 4 GB | 8 GB+ |
 | **Disk** | 2 GB free | 4 GB free |
@@ -32,12 +32,11 @@ is nothing to configure.
 | **Linux** | CPU | GPU acceleration on the roadmap |
 
 <Note>
-We dropped CUDA support to escape "requirements hell" — matching the right
-NVIDIA driver, the right CUDA Toolkit version, and the right cuDNN version
-turned every install into a multi-step yak-shave. DirectML is built into
-Windows, runs on every modern GPU regardless of vendor, and gives us the
-same wins for transcription workloads with none of the install pain. Native
-CPU and Apple Metal cover the rest.
+**CUDA's gains are negligible for our models, so we don't make you fight
+requirements hell for them.** DirectML is the Windows default: built into the
+OS, works on any vendor's GPU, no driver / Toolkit / cuDNN version matching.
+NVIDIA users who already run CUDA 13.0+ and cuDNN 9.19+ can opt in from
+Settings -> GPU Acceleration; see [GPU Acceleration](/config/gpu).
 </Note>
 
 ## Supported models
@@ -47,16 +46,10 @@ models that ship today.
 
 | Model | Parameters | Min VRAM | Recommended GPU | Realtime speed |
 |-------|------------|----------|-----------------|----------------|
-| **Parakeet-TDT 0.6B** *(default)* | 0.6B | 6 GB | RTX 3080 or better | 12× |
+| **Parakeet-TDT 0.6B v3** *(default)* | 0.6B | 6 GB | RTX 3080 or better | 12× |
 | **Qwen3-ASR 0.6B** *(international, 52 languages)* | 0.6B | 4 GB | RTX 3060 or better | 2–6× |
 | **Parakeet Lite** | 120M | None (GPU optional) | Any modern GPU, even integrated | 2–5× |
 | **T5-Mini Grammar** *(post-process)* | Mini | — | Any GPU | — |
-
-### Recommended NVIDIA card
-
-For the **default Parakeet-TDT** model we recommend an **RTX 3080 or better**.
-**Parakeet Lite** runs comfortably on integrated graphics or any older NVIDIA
-card — you do not need a dedicated GPU to use Echophrase.
 
 <Tip>
 **More models on the way.** Echophrase is model-agnostic, so new backends can

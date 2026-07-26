@@ -33,17 +33,19 @@ You can force a specific provider if you need to:
 - **Auto (Recommended)**: Let Echophrase pick the fastest device at session start
 - **DirectML**: Force Windows DirectML (any DirectX 12 GPU)
 - **CoreML**: Force Apple Metal (macOS 13.3+ on Apple Silicon)
+- **CUDA** *(Windows, NVIDIA, opt-in)*: Download the CUDA plugin and force the CUDA provider - requires CUDA Toolkit 13.0+ and cuDNN 9.19+, and a restart
 - **CPU**: Force CPU - useful for battery savings or when the GPU is busy elsewhere
 
-<Note>CUDA support was removed; DirectML covers NVIDIA GPUs on Windows with
-no driver/toolkit version juggling. See [GPU Acceleration](/config/gpu) for
-the rationale.</Note>
+<Note>DirectML covers NVIDIA GPUs on Windows with no driver/toolkit version
+juggling, so it is the default. NVIDIA users with CUDA 13.0+ and cuDNN 9.19+
+installed can opt in to a downloadable CUDA plugin here. See
+[GPU Acceleration](/config/gpu).</Note>
 
 <Note>Changing the active provider requires restarting Echophrase to take effect. The settings UI shows a "Restart to apply" banner when a change needs a relaunch.</Note>
 
 ## Transform Model <sup>Pro</sup>
 
-Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses a lightweight T5 model (~35 MB). You can write custom transformation rules or use the default grammar correction.
+Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses the lightweight **T5-Mini Grammar** model (~60 MB), downloaded on demand and run entirely on-device. This is a **Pro-only** feature - the toggle is locked on the Free tier. You can write custom transformation rules or use the default grammar correction.
 
 ## Output
 
@@ -52,7 +54,7 @@ Control what happens after a transcription completes.
 - **Format**: Plain Text (all tiers), JSON with custom metadata template <sup>Pro</sup>
 - **Post-record actions** (choose one or more):
   - Copy to Clipboard (default)
-  - Paste at Cursor <sup>Pro</sup>
+  - Paste at Cursor (all tiers, requires signing in)
   - Save as File <sup>Pro</sup> - configure an auto-save directory and export transcripts, including JSON with custom metadata <sup>Pro</sup>
 
 ## Audio Input
@@ -68,7 +70,7 @@ Select your microphone input device and adjust the **voice threshold** (0–100%
 
 ## Hotkeys
 
-Set the global hotkey for toggling recording. Default: **Ctrl+Shift+R** on Windows/Linux, or the **Dictation key** (mic icon, shown as F5) on macOS. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
+Set the global hotkey for toggling recording. Default: **Ctrl+Shift+Space** on Windows/Linux, or the **Dictation key** (mic icon, shown as F5) on macOS. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
 
 <Note>ESC and Spacebar also work as recording toggles when the app window is focused.</Note>
 

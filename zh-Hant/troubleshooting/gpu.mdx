@@ -28,12 +28,12 @@ DirectML 需要 DirectX 12。按 **Win + R**，輸入 `dxdiag`，然後查看
 **顯示**標籤頁 — 在「驅動程式」項目下，**功能等級**這一行應包含 `12_0`
 或更高。約 2015 年後推出的任何 GPU 都應符合條件。
 
-### 之前在用 CUDA？
+### 想使用 CUDA？
 
-我們已以 DirectML 取代 CUDA，Echophrase 也不再內含 CUDA。如果您是
-從舊版文件中得知需要安裝 CUDA Toolkit 或 cuDNN — 若這些只是為 Echophrase
-而安裝，現在可以解除安裝。請更新至最新版的 Echophrase，GPU 將透過 DirectML
-自動被識別。
+Windows 上預設使用 DirectML，無需任何設定。若您已安裝 **CUDA Toolkit 13.0+**
+與 **cuDNN 9.19+**，可於「**設定 → GPU 加速**」選擇啟用 CUDA 執行提供者：
+Echophrase 會下載 CUDA 執行環境外掛（約 650 MB），重新啟動後生效。
+即使不使用 CUDA，也一樣能獲得 GPU 加速。
 
 ## GPU 已偵測但未使用
 
@@ -51,7 +51,7 @@ DirectML 需要 DirectX 12。按 **Win + R**，輸入 `dxdiag`，然後查看
 
 如果出現 GPU 記憶體不足的錯誤：
 
-1. 改用較小的模型 — 從 **Parakeet-TDT 0.6B** 切換為
+1. 改用較小的模型 — 從 **Parakeet-TDT 0.6B v3** 切換為
    **Parakeet Lite**（完整對照表請見[系統需求](/zh-Hant/requirements)）
 2. 關閉其他 GPU 密集型應用程式
 3. 重新啟動 Echophrase 以釋放 GPU 記憶體

@@ -18,13 +18,17 @@ Echophrase 使用 ONNX Runtime 的自動裝置選擇功能，在執行時選擇�
 | **macOS** | CoreML（Metal） | Apple Silicon（M1+），macOS 13.3+ |
 | **Linux / WSL** | CPU | GPU 加速已列入規劃 |
 
-## 為什麼不再支援 CUDA？
+## CUDA（選用，Windows + NVIDIA）
 
-我們以 DirectML 取代了 CUDA 支援。簡單來說：要讓 NVIDIA 驅動程式、CUDA
-Toolkit 與 cuDNN 三者版本同步，是一場沒完沒了的戰爭，使用者支援工單因此
-不斷出現。DirectML 已內建於 Windows，可在所有現代 GPU 上執行（不分品牌），
-並能在我們執行的語音模型上提供相當的效能。對於 CUDA 仍占優勢的少數工作負載，
-正確的途徑應該是直接使用底層的 ONNX Runtime — 而非 Echophrase。
+Windows 上預設使用 DirectML，因為它內建於作業系統，可在所有現代 GPU 上執行
+（不分品牌），無需對齊驅動程式與 Toolkit 版本。
+
+若您已安裝 **CUDA Toolkit 13.0+** 與 **cuDNN 9.19+**，可於「**設定 → GPU
+加速**」選擇啟用 CUDA 執行提供者。Echophrase 會將 CUDA 執行環境以獨立外掛
+下載（約 650 MB），並在重新啟動後啟用。這完全是選用功能：不啟用即維持
+DirectML。
+
+已發佈的 Linux 版本僅支援 CPU。
 
 ## 驗證 GPU 使用
 

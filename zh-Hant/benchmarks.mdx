@@ -10,8 +10,8 @@ Echophrase 以 **Tauri + Rust** 打造，而非 Electron - 我們實際測量了
 
 ## 摘要
 
-於 2026-07-06 在 NVIDIA GeForce RTX 5080 上測量，載入 **NVIDIA Parakeet-TDT
-0.6B**（預設模型）：
+於 2026-07-06 測量，載入 **NVIDIA Parakeet-TDT 0.6B v3**
+（預設模型）：
 
 | 階段 | GPU 功耗 | GPU VRAM | 記憶體 | CPU |
 |------|----------|----------|--------|-----|
@@ -50,20 +50,13 @@ Electron 執行環境數據來源（2026 年獨立框架比較，非我們自行
 ## 測試方法
 
 <Note>
-**硬體：** NVIDIA GeForce RTX 5080。**模型：** NVIDIA Parakeet-TDT 0.6B。
+**硬體：** NVIDIA GeForce RTX 5080。**模型：** NVIDIA Parakeet-TDT 0.6B v3。
 GPU 功耗/VRAM/使用率透過單一常駐的 `nvidia-smi --query-gpu ... -lms` 程序取樣；
 記憶體/CPU 透過 PowerShell `Get-Process`，%CPU 以工作管理員方式計算
 （CPU 秒差 ÷ 實際秒差 ÷ 邏輯核心數）。取樣工具的開銷很小但不為零 -
 請將這些視為接近實際的估計值，而非實驗室隔離數據。GPU 閒置基準也會因
 其他系統活動在不同測試間漂移，因此每次測試都重新取得基準線。
 </Note>
-
-## 與其他產品的比較
-
-據我們所知，**此類別中沒有其他應用程式公布過受控的 GPU 瓦數或單句 VRAM
-基準測試**，因此這些數據沒有可直接對照的公開比較 - 我們只是測量了別人
-沒有公布的東西。凡有獨立數據之處（上述 Electron 執行環境與安裝大小），
-我們附上來源；沒有的地方，我們如實說明而非誇大。
 
 <Tip>
 對數據有疑問，或想在不同硬體上執行測試？
