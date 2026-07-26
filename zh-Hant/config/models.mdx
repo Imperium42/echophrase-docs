@@ -31,6 +31,12 @@ Echophrase 內建一個經過篩選的模型登錄表。下方資料直接對應
 並提供可選的簡繁轉換輸出切換（設定 → 語音模型 → 中文字體）。
 </Tip>
 
+### 模型格式
+
+內建模型皆為 **ONNX**。自訂（自帶）模型可使用 **ONNX** 或 **safetensors** -
+轉錄後端採特徵介面（trait）設計，ONNX Runtime 與 Candle 皆可接入。
+不支援 GGUF 與 PyTorch `.bin`。
+
 ## 建議
 
 - **僅 CPU**：Parakeet Lite

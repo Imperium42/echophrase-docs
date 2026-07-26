@@ -9,15 +9,23 @@ Open settings from the gear icon in the main window. Settings are organized into
 
 ## Language
 
-Choose the UI language. Currently supported: **English** and **Traditional Chinese**.
+Choose the UI language. Currently supported: **English** and **Traditional Chinese** (beta).
 
-## Account <sup>Pro</sup>
+## Account
 
 Signing in is entirely optional and only needed for Pro features - the Free tier works fully offline with no account. If you do sign in, view your email, linked providers (Google, email), and current plan tier. You can enter a license key, link additional sign-in providers, or sign out.
 
+## Cloud Sync <sup>Pro</sup>
+
+Opt in, per device, to syncing your application settings to our servers so they
+follow you across every machine you sign in on. Off by default. Settings only -
+voice data, audio, and transcriptions never sync, and neither do API keys,
+hardware settings, or local file paths. You can push this device's settings up
+or pull the server's copy down at any time.
+
 ## Voice Model
 
-View and change the active transcription model. Shows your GPU/device info, current model name, size, and quality rating. Click **Change** to browse and download other models.
+View and change the active transcription model. Shows your detected GPU and the active model. Click **Change** to browse and download other models.
 
 <Note>Available models depend on your tier. See the [beta page](/beta) for a comparison.</Note>
 
@@ -59,18 +67,22 @@ Control what happens after a transcription completes.
 
 ## Audio Input
 
-Select your microphone input device and adjust the **voice threshold** (0–100%) that determines when speech is detected. Use the **Test** button to see a live audio meter.
+- **Input Device**: pick your microphone, or leave it on System Default
+- **Recording Mode**: **Push to Talk** (default) or **Open Mic** - see
+  [Input Modes](/features/modes)
+- **Voice Threshold** (0-100%): the minimum voice level that triggers recording.
+  Use **Test** to watch a live audio meter.
 
 ## Recording
 
-- **Max duration**: 5–60 seconds per recording (Free: up to 30s, Pro: up to 60s)
+- **Max duration**: 5–60 seconds per recording (all tiers)
 - **Remove filler words**: Filter out "umm", "uh", "like", etc. <sup>Pro</sup>
 - **Normalize numbers to digits**: Convert "three" → "3" <sup>Pro</sup>
 - **Append space to incomplete sentences**: Adds a trailing space when a transcription doesn't end with `.`, `!`, or `?`, so you can pause mid-sentence and keep dictating without manually adding a space (on by default)
 
 ## Hotkeys
 
-Set the global hotkey for toggling recording. Default: **Ctrl+Shift+Space** on Windows/Linux, or the **Dictation key** (mic icon, shown as F5) on macOS. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
+Set the global **Toggle Recording** hotkey. It works globally whenever the app is running. Default: **Ctrl+Shift+Space** on Windows/Linux, or the **Dictation key** (mic icon, shown as F5) on macOS. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
 
 <Note>ESC and Spacebar also work as recording toggles when the app window is focused.</Note>
 
@@ -78,13 +90,15 @@ Set the global hotkey for toggling recording. Default: **Ctrl+Shift+Space** on W
 
 Toggle visibility of UI elements <sup>Pro</sup>:
 
-- Hotkey changer
-- Transcription preview
-- Output confirmations (toast notifications)
-- Copy last button
-- Input (mic) selector
-- Model switcher
-- Transcription speed display
+- Show Hotkey Changer
+- Show Transcription Preview
+- Show Output Confirmations
+- Show Copy Last Button
+- Show Input Changer
+- Show Model Switcher
+- Show Transcription Speed in History
+- Hover to Reveal Last Transcription
+- Minimize to Tray on Close
 
 ## Accessibility
 
@@ -93,6 +107,7 @@ Scale the entire interface to your preference - useful on high-DPI displays or i
 - **UI Scale - Auto** (default): Matches your operating system's display scaling (e.g. 150% Windows scaling)
 - **UI Scale - Manual**: Set any scale from **50% to 200%** with a slider; changes apply live
 - **Scale UI with window size**: Optionally grow or shrink the interface as you resize the window
+- **Reset scale and window**: Restore the default scale and window size
 
 <Note>In rare environments where OS scaling can't be detected reliably, Auto falls back to 100% and the app suggests switching to Manual.</Note>
 

@@ -35,6 +35,12 @@ GPU, and pairs it with an optional Simplified ↔ Traditional Chinese output
 toggle (Settings → Voice Model → Chinese script).
 </Tip>
 
+### Model formats
+
+The bundled models are all **ONNX**. Custom (bring-your-own) models can be
+either **ONNX** or **safetensors** - the transcription backend is trait-based, so
+ONNX Runtime and Candle both plug in. GGUF and PyTorch `.bin` are not supported.
+
 ## Recommendations
 
 - **CPU only**: Parakeet Lite

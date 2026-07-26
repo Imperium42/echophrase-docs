@@ -7,6 +7,13 @@ description: How Echophrase behaves without an internet connection
 
 Echophrase is built to work offline. The **Free tier is 100% offline and unlimited** - no account, no internet connection, no server round-trip, ever. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
 
+<Note>
+**One exception: the first run.** Models are downloaded on demand, so you need an
+internet connection once - to fetch whichever model(s) you want to use. After
+that model is on disk, transcription never touches the network again. The default
+Parakeet-TDT 0.6B v3 is ~2.5 GB; see [Models](/config/models) for the others.
+</Note>
+
 ## What Works Offline
 
 <CardGroup cols={2}>
