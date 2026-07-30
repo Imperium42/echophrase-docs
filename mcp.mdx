@@ -1,0 +1,73 @@
+---
+title: MCP Server
+description: Let AI agents like Claude Code use Echophrase's voice tools
+---
+
+# MCP Server
+
+MCP (Model Context Protocol) is an open standard that lets AI assistants,
+like Claude Code, call small, well-defined tools on your machine instead of
+guessing how to do something themselves. Echophrase's CLI can run as an MCP
+server, exposing recording, status, transcoding, and transcription as tools
+an agent can call directly, so an agent can capture your voice and get a
+transcript back without you writing any glue code.
+
+<Warning>
+`transcribe` requires the Echophrase desktop app to be running, with the
+**MCP Server** toggle enabled in **Settings > MCP Server**. The toggle is
+off by default and requires an active **Pro** subscription. The other four
+tools (`record`, `stop`, `status`, `transcode`) work standalone, free, with
+no app or account needed.
+</Warning>
+
+## Setup for Claude Code
+
+Add Echophrase to your project's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "echophrase": {
+      "command": "/absolute/path/to/echophrase",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+Use the absolute path to the `echophrase` binary installed alongside the
+desktop app. Restart Claude Code (or reload MCP servers) after saving, and
+the tools below become available.
+
+## Tools
+
+| Tool | Mirrors CLI command | Requirements |
+|------|---------------------|--------------|
+| `record` | `echophrase record` | None, free |
+| `stop` | `echophrase stop` | None, free |
+| `status` | `echophrase status` | None, free |
+| `transcode` | `echophrase transcode` | None, free |
+| `transcribe` | `echophrase transcribe` | Desktop app running, MCP Server toggle enabled, Pro subscription |
+
+Every tool shares the same session and audio logic as the CLI commands, so
+behavior never drifts between using the terminal directly and having an
+agent call the same actions through MCP.
+
+## Enabling transcribe
+
+To let an agent transcribe audio (not just record and transcode it):
+
+1. Open the Echophrase desktop app and make sure it's running
+2. Go to **Settings > MCP Server**
+3. Enable the toggle (requires an active Pro subscription)
+
+<Note>
+The desktop app owns the loaded transcription model, so it must stay running
+for the whole session. If it's closed, the `transcribe` tool returns a
+friendly error instead of a transcript.
+</Note>
+
+<Card title="CLI reference" icon="terminal" href="/cli">
+  See the full command overview if you'd rather drive Echophrase from a
+  terminal directly.
+</Card>

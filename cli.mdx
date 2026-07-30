@@ -1,0 +1,83 @@
+---
+title: CLI
+description: Command-line access to recording, transcoding, and transcription
+---
+
+# CLI
+
+Echophrase ships a small command-line binary alongside the desktop app,
+named `echophrase`. It gives you terminal access to microphone recording and
+audio transcoding without opening the app window, plus an [MCP server mode](/mcp)
+so AI agents like Claude Code can drive voice capture directly.
+
+## Where to find it
+
+The CLI installs together with the desktop app; there is nothing separate to
+download. On the same machine as the desktop app, run:
+
+```bash
+echophrase --help
+```
+
+If the binary is not on your `PATH`, look for it next to the installed app,
+or build it yourself from the `cli/` folder of the
+[Echophrase source](https://github.com/dylanh724/echophrase/tree/main/cli).
+
+## Commands
+
+| Command | What it does |
+|---------|--------------|
+| `record` | Start recording the microphone in the background |
+| `stop` | Stop the active recording and finalize the WAV file |
+| `status` | Show whether a recording is currently in progress |
+| `transcode` | Convert an existing WAV file to 16 kHz mono (downmix + resample + normalize) |
+| `transcribe` | Transcribe a WAV file using the running desktop app's loaded model |
+| `mcp` | Run as an MCP server so AI agents can drive voice capture |
+
+## What each command needs
+
+**Work standalone, no app or account required:**
+
+- `record` / `stop` / `status`: capture the microphone in the background and
+  write a WAV file to disk. Free.
+- `transcode`: normalizes an existing WAV file to the 16 kHz mono format the
+  transcription pipeline expects. Free, works fully offline.
+
+**Requires the desktop app and a Pro subscription:**
+
+- `transcribe`: sends a WAV file to the already-running desktop app over a
+  localhost-only connection and prints back the transcript. This needs:
+  1. The Echophrase desktop app running
+  2. The **MCP Server** toggle enabled in Settings (off by default, Pro-gated)
+  3. An active Pro subscription
+
+  <Note>
+  If the app is not running, `transcribe` exits with: `The Echophrase desktop
+  app must be running to transcribe. Start the app and try again.`
+  </Note>
+
+## Quick examples
+
+```bash
+# Record, then stop and finalize
+echophrase record
+echophrase status
+echophrase stop
+
+# Normalize an existing recording
+echophrase transcode meeting.wav
+
+# Transcribe (desktop app running, MCP Server enabled, Pro required)
+echophrase transcribe meeting.16k.wav
+```
+
+Every command has its own detailed help, for example `echophrase record --help`.
+
+<Card title="MCP Server" icon="robot" href="/mcp">
+  Use these same commands as tools from Claude Code and other AI agents.
+</Card>
+
+For the full flag-by-flag reference (background vs foreground recording,
+device selection, recovering a stuck session, and more), see the
+[CLI README](https://github.com/dylanh724/echophrase/blob/main/cli/README.md)
+in the source repository.

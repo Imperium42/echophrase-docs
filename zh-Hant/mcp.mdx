@@ -1,0 +1,67 @@
+---
+title: MCP 伺服器
+description: 讓 Claude Code 等 AI 代理使用 Echophrase 的語音工具
+---
+
+# MCP 伺服器
+
+MCP（Model Context Protocol）是一種開放標準，讓 Claude Code 等 AI 助理
+可以呼叫您機器上定義明確的小型工具，而不必自行猜測該如何操作。
+Echophrase 的 CLI 可以以 MCP 伺服器模式執行，將錄音、狀態查詢、轉碼與轉錄
+公開為代理可直接呼叫的工具，讓代理無需您撰寫任何串接程式碼，
+即可擷取您的語音並取得轉錄結果。
+
+<Warning>
+`transcribe` 需要 Echophrase 桌面應用程式正在執行，且已在
+**設定 > MCP 伺服器**中啟用 **MCP 伺服器**開關。此開關預設關閉，
+且需要有效的 **Pro** 訂閱。其餘四個工具（`record`、`stop`、`status`、
+`transcode`）可獨立運作，免費，不需要應用程式或帳號。
+</Warning>
+
+## Claude Code 設定
+
+將 Echophrase 加入專案的 `.mcp.json`：
+
+```json
+{
+  "mcpServers": {
+    "echophrase": {
+      "command": "/absolute/path/to/echophrase",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+請使用與桌面應用程式一同安裝的 `echophrase` 執行檔的絕對路徑。
+儲存後重新啟動 Claude Code（或重新載入 MCP 伺服器），下列工具即可使用。
+
+## 工具
+
+| 工具 | 對應 CLI 指令 | 需求 |
+|------|--------------|------|
+| `record` | `echophrase record` | 無，免費 |
+| `stop` | `echophrase stop` | 無，免費 |
+| `status` | `echophrase status` | 無，免費 |
+| `transcode` | `echophrase transcode` | 無，免費 |
+| `transcribe` | `echophrase transcribe` | 桌面應用程式執行中、已啟用 MCP 伺服器開關、需要 Pro 訂閱 |
+
+每個工具都與 CLI 指令共用相同的工作階段與音訊邏輯，因此無論是直接
+在終端機操作，還是由代理透過 MCP 呼叫相同動作，行為都不會有差異。
+
+## 啟用 transcribe
+
+若要讓代理轉錄音訊（而不只是錄音和轉碼）：
+
+1. 開啟 Echophrase 桌面應用程式並確認正在執行
+2. 前往**設定 > MCP 伺服器**
+3. 啟用開關（需要有效的 Pro 訂閱）
+
+<Note>
+桌面應用程式擁有已載入的轉錄模型，因此在整個工作階段中都必須保持執行。
+若應用程式已關閉，`transcribe` 工具會回傳友善的錯誤訊息，而非轉錄結果。
+</Note>
+
+<Card title="CLI 參考" icon="terminal" href="/zh-Hant/cli">
+  若您偏好直接透過終端機操作 Echophrase，可參閱完整的指令總覽。
+</Card>

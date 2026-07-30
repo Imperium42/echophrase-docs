@@ -41,6 +41,13 @@
                 ]
               },
               {
+                "group": "CLI & MCP",
+                "pages": [
+                  "cli",
+                  "mcp"
+                ]
+              },
+              {
                 "group": "Configuration",
                 "pages": [
                   "config/settings",
@@ -90,6 +97,13 @@
                   "zh-Hant/features/hotkeys",
                   "zh-Hant/features/modes",
                   "zh-Hant/features/offline"
+                ]
+              },
+              {
+                "group": "CLI 與 MCP",
+                "pages": [
+                  "zh-Hant/cli",
+                  "zh-Hant/mcp"
                 ]
               },
               {
