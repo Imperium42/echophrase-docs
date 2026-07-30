@@ -44,7 +44,8 @@
                 "group": "CLI & MCP",
                 "pages": [
                   "cli",
-                  "mcp"
+                  "mcp",
+                  "security"
                 ]
               },
               {
@@ -103,7 +104,8 @@
                 "group": "CLI 與 MCP",
                 "pages": [
                   "zh-Hant/cli",
-                  "zh-Hant/mcp"
+                  "zh-Hant/mcp",
+                  "zh-Hant/security"
                 ]
               },
               {

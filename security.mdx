@@ -1,0 +1,204 @@
+---
+title: MCP / IPC Security Model
+description: How Echophrase's local IPC server is bound, authenticated, gated, and scoped
+---
+
+# MCP / IPC Security Model
+
+This page documents the security design of the localhost IPC server that backs
+the `transcribe` MCP tool and the `echophrase transcribe` CLI command - the
+part of Echophrase that lets an AI agent talk to the desktop app. It is
+written for readers who want to evaluate the design themselves, not take our
+word for it. Every claim below is checked against the current source; file
+and line references are included so you can verify them too.
+
+<Note>
+This describes the transport between the CLI/MCP process and the running
+desktop app. The other four MCP tools (`record`, `stop`, `status`,
+`transcode`) don't touch this server at all - they run entirely inside the
+CLI process against local files. See [MCP Server](/mcp) for the tool overview.
+</Note>
+
+## Bound to localhost, never the network
+
+The IPC server binds `127.0.0.1` explicitly and only:
+
+```rust
+let addr = format!("127.0.0.1:{IPC_PORT}");
+let std_listener = std::net::TcpListener::bind(&addr)...
+```
+
+`src-tauri/src/ipc/mod.rs:124-126`. There is no code path that binds
+`0.0.0.0` or any other interface - the module's own doc comment states the
+same constraint (`src-tauri/src/ipc/server.rs:3`: "Binds `127.0.0.1` only
+(never `0.0.0.0`)").
+
+What that means concretely: the socket is only reachable from processes
+running on the same machine, under the same OS user session (loopback
+interfaces are not exposed to other hosts on your LAN or the internet, and
+typical OS-level socket permissions mean another OS user account on a shared
+machine cannot connect to it either). Nothing outside "software already
+running as you, on your machine" can reach port `1424`. This is a meaningfully
+smaller attack surface than a server bound to a routable interface: there is
+no port-forwarding misconfiguration, no router UPnP hole, no cloud metadata
+endpoint that could accidentally expose it.
+
+## Bearer token: fresh per launch, gone when stopped
+
+Every `POST /v1/transcribe` request must carry
+`Authorization: Bearer <token>`. The check is constant-time, not a plain `==`,
+specifically to avoid a timing side channel on the comparison
+(`src-tauri/src/ipc/server.rs:100-135`, `constant_time_eq`). The unauthenticated-first
+`GET /v1/health` route only reports the app version - never anything about
+the token or user - so a probe against the port learns nothing beyond "the
+app is running" (`src-tauri/src/ipc/server.rs:15-16, 65-71`).
+
+Token lifecycle:
+
+- **Generated fresh on every server start.** `start()` calls
+  `write_fresh_token()`, which draws 32 random bytes from `rand::thread_rng()`
+  and hex-encodes them, on every single call to `start()` - not once at app
+  install, not reused across restarts (`src-tauri/src/ipc/mod.rs:107-133, 176-194`).
+- **Written with owner-only file permissions on Unix** (`0o600`) immediately
+  after generation (`src-tauri/src/ipc/mod.rs:187-191`). (Windows and macOS
+  currently rely on the per-user profile directory's default ACL rather than
+  an explicit chmod-equivalent call in this code path - see Limitations
+  below.)
+- **Lives at** the same per-user data directory the CLI reads from -
+  `<platform data dir>/echophrase-cli/run/ipc-token` (`src-tauri/src/ipc/paths.rs:76-105`).
+  The desktop app and the CLI resolve this path independently but identically,
+  by design, so neither depends on the other's crate.
+- **Removed when the server stops**, not just left to rot: `stop()` calls
+  `clear_token_best_effort()` before returning (`src-tauri/src/ipc/mod.rs:161-166,
+  200-207`), and the same cleanup runs on force-exit. This is the detail worth
+  underlining: a stopped server is **unauthenticatable**, not merely
+  unreachable. Even if something cached a valid token from a previous session,
+  it stops working the moment the app (or just the toggle) is turned off,
+  because the token file backing it is gone and the next `start()` mints an
+  unrelated one.
+- The CLI's own read path treats "no token file" and "can't connect" as the
+  same case and reports one friendly message rather than a raw connection
+  error (`cli/src/ops.rs:316-322`).
+
+## Explicit opt-in, enforced server-side
+
+The listener does not start just because the app launches. `spawn()` gates
+startup on two conditions, checked in this order, and only proceeds if both
+hold (`src-tauri/src/ipc/mod.rs:67-88`):
+
+1. The session's tier is Premium (`is_premium_tier()`), and
+2. The **MCP Server** setting in Settings is explicitly enabled.
+
+The setting defaults to `false` (`src-tauri/src/settings/mod.rs:575`, `//
+Off by default (Pro-gated)`), and the Pro check fails closed: if there is no
+app handle or no session yet, `is_premium_tier()` returns `false`
+(`src-tauri/src/ipc/mod.rs:95-101`) - "erring on the side of NOT exposing the
+local server," in the code's own words.
+
+Two details matter for "is this a real gate or just a UI toggle":
+
+- The gate is enforced in Rust, not the frontend. `set_mcp_server_enabled`
+  (the Tauri command backing the Settings toggle) re-checks Pro tier
+  server-side before flipping the setting on, independent of what the UI
+  believes (`src-tauri/src/settings/mod.rs:840-857`).
+- A bypass attempt via hand-editing the settings file doesn't work either:
+  the generic settings-patch path (used for YAML import/reconciliation)
+  re-checks Pro tier again before starting the listener, specifically to
+  close that route (`src-tauri/src/settings/mod.rs:802-814`, comment: "a
+  free-tier user importing/editing yaml to flip this on must not actually
+  open the port").
+
+Toggling the setting live starts or stops the listener immediately (no app
+restart needed), and turning it off removes the bearer token as described
+above.
+
+## What the five tools can and cannot do
+
+The MCP server (`echophrase mcp`) exposes exactly five tools, defined with
+`#[tool_router]` over a fixed set of methods
+(`cli/src/commands/mcp.rs:93-156`): `record`, `stop`, `status`, `transcode`,
+`transcribe`. A sixth subcommand, `worker`, exists internally to run the
+background recording process but is never registered as a tool
+(`cli/src/commands/mcp.rs:6-9`, `cli/README.md:150`) - there is no tool an
+agent can call that maps to it.
+
+Verified boundaries of that surface:
+
+- **No arbitrary file read.** `transcribe` accepts a `wav_path` string, but
+  the HTTP handler validates it before touching the transcription pipeline:
+  it must resolve via `canonicalize()` (which also collapses any symlink
+  tricks), must exist, must be a file, and must have a `.wav` extension - or
+  the request is rejected with `400 Bad Request` before any file content is
+  read by the model (`src-tauri/src/ipc/server.rs:163-186`,
+  `validate_wav_path`). The response contains only the transcript text, never
+  file contents, directory listings, or anything else about the filesystem.
+- **No code execution and no shell-out.** Neither the HTTP router
+  (`src-tauri/src/ipc/server.rs`) nor the tool router (`cli/src/commands/mcp.rs`)
+  contains a code path that runs a subprocess, evaluates a string as code, or
+  passes user input to a shell. The only external-process interaction in the
+  CLI is the recording worker it spawns itself for `record`/`stop`, which
+  takes no untrusted input from the network.
+- **`record`/`stop`/`status`/`transcode` never touch the network.** They run
+  entirely against local files and the local `cpal` audio device through
+  `crate::ops` (`cli/src/ops.rs`), independent of whether the desktop app or
+  its IPC server is even running. Only `transcribe` talks to the desktop app
+  at all, and it does so over the bearer-token-gated localhost connection
+  described above.
+- **`transcribe`'s request body is a file path, not audio.** The CLI reads
+  the bearer token, then POSTs `{"wav_path": "<local path>"}` to
+  `http://127.0.0.1:1424/v1/transcribe` (`cli/src/ops.rs:315-329`). The
+  desktop process reads the WAV bytes off disk itself; audio content never
+  serializes across the socket in either direction, only a path string in
+  and a transcript string out.
+
+## Where the audio and the transcript go
+
+Transcription runs inside the already-running desktop app process, using
+whichever backend it already loaded (Candle, ONNX/parakeet-rs) for local
+GPU/CPU inference - the same code path the desktop UI's own dictation feature
+uses. There is no HTTP client in any of the transcription backend
+implementations (`src-tauri/src/transcription/{mod,candle_whisper,onnx_backend,parakeet}.rs`
+contain no networking calls beyond doc-comment URLs), so nothing about the
+audio, its path, or the resulting text is sent to any Echophrase server as
+part of this flow. The only network traffic involved is the loopback HTTP
+request between the CLI/MCP process and the desktop app on the same machine.
+
+This matches the product's broader design principle (unrelated to MCP
+specifically): voice processing happens locally, and the server side of
+Echophrase exists only for auth and subscription management, never audio.
+
+## Limitations, honestly
+
+- **The token file is only as protected as your OS account.** Its permission
+  bits (`0600` on Unix) stop other *users* on a shared machine from reading
+  it, but any process running as *you* - a misbehaving browser extension, a
+  compromised dependency in some other app, malware, another AI agent you've
+  granted broad filesystem access to - can read the same file your terminal
+  can. This is the same trust boundary as your OS user account, not a
+  stronger one. If you don't trust arbitrary local processes running as you,
+  you shouldn't trust this token file to be secret from them either - and
+  that's true of basically every local dev tool with a bearer-token-over-
+  loopback design, not something unique to Echophrase.
+- **We did not verify Windows/macOS file ACLs.** The `0o600` permission call
+  is `#[cfg(unix)]`-gated (`src-tauri/src/ipc/mod.rs:187-191`); on Windows and
+  macOS the token file inherits whatever default permissions your OS applies
+  to files in your per-user data directory, which we have not independently
+  audited here.
+- **A stale `"running"` state file can outlive a hard crash.** The state file
+  used to report *why* the server is down (`not_pro` / `disabled` / `running`)
+  is only cleared on graceful shutdown; a hard crash can leave it saying
+  `"running"` when the process is actually gone. This has no security
+  consequence - the token file is what gates requests, and a dead process
+  can't answer them regardless of what the state file says - but it's worth
+  naming since we said we'd be upfront about the gaps rather than only the
+  guarantees (`src-tauri/src/ipc/mod.rs:252-265`).
+- **This page describes the code we read on 2026-07-30.** The IPC module was
+  under active development at the time of writing (a state-file addition for
+  friendlier CLI error messages was in progress); the design-level claims
+  here (localhost-only, token-per-start, removed-on-stop, Pro-gated,
+  fail-closed) are the parts we expect to remain stable, but treat specific
+  line numbers as a snapshot, not a permanent contract.
+
+<Card title="MCP Server" icon="robot" href="/mcp">
+  Back to the tool overview and setup instructions.
+</Card>
