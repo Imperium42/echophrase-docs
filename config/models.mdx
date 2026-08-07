@@ -37,9 +37,10 @@ toggle (Settings → Voice Model → Chinese script).
 
 ### Model formats
 
-The bundled models are all **ONNX**. Custom (bring-your-own) models can be
-either **ONNX** or **safetensors** - the transcription backend is trait-based, so
-ONNX Runtime and Candle both plug in. GGUF and PyTorch `.bin` are not supported.
+The bundled models are all **ONNX**. Custom (bring-your-own) models must also
+be **ONNX** - see [Custom Models](/features/custom-models) for how to import
+one. GGUF, PyTorch `.bin`, and safetensors are not supported for custom
+models in this release.
 
 ## Recommendations
 

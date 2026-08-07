@@ -33,9 +33,9 @@ Echophrase 內建一個經過篩選的模型登錄表。下方資料直接對應
 
 ### 模型格式
 
-內建模型皆為 **ONNX**。自訂（自帶）模型可使用 **ONNX** 或 **safetensors** -
-轉錄後端採特徵介面（trait）設計，ONNX Runtime 與 Candle 皆可接入。
-不支援 GGUF 與 PyTorch `.bin`。
+內建模型皆為 **ONNX**。自訂（自帶）模型也必須為 **ONNX** 格式 - 匯入方式請參閱
+[自訂模型](/zh-Hant/features/custom-models)。目前版本不支援 GGUF、
+PyTorch `.bin` 與 safetensors 格式的自訂模型。
 
 ## 建議
 

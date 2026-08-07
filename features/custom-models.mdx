@@ -1,0 +1,124 @@
+---
+title: Custom Models
+description: Bring your own ONNX speech-to-text model
+---
+
+# Custom Models <sup>Pro</sup>
+
+Pro subscribers can import their own speech-to-text model instead of using one
+of the models in Echophrase's built-in registry. This is for advanced users
+who want a specific model - a fine-tune, a niche-language model, or something
+not yet in our registry.
+
+<Note>
+This is a Pro feature. See the [beta page](/beta) for a tier comparison, or
+the [Model Selection](/config/models) page for the bundled models available
+on every tier.
+</Note>
+
+## What's an ONNX model?
+
+[ONNX](https://onnx.ai) (Open Neural Network Exchange) is an open, portable
+file format for machine learning models. It lets a model trained in one
+framework run in a different runtime - in this case, ONNX Runtime, which
+Echophrase already uses for its built-in models.
+
+A speech-to-text model in ONNX form usually looks like:
+
+- **`model.onnx`** - the model itself (required)
+- **`model.onnx.data`** - an external weights file for larger models (optional,
+  only present if the model was exported that way)
+- **`tokenizer.json`** and/or **`config.json`** - files describing how to turn
+  the model's raw output into text (optional, but recommended - without them
+  the app falls back to best-effort decoding)
+
+You don't need to understand the format to use it - Echophrase reads whatever
+files you point it at and tells you if something's missing or broken.
+
+<Warning>
+Custom models in Echophrase v1 must be **ONNX**. Other formats such as
+safetensors or GGUF are not supported for custom models.
+</Warning>
+
+## Where to find models
+
+- **[Hugging Face model hub](https://huggingface.co/models?pipeline_tag=automatic-speech-recognition&library=onnx)**
+  - filtered to automatic speech recognition models published in ONNX format.
+  This is the easiest place to browse.
+- **[ONNX Model Zoo](https://github.com/onnx/models)** - a curated collection
+  of pre-trained ONNX models maintained by the ONNX community.
+
+Look for a repo or download that includes a `.onnx` file (plus, ideally, a
+`tokenizer.json`) built for automatic speech recognition.
+
+## How to import a model
+
+Open **Settings > Custom Model** and choose one of two ways to bring in a
+model:
+
+<CardGroup cols={2}>
+  <Card title="Local file" icon="folder-open">
+    Browse to a `.onnx` file on disk, or drag and drop it into the settings
+    window. If the model has a companion `.onnx.data` weights file, a
+    `tokenizer.json`, or a `config.json`, add those too (or drop the whole
+    folder).
+  </Card>
+  <Card title="Hugging Face repo" icon="link">
+    Paste a repo URL or `org/repo` name, such as `openai/whisper-tiny.en`.
+    Echophrase downloads the repo's files directly. The repo must contain
+    **exactly one** `.onnx` file - if it has more than one, download the one
+    you want manually and import it as a local file instead.
+  </Card>
+</CardGroup>
+
+Once you import a model, Echophrase actually loads it in ONNX Runtime to
+confirm it's a valid, loadable ONNX model, then stores a copy in the app's
+local cache. This validation step catches corrupted downloads and files that
+aren't ONNX models at all - it does not evaluate transcription quality.
+
+<Note>
+Custom models have an **8 GB** size limit.
+</Note>
+
+## The compatibility contract
+
+Echophrase runs custom models through a single generic inference path, since
+it can't know in advance how every possible model is built. For a model to
+produce usable transcriptions, it must:
+
+- Accept a **raw 16 kHz mono waveform** as input
+- Expose that input under the tensor name **`audio/input/mel`**
+- Produce **text or token output** that Echophrase can decode into words
+
+If a model doesn't follow this contract, Echophrase will still load and run
+it - it just won't crash - but the output may be garbled, empty, or
+nonsensical. That's a sign the model is incompatible with Echophrase's
+inference path, not a bug in the app. If you hit this, double-check that the
+model was actually exported for raw-waveform ASR input and not, say,
+mel-spectrogram or log-mel features computed outside the model.
+
+## Coming soon: Transform models
+
+A second custom model slot - for **Transform** models, which post-process
+transcribed text (grammar correction, custom rewriting rules, and similar) -
+is planned for a future release. Custom Transform models are not yet
+supported; see [Transform Model](/config/settings#transform-model-pro) for
+the built-in version.
+
+## Security notes
+
+Custom models run **entirely on your device** through ONNX Runtime, the same
+engine that powers Echophrase's built-in models - nothing about a custom
+model is uploaded or sent to Echophrase's servers.
+
+That said, please keep a few things in mind:
+
+- **Only import models you trust.** A `.onnx` file is a computation graph, and
+  a malicious or broken one could still misbehave at runtime even though
+  Echophrase validates that it loads successfully in ONNX Runtime.
+- **Validation confirms format, not quality.** Echophrase checks that a file
+  is a real, loadable ONNX model - it can't vet what the model was trained on,
+  how accurate it is, or whether its output can be trusted.
+- **Prefer known sources.** Hugging Face repos with a listed author,
+  description, and download count are generally a safer bet than an
+  unfamiliar file from an untrusted link.

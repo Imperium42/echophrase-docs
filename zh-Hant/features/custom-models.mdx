@@ -1,0 +1,107 @@
+---
+title: 自訂模型
+description: 匯入您自己的 ONNX 語音轉文字模型
+---
+
+# 自訂模型 <sup>Pro</sup>
+
+Pro 訂閱者可以匯入自己的語音轉文字模型，取代 Echophrase 內建模型庫中的模型。
+此功能適合進階使用者，例如想使用特定微調模型、小眾語言模型，或是尚未收錄於
+內建模型庫中的模型。
+
+<Note>
+這是 Pro 功能。方案比較請參閱[測試版頁面](/zh-Hant/beta)，內建模型（所有方案皆可使用）
+請參閱[模型選擇](/zh-Hant/config/models)。
+</Note>
+
+## 什麼是 ONNX 模型？
+
+[ONNX](https://onnx.ai)（Open Neural Network Exchange）是一種開放、可攜的機器
+學習模型檔案格式，讓在某個框架訓練的模型能在不同的執行環境中運作 - 在此指的
+是 ONNX Runtime，也就是 Echophrase 內建模型所使用的執行引擎。
+
+ONNX 格式的語音轉文字模型通常包含以下檔案：
+
+- **`model.onnx`** - 模型本身（必要）
+- **`model.onnx.data`** - 較大模型的外部權重檔（選用，僅在模型以此方式匯出時
+  才會出現）
+- **`tokenizer.json`** 與／或 **`config.json`** - 描述如何將模型的原始輸出轉換
+  為文字的檔案（選用，但建議提供 - 若缺少，應用程式會退回盡力解碼）
+
+您不需要理解此格式的細節即可使用 - Echophrase 會讀取您指定的檔案，並在缺少
+或損壞時提示您。
+
+<Warning>
+Echophrase v1 中的自訂模型必須為 **ONNX** 格式。目前不支援 safetensors 或
+GGUF 等其他格式的自訂模型。
+</Warning>
+
+## 從哪裡尋找模型
+
+- **[Hugging Face 模型庫](https://huggingface.co/models?pipeline_tag=automatic-speech-recognition&library=onnx)**
+  - 已篩選為 ONNX 格式的自動語音辨識模型，是最容易瀏覽的來源。
+- **[ONNX Model Zoo](https://github.com/onnx/models)** - 由 ONNX 社群維護的
+  預訓練 ONNX 模型精選集。
+
+尋找包含 `.onnx` 檔案（最好也附有 `tokenizer.json`）且專為自動語音辨識設計
+的儲存庫或下載項目。
+
+## 如何匯入模型
+
+開啟**設定 > 自訂模型**，選擇以下其中一種方式匯入模型：
+
+<CardGroup cols={2}>
+  <Card title="本機檔案" icon="folder-open">
+    瀏覽選擇磁碟上的 `.onnx` 檔案，或直接拖放至設定視窗中。若模型附有
+    `.onnx.data` 權重檔、`tokenizer.json` 或 `config.json`，請一併加入
+    （或直接拖放整個資料夾）。
+  </Card>
+  <Card title="Hugging Face 儲存庫" icon="link">
+    貼上儲存庫網址或 `org/repo` 名稱，例如 `openai/whisper-tiny.en`。
+    Echophrase 會直接下載該儲存庫的檔案。該儲存庫必須**恰好包含一個**
+    `.onnx` 檔案 - 若有多個，請手動下載您想要的檔案並改用本機檔案方式匯入。
+  </Card>
+</CardGroup>
+
+匯入模型後，Echophrase 會實際在 ONNX Runtime 中載入該模型以確認其為有效、
+可載入的 ONNX 模型，接著將副本儲存於應用程式的本機快取中。此驗證步驟可攔截
+損壞的下載檔案，以及根本不是 ONNX 模型的檔案 - 但不會評估轉錄品質。
+
+<Note>
+自訂模型有 **8 GB** 的大小限制。
+</Note>
+
+## 相容性規範
+
+由於 Echophrase 無法預先得知每個可能模型的架構，因此所有自訂模型都會透過
+單一通用推論流程執行。模型若要產生可用的轉錄結果，必須：
+
+- 接受**原始 16 kHz 單聲道波形**作為輸入
+- 以張量名稱 **`audio/input/mel`** 公開該輸入
+- 產生 Echophrase 可解碼為文字的**文字或詞元輸出**
+
+若模型不符合此規範，Echophrase 仍會載入並執行它 - 不會當機 - 但輸出可能是
+亂碼、空白或不合邏輯。這代表該模型與 Echophrase 的推論流程不相容，並非應用
+程式的錯誤。若遇到此情況，請確認該模型匯出時確實是設計給原始波形輸入的語音
+辨識模型，而非在模型外部計算的梅爾頻譜或 log-mel 特徵。
+
+## 即將推出：轉換模型
+
+第二個自訂模型欄位 - 供**轉換（Transform）**模型使用，用於後製處理轉錄文字
+（文法修正、自訂改寫規則等）- 規劃於未來版本推出。目前尚不支援自訂轉換模型；
+內建版本請參閱[轉換模型](/zh-Hant/config/settings#transform-model-pro)。
+
+## 安全性須知
+
+自訂模型完全在**您的裝置上**透過 ONNX Runtime 執行，與 Echophrase 內建模型
+使用的引擎相同 - 自訂模型的任何內容都不會上傳或傳送至 Echophrase 的伺服器。
+
+儘管如此，請留意以下幾點：
+
+- **僅匯入您信任的模型。** `.onnx` 檔案本質上是一個運算圖，即使 Echophrase
+  已驗證其能在 ONNX Runtime 中成功載入，惡意或有問題的檔案仍可能在執行時
+  出現異常行為。
+- **驗證僅確認格式，不代表品質。** Echophrase 只會檢查檔案是否為真實、可
+  載入的 ONNX 模型 - 無法驗證該模型的訓練資料、準確度，或其輸出是否可信。
+- **優先選擇可靠來源。** 具有明確作者、說明與下載次數的 Hugging Face 儲存庫，
+  通常比來路不明的連結或檔案更值得信賴。

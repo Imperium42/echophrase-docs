@@ -37,7 +37,8 @@
                   "features/transcription",
                   "features/hotkeys",
                   "features/modes",
-                  "features/offline"
+                  "features/offline",
+                  "features/custom-models"
                 ]
               },
               {
@@ -97,7 +98,8 @@
                   "zh-Hant/features/transcription",
                   "zh-Hant/features/hotkeys",
                   "zh-Hant/features/modes",
-                  "zh-Hant/features/offline"
+                  "zh-Hant/features/offline",
+                  "zh-Hant/features/custom-models"
                 ]
               },
               {
