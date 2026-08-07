@@ -7,27 +7,44 @@ description: Configure Echophrase to your preferences
 
 Open settings from the gear icon in the main window. Settings are organized into the following sections.
 
-## Language
-
-Choose the UI language. Currently supported: **English** and **Traditional Chinese** (beta).
-
 ## Account
 
 Signing in is entirely optional and only needed for Pro features - the Free tier works fully offline with no account. If you do sign in, view your email, linked providers (Google, email), and current plan tier. You can enter a license key, link additional sign-in providers, or sign out.
 
-## Cloud Sync <sup>Pro</sup>
+## Audio Input
 
-Opt in, per device, to syncing your application settings to our servers so they
-follow you across every machine you sign in on. Off by default. Settings only -
-voice data, audio, and transcriptions never sync, and neither do API keys,
-hardware settings, or local file paths. You can push this device's settings up
-or pull the server's copy down at any time.
+- **Input Device**: pick your microphone, or leave it on System Default
+- **Recording Mode**: **Push to Talk** (default) or **Open Mic** - see
+  [Input Modes](/features/modes)
+- **Voice Threshold** (0-100%): the minimum voice level that triggers recording.
+  Use **Test** to watch a live audio meter.
+
+## Recording
+
+- **Max duration**: 5–60 seconds per recording (all tiers)
+- **Remove filler words**: Filter out "umm", "uh", "like", etc. <sup>Pro</sup>
+- **Normalize numbers to digits**: Convert "three" → "3" <sup>Pro</sup>
+- **Append space to incomplete sentences**: Adds a trailing space when a transcription doesn't end with `.`, `!`, or `?`, so you can pause mid-sentence and keep dictating without manually adding a space (on by default)
+
+## Hotkeys
+
+Set the global **Toggle Recording** hotkey. It works globally whenever the app is running. Default: **Ctrl+Shift+Space** on Windows/Linux, or the **Dictation key** (mic icon, shown as F5) on macOS. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
+
+<Note>ESC and Spacebar also work as recording toggles when the app window is focused.</Note>
 
 ## Voice Model
 
 View and change the active transcription model. Shows your detected GPU and the active model. Click **Change** to browse and download other models.
 
 <Note>Available models depend on your tier. See the [beta page](/beta) for a comparison.</Note>
+
+## Custom Model <sup>Pro</sup>
+
+Bring your own ONNX transcription model - import a local `.onnx` file or pull one straight from a HuggingFace repo URL. Echophrase validates the model before switching to it. See [Custom Models](/features/custom-models) for supported formats and where to find models.
+
+## Transform Model <sup>Pro</sup>
+
+Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses the lightweight **T5-Mini Grammar** model (~60 MB), downloaded on demand and run entirely on-device. This is a **Pro-only** feature - the toggle is locked on the Free tier. You can write custom transformation rules or use the default grammar correction.
 
 ## GPU Acceleration
 
@@ -51,10 +68,6 @@ installed can opt in to a downloadable CUDA plugin here. See
 
 <Note>Changing the active provider requires restarting Echophrase to take effect. The settings UI shows a "Restart to apply" banner when a change needs a relaunch.</Note>
 
-## Transform Model <sup>Pro</sup>
-
-Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses the lightweight **T5-Mini Grammar** model (~60 MB), downloaded on demand and run entirely on-device. This is a **Pro-only** feature - the toggle is locked on the Free tier. You can write custom transformation rules or use the default grammar correction.
-
 ## Output
 
 Control what happens after a transcription completes.
@@ -65,26 +78,9 @@ Control what happens after a transcription completes.
   - Paste at Cursor (all tiers, requires signing in)
   - Save as File <sup>Pro</sup> - configure an auto-save directory and export transcripts, including JSON with custom metadata <sup>Pro</sup>
 
-## Audio Input
+## Language
 
-- **Input Device**: pick your microphone, or leave it on System Default
-- **Recording Mode**: **Push to Talk** (default) or **Open Mic** - see
-  [Input Modes](/features/modes)
-- **Voice Threshold** (0-100%): the minimum voice level that triggers recording.
-  Use **Test** to watch a live audio meter.
-
-## Recording
-
-- **Max duration**: 5–60 seconds per recording (all tiers)
-- **Remove filler words**: Filter out "umm", "uh", "like", etc. <sup>Pro</sup>
-- **Normalize numbers to digits**: Convert "three" → "3" <sup>Pro</sup>
-- **Append space to incomplete sentences**: Adds a trailing space when a transcription doesn't end with `.`, `!`, or `?`, so you can pause mid-sentence and keep dictating without manually adding a space (on by default)
-
-## Hotkeys
-
-Set the global **Toggle Recording** hotkey. It works globally whenever the app is running. Default: **Ctrl+Shift+Space** on Windows/Linux, or the **Dictation key** (mic icon, shown as F5) on macOS. Click the binding to enter capture mode, then press your desired key combination. ESC cancels.
-
-<Note>ESC and Spacebar also work as recording toggles when the app window is focused.</Note>
+Choose the UI language. Currently supported: **English** and **Traditional Chinese** (beta).
 
 ## Customize
 
@@ -110,6 +106,14 @@ Scale the entire interface to your preference - useful on high-DPI displays or i
 - **Reset scale and window**: Restore the default scale and window size
 
 <Note>In rare environments where OS scaling can't be detected reliably, Auto falls back to 100% and the app suggests switching to Manual.</Note>
+
+## Cloud Sync <sup>Pro</sup>
+
+Opt in, per device, to syncing your application settings to our servers so they
+follow you across every machine you sign in on. Off by default. Settings only -
+voice data, audio, and transcriptions never sync, and neither do API keys,
+hardware settings, or local file paths. You can push this device's settings up
+or pull the server's copy down at any time.
 
 ## MCP Server <sup>Pro</sup>
 
