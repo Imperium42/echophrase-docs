@@ -76,6 +76,16 @@ confirm it's a valid, loadable ONNX model, then stores a copy in the app's
 local cache. This validation step catches corrupted downloads and files that
 aren't ONNX models at all - it does not evaluate transcription quality.
 
+A successfully imported model **becomes your active model immediately** - no
+extra selection step. You can manage it (switch back to it, replace it, or
+remove it) from the same import window, from **Settings > Custom Model**, or
+by clicking its row in the AI Models picker.
+
+<Note>
+On WSL, Windows Explorer cannot drag files into WSL windows, so the import
+window shows a **Browse** button instead of a drop zone.
+</Note>
+
 <Note>
 Custom models have an **8 GB** size limit.
 </Note>
