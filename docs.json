@@ -68,7 +68,8 @@
               {
                 "group": "Legal",
                 "pages": [
-                  "privacy"
+                  "privacy",
+                  "privacy/telemetry"
                 ]
               }
             ]
@@ -129,7 +130,8 @@
               {
                 "group": "法律",
                 "pages": [
-                  "zh-Hant/privacy"
+                  "zh-Hant/privacy",
+                  "zh-Hant/privacy/telemetry"
                 ]
               }
             ]

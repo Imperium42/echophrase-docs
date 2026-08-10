@@ -1,0 +1,81 @@
+---
+title: What We Collect
+description: Every anonymous telemetry event Echophrase sends, property by property, and how to turn it all off.
+---
+
+Echophrase asks for anonymous usage stats on first run, with the box pre-checked. This page is the complete list of what that box turns on. Nothing here is hidden behind a summary: if an event is not on this page, the app does not send it.
+
+<Card title="Every event respects your choice" icon="shield-halved">
+  There are no exceptions. Turn the setting off and Echophrase sends nothing - not even a count of the install. The only thing that leaves your machine after you opt out is a single `telemetry_disabled` ping so our dashboard stops counting you as active.
+</Card>
+
+## How to turn it off
+
+**Settings > Data > "Send anonymous usage stats"** - one toggle, no confirmation prompt, effective immediately.
+
+Prefer an environment variable? Echophrase honors both of these at launch, which overrides the setting entirely:
+
+```bash
+DO_NOT_TRACK=1 echophrase          # the cross-vendor convention
+ECHOPHRASE_NO_TELEMETRY=1 echophrase   # ours, if you'd rather be explicit
+```
+
+A launch with either variable set sends nothing **and** does not consume the one-time first-launch marker, so a later normal launch is still counted correctly.
+
+Development builds (`bun run tauri:dev`) never send telemetry at all.
+
+## The events
+
+Events are queued locally and sent in batches only while the app is idle (at least 10 minutes since the last recording or transcription), on settings save, and on app exit. Echophrase never makes a telemetry request during or right after a transcription. Each event is a few hundred bytes of metadata.
+
+| Event | Properties | When |
+|-------|-----------|------|
+| `first_launch` | `arch` (x86_64/aarch64) | Very first launch on a machine, after you answer the consent checkbox (once ever, tracked by a local marker file) |
+| `app_updated` | `from`, `to` (version strings) | First launch after an update |
+| `daily_active` | `auth_state` (pre_login/authenticated), `recording_mode` (push_to_talk/open_mic), `arch` | App launch, at most once per 24h |
+| `gpu_backend` | `backend` (cuda/directml/cpu/metal), `vram_bucket` (&lt;4GB/4-8GB/8-16GB/&gt;16GB/unknown) | First transcription of a session |
+| `transcription_completed` | `model`, `transform_used`, `auth_state`, `paste_at_cursor`, `remove_filler_words`, `gpu_backend`, `processing_ms` | After a transcription |
+| `transcription_failed` | `model`, `gpu_backend`, `error_category` (bucketed category, never a raw error string) | A transcription errors out |
+| `model_changed` | `model` (e.g. "distil-large-v3") | You save a model selection |
+| `settings_saved` | `output_to`, `recording_mode`, `remove_filler_words`, `use_numeric_digits`, `transform_enabled`, `language` | You change one of those settings |
+| `pro_modal_shown` | _(none)_ | The Pro upgrade modal is shown (once per session) |
+| `login_intent` | _(none)_ | The login modal is shown (once per session) |
+| `purchase_intent` | `source` (upgrade_modal), `channel` (always "app") | You click an upgrade button (once per source per session) |
+| `app_panic` | `location` (repo-relative `src/foo.rs:42`), `thread` (thread name) | The app crashes (release builds only) |
+| `telemetry_disabled` | _(none)_ | You opt out - the final ping before tracking stops |
+
+### Automatic system properties
+
+Attached by the client to every event above:
+
+- Platform and OS version
+- App version
+- Locale
+
+That is the whole list. There is no device ID, no install ID, and no session ID that survives a restart.
+
+## What is never collected
+
+| Data | Collected? |
+|------|-----------|
+| Voice recordings | **Never** |
+| Transcription text | **Never** |
+| AI model inputs or outputs | **Never** |
+| Panic/error messages | **Never** (only the source location) |
+| User ID, install ID, device fingerprint | **Never** |
+| IP address | **Never stored** (our Aptabase instance does not retain it) |
+| Recording duration or frequency | **Never** (`processing_ms` is model compute time, not how long you spoke) |
+| Cookies | **None** |
+
+## Where it goes
+
+- **Backend**: [Aptabase](https://github.com/aptabase/aptabase), self-hosted at `https://telemetry.echophrase.com` - the data never reaches a third-party analytics vendor
+- **Transport**: HTTPS only (TLS 1.3)
+- **Retention**: raw events deleted after 1 year
+- **Source code**: `src-tauri/src/telemetry/` in the desktop app - the table above is generated from the same code that sends the events
+
+## Your account data is separate
+
+Everything above is anonymous and unlinked to an account. If you sign in, the data tied to your account (email, subscription tier, transcription count) is covered by self-serve GDPR controls in **Settings > Data**: **Get Data** exports everything we hold, and **Delete (Anonymize) Account** removes it.
+
+See [Privacy & Data](/privacy) for the overview and the full [Privacy Policy](https://echophrase.com/privacy) for retention, third-party processors, and your GDPR/CCPA rights.

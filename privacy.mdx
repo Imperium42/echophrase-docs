@@ -32,13 +32,15 @@ We collect **anonymous, non-identifiable telemetrics** to make better product de
     GPU backend, selected model, recording mode, feature toggles (paste-at-cursor, filler word removal). Sent to our self-hosted [Aptabase](https://github.com/aptabase/aptabase) instance - data never leaves our infrastructure.
   </Card>
   <Card title="Website (Umami)" icon="globe">
-    Page views, referrer, browser type, country. Sent to our self-hosted [Umami](https://github.com/umami-software/umami) instance - cookieless, no tracking across sites.
+    Page views, referrer, browser type, country. Sent to our self-hosted [Umami](https://github.com/umami-software/umami) instance - cookieless, no tracking across sites, and it honors your browser's Do Not Track signal (the site tells you when it does).
   </Card>
 </CardGroup>
 
-### Opt out anytime
+Every single event is listed, property by property, on [What We Collect](/privacy/telemetry).
 
-Desktop telemetrics can be disabled in **Settings > Data > "Help improve Echophrase"**. One final event is sent to confirm opt-out, then all tracking stops. Disabling telemetrics does not affect app functionality in any way.
+### Consent and opting out
+
+Echophrase asks on first run, with the box pre-checked, and **every event respects your answer** - including the install count. You can change it anytime in **Settings > Data > "Send anonymous usage stats"**: one toggle, no confirmation prompt. One final event is sent to confirm the opt-out, then all tracking stops. Launching with `DO_NOT_TRACK=1` (or `ECHOPHRASE_NO_TELEMETRY=1`) overrides the setting entirely. Disabling telemetrics does not affect app functionality in any way.
 
 ## Account data
 

@@ -5,7 +5,7 @@ description: How Echophrase behaves without an internet connection
 
 # Working Offline
 
-Echophrase is built to work offline. The **Free tier is 100% offline and unlimited** - no account, no internet connection, no server round-trip, ever. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
+Echophrase is built to work offline - including in airplane mode. The **Free tier offers 100% offline transcription and is unlimited** - no account and no internet connection required, ever. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
 
 <Note>
 **One exception: the first run.** Models are downloaded on demand, so you need an
@@ -14,11 +14,15 @@ that model is on disk, transcription never touches the network again. The defaul
 Parakeet-TDT 0.6B v3 is ~2.5 GB; see [Models](/config/models) for the others.
 </Note>
 
+<Note>
+**What about telemetry?** Separately from transcription, Echophrase collects anonymous, non-identifiable usage telemetry by default (crash reports, app open/close events - never audio or transcript content). The app asks on first run with the box pre-checked, and you can turn it off anytime in Settings > Data > "Send anonymous usage stats" (or launch with `DO_NOT_TRACK=1`) - see [What We Collect](/privacy/telemetry). With no internet connection (airplane mode included), there's nothing to send either way - transcription works exactly the same.
+</Note>
+
 ## What Works Offline
 
 <CardGroup cols={2}>
   <Card title="All Transcription" icon="microphone">
-    Every transcription feature - global hotkey, clipboard copy, paste-at-cursor, model switching - works fully offline.
+    Every transcription feature - global hotkey, clipboard copy, paste-at-cursor, model switching - works fully offline, in airplane mode too.
   </Card>
   <Card title="Local Models" icon="cube">
     Once a model is downloaded, it runs entirely on your device. No round-trip to a server.
@@ -31,7 +35,7 @@ Parakeet-TDT 0.6B v3 is ~2.5 GB; see [Models](/config/models) for the others.
   </Card>
 </CardGroup>
 
-There is nothing to verify, ever: the Free tier has no account, no login, no grace period, and no expiry. It never contacts our servers, so there is no online requirement to fall out of compliance with. If you never sign in, this entire page could be one sentence: **it just works, offline, forever.**
+There is nothing to verify, ever: the Free tier has no account, no login, no grace period, and no expiry. Transcription never contacts our servers, so there is no online requirement to fall out of compliance with. If you never sign in, this entire page could be one sentence: **it just works, offline, forever.**
 
 ## Pro Subscriptions & Offline (Pro Only)
 
