@@ -61,6 +61,7 @@
                 "group": "Troubleshooting",
                 "pages": [
                   "troubleshooting/common-issues",
+                  "troubleshooting/permissions",
                   "troubleshooting/gpu",
                   "troubleshooting/audio"
                 ]

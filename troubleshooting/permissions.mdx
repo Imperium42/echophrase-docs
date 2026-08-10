@@ -1,0 +1,141 @@
+---
+title: Permissions
+description: What macOS permissions Echophrase asks for, why, and how to manage them
+---
+
+# Permissions
+
+On macOS, Echophrase asks for one or two system permissions. This page explains
+exactly what each one is for, why the system wording sounds broader than what
+Echophrase actually does, and how to grant, revoke, or change your mind about
+them at any time.
+
+<Note>
+This page covers macOS specifically. Windows and Linux do not use this
+permission model.
+</Note>
+
+## The short version
+
+- **Microphone** is required - Echophrase can't transcribe your voice without it.
+- **Accessibility** is optional - it's only used to press Cmd+V so your
+  transcript lands at your cursor automatically. If you'd rather not grant it,
+  Echophrase falls back to copying transcripts to your clipboard instead, and
+  you can change that choice later at any time.
+
+macOS labels the Accessibility permission "control your computer," which
+sounds like it grants very broad access. In practice, Echophrase only ever
+uses the single narrow capability inside that permission that lets an app
+send a keystroke - and it uses that capability for exactly one thing: pasting
+your transcript where your cursor is.
+
+## Microphone permission
+
+Echophrase needs to hear you to transcribe you. This uses the standard macOS
+`AVCaptureDevice.requestAccess(for: .audio)` API - the same permission every
+voice or video app on your Mac requests. Audio is processed entirely on your
+device and is never uploaded anywhere.
+
+Without Microphone access, Echophrase cannot record at all.
+
+## Accessibility permission (optional)
+
+Accessibility is what lets Echophrase paste your transcript automatically at
+your cursor, by simulating a Cmd+V keystroke after transcription finishes.
+
+If you decline it, nothing breaks - Echophrase switches to a clipboard-only
+mode: your transcript is copied to the clipboard instead, and you paste it
+yourself with Cmd+V whenever you're ready. You can change this choice later
+at any time in **Settings → Output**, in either direction.
+
+### Why Echophrase only needs a narrow slice of it
+
+The macOS Accessibility permission bundles together a few different
+capabilities, and the system prompt ("Echophrase would like to control this
+computer") describes the permission as a whole, not the specific thing an app
+actually does with it. Echophrase deliberately calls the narrowest API
+available for its use case:
+
+- It uses `CGPreflightPostEventAccess` / `CGRequestPostEventAccess` - the API
+  scoped specifically to sending synthetic input events.
+- It does **not** use `AXIsProcessTrusted`, the broader API that also unlocks
+  reading and driving other apps' UI element trees.
+
+That means Echophrase can send a paste keystroke, and nothing more - it
+cannot inspect what's on your screen, read another app's window contents, or
+control anything besides sending that one keystroke.
+
+## The clipboard fallback
+
+If you choose "Copy to clipboard, instead" when Echophrase asks for
+Accessibility access (or you simply never grant it), Echophrase does not
+nag you or repeatedly re-prompt. Every transcript is copied to your clipboard,
+ready to paste with Cmd+V wherever you need it.
+
+This is a preference, not a one-time decision - you can switch between
+auto-paste and clipboard-only mode any time in **Settings → Output**.
+
+## Granting or revoking permissions
+
+You can manage both permissions directly from macOS System Settings. Echophrase's
+own prompts link straight to the right pane using these deep links:
+
+- Microphone: `x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone`
+- Accessibility: `x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility`
+
+To do it manually:
+
+<Steps>
+  <Step title="Open System Settings">
+    Go to **System Settings → Privacy & Security**.
+  </Step>
+  <Step title="Choose the permission">
+    Select **Microphone** or **Accessibility** from the list.
+  </Step>
+  <Step title="Toggle Echophrase">
+    Find Echophrase in the list and turn its switch on or off.
+  </Step>
+</Steps>
+
+<Warning>
+**If you just granted Accessibility while Echophrase was already running, restart Echophrase.**
+
+macOS's underlying event system (CoreGraphics) caches a "no" answer for the
+life of a running process once it has been asked. If Echophrase checked
+before you granted the permission, it may keep behaving as if access were
+still denied until you quit and reopen the app - even though System Settings
+now shows it as allowed.
+</Warning>
+
+## What Echophrase never does
+
+To be explicit about the boundaries:
+
+- Echophrase never reads your screen contents.
+- Echophrase never reads or logs your keystrokes.
+- Echophrase never needs or requests Input Monitoring.
+- Global hotkeys (for starting/stopping dictation) need **no permission at
+  all** - they're registered with Carbon's `RegisterEventHotKey` through
+  `tauri-plugin-global-shortcut`.
+- The dictation/F5 key remap is handled at the HID layer via `hidutil`, which
+  is also permission-free.
+
+## The three macOS permission services, plainly explained
+
+macOS's underlying permission system (TCC) actually tracks several distinct
+capabilities under names most people never see. Here's what they mean and
+which one Echophrase actually uses:
+
+| Service | What it lets an app do | Does Echophrase use it? |
+| --- | --- | --- |
+| Accessibility (`kTCCServiceAccessibility`) | Inspect and drive other apps' UI - read buttons, menus, and windows, and control them | No |
+| Send input (`kTCCServicePostEvent`) | Send synthetic keystrokes or clicks to the system | Yes - and only this, only to paste |
+| Input Monitoring (`kTCCServiceListenEvent`) | Read all keyboard/input events system-wide, i.e. keylogging-capable | No |
+
+Input Monitoring is the one apps like Discord request for push-to-talk with
+modifier-only keys (like holding Right Option) - Echophrase's hotkeys don't
+need that approach, so it never asks for that permission at all.
+
+<Card title="Common Issues" icon="wrench" href="/troubleshooting/common-issues">
+  Back to general troubleshooting.
+</Card>
