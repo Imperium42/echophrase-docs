@@ -8,14 +8,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Mintlify documentation site for [Echophrase](https://github.com/dylanh724/echophrase), a privacy-first desktop speech-to-text application. This is a git submodule of the echophrase-mono monorepo.
 
+## Deployment
+
+**Mintlify deploys `main`.** Pushing `main` publishes to https://docs.echophrase.com within
+a minute or two; there is no workflow file, the Mintlify GitHub App watches the branch and
+reports a "Mintlify Deployment" commit check.
+
+> **Verify the check ran.** If that check says `skipped` instead of `success`, the branch you
+> pushed is NOT the configured deployment branch and the site is silently going stale. This
+> happened for real: the repo's deployment branch was `dev` while everyone committed to
+> `main`, so 24 commits of published-intent docs (Custom Models, CLI & MCP, security, Pro
+> trial, macOS Permissions, telemetry disclosure) never reached the public site. Fixed
+> 2026-08-10 by pointing both Mintlify and the GitHub default branch at `main`.
+>
+> ```bash
+> gh api repos/dylanh724/echophrase-docs/commits/main/check-runs \
+>   --jq '.check_runs[] | "\(.name)=\(.conclusion // .status)"'
+> ```
+
+`dev` is a dead mirror kept only for history - do not push it.
+
 ## Development Commands
 
 ```bash
 # Preview docs locally (requires Mintlify CLI)
-npx mintlify dev
+bunx mintlify dev
 
-# Check for broken links and issues
-npx mintlify broken-links
+# Check for broken links and issues (run before pushing)
+bunx mintlify broken-links
 ```
 
 ## Structure
