@@ -61,6 +61,7 @@
                 "group": "Troubleshooting",
                 "pages": [
                   "troubleshooting/common-issues",
+                  "troubleshooting/permissions",
                   "troubleshooting/gpu",
                   "troubleshooting/audio"
                 ]
@@ -123,6 +124,7 @@
                 "group": "疑難排解",
                 "pages": [
                   "zh-Hant/troubleshooting/common-issues",
+                  "zh-Hant/troubleshooting/permissions",
                   "zh-Hant/troubleshooting/gpu",
                   "zh-Hant/troubleshooting/audio"
                 ]
