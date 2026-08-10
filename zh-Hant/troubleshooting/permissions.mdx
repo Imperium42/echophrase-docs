@@ -1,0 +1,127 @@
+---
+title: 權限
+description: Echophrase 會要求哪些 macOS 權限、原因為何，以及如何管理它們
+---
+
+# 權限
+
+在 macOS 上，Echophrase 會要求一或兩項系統權限。本頁說明每一項權限的確切
+用途、為何系統文字看起來比 Echophrase 實際所做的還要廣泛，以及您如何隨時
+授予、撤銷或改變主意。
+
+<Note>
+本頁專門說明 macOS。Windows 與 Linux 不使用此權限模型。
+</Note>
+
+## 簡短版本
+
+- **麥克風**是必要的 - 沒有它，Echophrase 就無法轉錄您的語音。
+- **輔助使用**是選用的 - 僅用於按下 Cmd+V，讓轉錄內容自動貼到您的游標處。
+  若您不想授予此權限，Echophrase 會改為將轉錄內容複製到剪貼板，而且您之後
+  隨時都可以改變這個選擇。
+
+macOS 將輔助使用權限標示為「控制您的電腦」，聽起來像是授予了非常廣泛的存取
+權。實際上，Echophrase 只使用該權限中一項狹窄的能力，也就是讓應用程式送出
+按鍵 - 而且僅用於一件事：將您的轉錄內容貼到游標所在位置。
+
+## 麥克風權限
+
+Echophrase 需要聽到您的聲音才能進行轉錄。此功能使用標準的 macOS
+`AVCaptureDevice.requestAccess(for: .audio)` API - 與您 Mac 上任何語音
+或視訊應用程式所要求的權限相同。音訊完全在您的裝置上處理，絕不會上傳到
+任何地方。
+
+若沒有麥克風權限，Echophrase 完全無法錄音。
+
+## 輔助使用權限（選用）
+
+輔助使用讓 Echophrase 能在轉錄完成後模擬 Cmd+V 按鍵，自動將轉錄內容貼到您
+的游標處。
+
+若您拒絕授予此權限，也不會有任何問題 - Echophrase 會切換為僅剪貼板模式：
+轉錄內容會複製到剪貼板，您可以在需要時自行按 Cmd+V 貼上。您之後隨時可以在
+**設定 → 輸出**中變更此選擇，兩個方向皆可切換。
+
+### 為什麼 Echophrase 只需要其中一小部分
+
+macOS 的輔助使用權限將多項不同的能力綁在一起，而系統提示（「Echophrase
+想要控制您的電腦」）描述的是整個權限，而非應用程式實際使用的具體功能。
+Echophrase 刻意呼叫適用於其使用情境中最狹窄的 API：
+
+- 它使用 `CGPreflightPostEventAccess` / `CGRequestPostEventAccess` - 這是
+  專門用於送出合成輸入事件的 API。
+- 它**不會**使用 `AXIsProcessTrusted`，這是另一個更廣泛的 API，還能解鎖讀取
+  與操控其他應用程式的 UI 元件樹。
+
+這代表 Echophrase 只能送出一個貼上按鍵，僅此而已 - 它無法檢視您畫面上的
+內容、讀取其他應用程式的視窗內容，或控制那個按鍵以外的任何東西。
+
+## 剪貼板備援方案
+
+如果您在 Echophrase 要求輔助使用權限時選擇「改為複製到剪貼板」（或您只是
+從未授予此權限），Echophrase 不會一直提醒您或重複要求。每則轉錄內容都會
+複製到您的剪貼板，隨時可用 Cmd+V 貼到您需要的地方。
+
+這是一項偏好設定，而非一次性的決定 - 您可以隨時在**設定 → 輸出**中切換
+自動貼上與僅剪貼板模式。
+
+## 授予或撤銷權限
+
+您可以直接從 macOS 系統設定管理這兩項權限。Echophrase 自身的提示會直接
+連結到正確的頁面：
+
+- 麥克風：`x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone`
+- 輔助使用：`x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility`
+
+手動操作方式如下：
+
+<Steps>
+  <Step title="開啟系統設定">
+    前往**系統設定 → 隱私權與安全性**。
+  </Step>
+  <Step title="選擇權限項目">
+    從清單中選擇**麥克風**或**輔助使用**。
+  </Step>
+  <Step title="切換 Echophrase 的開關">
+    在清單中找到 Echophrase，開啟或關閉它的開關。
+  </Step>
+</Steps>
+
+<Warning>
+**如果您是在 Echophrase 已在執行時才授予輔助使用權限，請重新啟動 Echophrase。**
+
+macOS 底層的事件系統（CoreGraphics）會在執行中的程序生命週期內快取「拒絕」
+的結果，一旦曾被詢問過。如果 Echophrase 在您授予權限前就檢查過一次，它可能
+會持續表現得像是權限仍被拒絕，直到您結束並重新開啟應用程式 - 即使系統設定
+中已顯示為允許。
+</Warning>
+
+## Echophrase 絕不會做的事
+
+為明確劃清界線：
+
+- Echophrase 絕不讀取您的畫面內容。
+- Echophrase 絕不讀取或記錄您的按鍵。
+- Echophrase 絕不需要或要求「輸入監控」權限。
+- 全域快速鍵（用於開始／停止聽寫）**完全不需要任何權限** - 它們是透過
+  `tauri-plugin-global-shortcut` 以 Carbon 的 `RegisterEventHotKey` 註冊的。
+- 聽寫／F5 按鍵的重新對應是在 HID 層透過 `hidutil` 處理的，同樣不需要權限。
+
+## 三項 macOS 權限服務，白話解釋
+
+macOS 底層的權限系統（TCC）實際上會追蹤好幾項多數人從未見過名稱的獨立
+能力。以下說明它們各自的意義，以及 Echophrase 實際使用的是哪一項：
+
+| 服務 | 讓應用程式能做什麼 | Echophrase 是否使用？ |
+| --- | --- | --- |
+| 輔助使用（`kTCCServiceAccessibility`） | 檢視並操控其他應用程式的 UI - 讀取按鈕、選單、視窗，並加以控制 | 否 |
+| 送出輸入（`kTCCServicePostEvent`） | 向系統送出合成按鍵或點擊 | 是 - 且僅此一項，僅用於貼上 |
+| 輸入監控（`kTCCServiceListenEvent`） | 讀取系統中所有鍵盤／輸入事件，等同具備側錄按鍵能力 | 否 |
+
+輸入監控是像 Discord 這類應用程式在需要以純修飾鍵（例如按住 Right Option）
+實現按住說話時所要求的權限 - Echophrase 的快速鍵不需要這種做法，因此完全
+不會要求此權限。
+
+<Card title="常見問題" icon="wrench" href="/zh-Hant/troubleshooting/common-issues">
+  返回一般疑難排解。
+</Card>
