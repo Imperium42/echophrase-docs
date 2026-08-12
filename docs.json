@@ -26,9 +26,9 @@
                   "introduction",
                   "quickstart",
                   "download",
+                  "beta",
                   "requirements",
-                  "benchmarks",
-                  "beta"
+                  "benchmarks"
                 ]
               },
               {
@@ -39,6 +39,13 @@
                   "features/modes",
                   "features/offline",
                   "features/custom-models"
+                ]
+              },
+              {
+                "group": "Privacy",
+                "pages": [
+                  "privacy",
+                  "privacy/telemetry"
                 ]
               },
               {
@@ -65,13 +72,6 @@
                   "troubleshooting/gpu",
                   "troubleshooting/audio"
                 ]
-              },
-              {
-                "group": "Legal",
-                "pages": [
-                  "privacy",
-                  "privacy/telemetry"
-                ]
               }
             ]
           }
@@ -89,9 +89,9 @@
                   "zh-Hant/introduction",
                   "zh-Hant/quickstart",
                   "zh-Hant/download",
+                  "zh-Hant/beta",
                   "zh-Hant/requirements",
-                  "zh-Hant/benchmarks",
-                  "zh-Hant/beta"
+                  "zh-Hant/benchmarks"
                 ]
               },
               {
@@ -102,6 +102,13 @@
                   "zh-Hant/features/modes",
                   "zh-Hant/features/offline",
                   "zh-Hant/features/custom-models"
+                ]
+              },
+              {
+                "group": "隱私",
+                "pages": [
+                  "zh-Hant/privacy",
+                  "zh-Hant/privacy/telemetry"
                 ]
               },
               {
@@ -127,13 +134,6 @@
                   "zh-Hant/troubleshooting/permissions",
                   "zh-Hant/troubleshooting/gpu",
                   "zh-Hant/troubleshooting/audio"
-                ]
-              },
-              {
-                "group": "法律",
-                "pages": [
-                  "zh-Hant/privacy",
-                  "zh-Hant/privacy/telemetry"
                 ]
               }
             ]

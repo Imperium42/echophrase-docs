@@ -33,7 +33,9 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
   </Card>
 </CardGroup>
 
-Debian/Ubuntu users can install the `.deb` instead of the AppImage:
+Linux ships from the same CrabNebula CDN as every other platform, in two
+formats - pick whichever fits your distro. Debian/Ubuntu users can install the
+`.deb` instead of the AppImage:
 
 ```bash
 # download, then:
@@ -49,6 +51,22 @@ code-signed, and macOS builds are notarized with Apple, so they install without
 Gatekeeper or SmartScreen workarounds. All downloads resolve to the latest
 release (currently shipping with beta version numbers) via CrabNebula Cloud's CDN.
 </Note>
+
+## Package Managers
+
+<CardGroup cols={2}>
+  <Card title="macOS: Homebrew" icon="beer">
+    ```bash
+    brew install --cask imperium42/tap/echophrase
+    ```
+    Installs the same CrabNebula-hosted build as the direct download above.
+  </Card>
+  <Card title="Windows: winget" icon="windows">
+    **Coming soon** - the winget manifest is submitted and awaiting
+    moderator approval in the `winget-pkgs` repo. Not yet available via
+    `winget install`.
+  </Card>
+</CardGroup>
 
 ## GPU Acceleration
 

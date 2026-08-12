@@ -33,6 +33,7 @@ description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
   </Card>
 </CardGroup>
 
+Linux 版本與其他平台一樣，皆來自同一個 CrabNebula CDN，提供兩種格式供您選擇。
 Debian/Ubuntu 使用者可以改用 `.deb` 套件，而非 AppImage：
 
 ```bash
@@ -48,6 +49,21 @@ sudo dpkg -i echophrase.deb
 macOS 版本並已通過 Apple 公證，因此安裝時無需任何 Gatekeeper 或 SmartScreen 的
 繞過步驟。所有下載連結皆透過 CrabNebula Cloud 的 CDN 解析至最新版本（目前版本號仍帶有 beta 標記）。
 </Note>
+
+## 套件管理工具
+
+<CardGroup cols={2}>
+  <Card title="macOS：Homebrew" icon="beer">
+    ```bash
+    brew install --cask imperium42/tap/echophrase
+    ```
+    安裝的是與上方直接下載連結相同、由 CrabNebula 託管的版本。
+  </Card>
+  <Card title="Windows：winget" icon="windows">
+    **即將推出** - winget 的套件清單已提交，目前正在 `winget-pkgs`
+    倉庫中等待審核者核准，尚未可透過 `winget install` 安裝。
+  </Card>
+</CardGroup>
 
 ## GPU 加速
 

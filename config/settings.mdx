@@ -75,7 +75,9 @@ Control what happens after a transcription completes.
 - **Format**: Plain Text (all tiers), JSON with custom metadata template <sup>Pro</sup>
 - **Post-record actions** (choose one or more):
   - Copy to Clipboard (default)
-  - Paste at Cursor (all tiers, requires signing in)
+  - Paste at Cursor (free for everyone, but requires signing in - it's the one Free-tier
+    output action gated behind an account rather than Pro; everything else on the
+    Free tier, including transcription itself, stays fully account-free)
   - Save as File <sup>Pro</sup> - configure an auto-save directory and export transcripts, including JSON with custom metadata <sup>Pro</sup>
 
 ## Language
@@ -126,8 +128,8 @@ model. See [CLI](/cli) and [MCP Server](/mcp) for the full tool list and setup.
 ## Data
 
 - **Send anonymous app stats**: toggle anonymous crash reports and usage stats (no audio or text is ever collected). Asked on first run, pre-checked; every event honors it, and `DO_NOT_TRACK=1` overrides it. See [What We Collect](/privacy/telemetry)
-- **Get Data**: GDPR data export (once per 30 days)
-- **Delete Account**: Anonymizes your account data and signs you out
+- **Get Data**: GDPR data export (rate-limited to once every 30 days)
+- **Delete Account**: Anonymizes your account data and signs you out (processed within a separate 30-day SLA - a different 30-day window than the export rate limit above)
 - **Legal**: Links to Terms of Service and Privacy Policy
 
 ## About
