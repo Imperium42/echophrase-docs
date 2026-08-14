@@ -16,12 +16,17 @@ Signing in is entirely optional and only needed for Pro features - the Free tier
 - **Input Device**: pick your microphone, or leave it on System Default
 - **Recording Mode**: **Push to Talk** (default) or **Open Mic** - see
   [Input Modes](/features/modes)
-- **Voice Threshold** (0-100%): the minimum voice level that triggers recording.
-  Use **Test** to watch a live audio meter.
+- **Open Mic Threshold** (0-100%): only shown in **Open Mic** mode. The minimum voice
+  level for open mic to start recording. Use **Test** to watch a live audio meter.
+  Turns red and warns you past 80%, since a high threshold can miss quiet or
+  soft-spoken starts.
 
 ## Recording
 
-- **Max duration**: 5–60 seconds per recording (all tiers)
+- **Max duration**: 5 seconds–5 minutes per recording (default 30 seconds; same
+  ceiling on every tier, no account required to change it). The slider fades from
+  green to yellow to red past 1 minute - transcription isn't streaming, so longer
+  recordings take longer to process and show nothing until they finish.
 - **Remove filler words**: Filter out "umm", "uh", "like", etc. <sup>Pro</sup>
 - **Normalize numbers to digits**: Convert "three" → "3" <sup>Pro</sup>
 - **Append space to incomplete sentences**: Adds a trailing space when a transcription doesn't end with `.`, `!`, or `?`, so you can pause mid-sentence and keep dictating without manually adding a space (on by default)
