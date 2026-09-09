@@ -139,6 +139,69 @@
             ]
           }
         ]
+      },
+      {
+        "language": "zh-CN",
+        "tabs": [
+          {
+            "tab": "文档",
+            "groups": [
+              {
+                "group": "开始使用",
+                "pages": [
+                  "zh-CN/introduction",
+                  "zh-CN/quickstart",
+                  "zh-CN/download",
+                  "zh-CN/beta",
+                  "zh-CN/requirements",
+                  "zh-CN/benchmarks"
+                ]
+              },
+              {
+                "group": "功能",
+                "pages": [
+                  "zh-CN/features/transcription",
+                  "zh-CN/features/hotkeys",
+                  "zh-CN/features/modes",
+                  "zh-CN/features/offline",
+                  "zh-CN/features/custom-models"
+                ]
+              },
+              {
+                "group": "隐私",
+                "pages": [
+                  "zh-CN/privacy",
+                  "zh-CN/privacy/telemetry"
+                ]
+              },
+              {
+                "group": "CLI 与 MCP",
+                "pages": [
+                  "zh-CN/cli",
+                  "zh-CN/mcp",
+                  "zh-CN/security"
+                ]
+              },
+              {
+                "group": "配置",
+                "pages": [
+                  "zh-CN/config/settings",
+                  "zh-CN/config/models",
+                  "zh-CN/config/gpu"
+                ]
+              },
+              {
+                "group": "疑难解答",
+                "pages": [
+                  "zh-CN/troubleshooting/common-issues",
+                  "zh-CN/troubleshooting/permissions",
+                  "zh-CN/troubleshooting/gpu",
+                  "zh-CN/troubleshooting/audio"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },

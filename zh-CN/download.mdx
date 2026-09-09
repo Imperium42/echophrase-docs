@@ -1,0 +1,94 @@
+---
+title: 下载
+description: 下载适用于 Windows、macOS 或 Linux 的 Echophrase
+---
+
+# 下载 Echophrase
+
+取得适用于您平台的最新版本。
+
+## 系统需求
+
+| 平台 | 最低需求 | 建议配备 |
+|------|---------|---------|
+| **Windows** | Windows 10+ | Windows 11 |
+| **macOS** | macOS 13.3+（仅 Apple Silicon） | macOS 14+ |
+| **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
+| **内存** | 4 GB | 8 GB+ |
+| **GPU** | 无（CPU 即可） | Windows 上的 DirectX 12 GPU；macOS 上的 Apple Silicon（Metal） |
+
+## 下载链接
+
+最新版本可于 [echophrase.com/download](https://echophrase.com/download) 取得，会自动检测您的平台。
+
+<CardGroup cols={3}>
+  <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64">
+    Windows 10/11 (x64)
+  </Card>
+  <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/dmg-aarch64">
+    macOS 13.3+（Apple Silicon）
+  </Card>
+  <Card title="Linux（Alpha）" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64">
+    AppImage (x64)
+  </Card>
+</CardGroup>
+
+Linux 版本与其他平台一样，皆来自同一个 CrabNebula CDN，提供两种格式供您选择。
+Debian/Ubuntu 用户可以改用 `.deb` 安装包，而非 AppImage：
+
+```bash
+# 下載後執行：
+sudo dpkg -i echophrase.deb
+```
+
+[下载 echophrase.deb（x64）](https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/debian-x86_64)
+
+<Note>
+**Linux 目前处于 Alpha 阶段** - 功能可用但仍有粗糙之处
+（仅支持 CPU），且尚未进行代码签署。Windows 与 macOS 版本皆已完成代码签署，
+macOS 版本并已通过 Apple 公证，因此安装时无需任何 Gatekeeper 或 SmartScreen 的
+绕过步骤。所有下载链接皆通过 CrabNebula Cloud 的 CDN 解析至最新版本（目前版本号仍带有 beta 标记）。
+</Note>
+
+## 包管理器
+
+<CardGroup cols={2}>
+  <Card title="macOS：Homebrew" icon="beer">
+    ```bash
+    brew install --cask imperium42/tap/echophrase
+    ```
+    安装的是与上方直接下载链接相同、由 CrabNebula 托管的版本。
+  </Card>
+  <Card title="Windows：winget" icon="windows">
+    ```bash
+    winget install Imperium42.Echophrase
+    ```
+    安装的是与上方直接下载链接相同、由 CrabNebula 托管的版本。
+  </Card>
+  <Card title="Windows：Scoop" icon="windows">
+    ```bash
+    scoop bucket add echophrase https://github.com/imperium42/scoop-bucket
+    scoop install echophrase
+    ```
+    安装的是与上方直接下载链接相同、已签署的版本。Echophrase 内置的更新程序
+    不会干扰 Scoop，请改用 `scoop update echophrase` 更新。
+  </Card>
+</CardGroup>
+
+## GPU 加速
+
+Echophrase 会在首次启动时自动检测最快的可用设备 - 您无需进行任何设置，
+也不需要安装任何驱动程序。
+
+- **Windows**：在任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm）上
+  使用 DirectML。内置于 Windows，无需安装。
+- **macOS**：在 Apple Silicon、macOS 13.3+ 上使用 Metal 加速。
+- **Linux**：CPU。GPU 加速已列入规划。
+
+### Linux 目前限制
+
+- **仅支持 CPU** - GPU（CUDA）加速将于日后版本推出。
+- **尚未支持全局快捷键绑定** - 请改用「开放麦克风」模式（设置 → 音频输入）。
+
+请参阅[系统需求](/zh-CN/requirements)以查看硬件建议与模型支持表格。
+Windows 上的 NVIDIA 用户可于「设置 → GPU 加速」选择激活 CUDA。

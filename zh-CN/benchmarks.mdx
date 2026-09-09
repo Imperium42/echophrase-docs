@@ -1,0 +1,64 @@
+---
+title: 基准测试
+description: 实测资源用量 - 安装大小、内存、GPU 功耗与 VRAM - 附完整测试方法
+---
+
+# 基准测试
+
+Echophrase 以 **Tauri + Rust** 打造，而非 Electron - 我们实际测量了这带来的
+差异。这些是第一方数据，但我们诚实呈现：凡属估计值或间接比较，都会明确说明。
+
+## 摘要
+
+于 2026-07-06 测量，加载 **NVIDIA Parakeet-TDT 0.6B v3**
+（默认模型）：
+
+| 阶段 | GPU 功耗 | GPU VRAM | 内存 | CPU |
+|------|----------|----------|--------|-----|
+| GPU 闲置（应用程序关闭） | ~21.9 W | 2690 MiB | - | - |
+| 应用程序 + 模型加载待命 | ~35.6 W | 5217 MiB | 226.6 MB | 0% |
+| 单句转录（边际峰值） | **+7.8 W** | **+31 MiB** | **+4.3 MB** | 峰值 5% |
+
+单次转录仅是短暂的微小波动 - 不到一瓦秒与数 MB - 随后一切回到待命状态。
+
+## 安装大小
+
+Windows 应用程序解压后仅 **34.2 MB**。作为对照：任何 Electron 应用在加入任何
+代码之前，就先背负 **约 200 MB 的运行环境**（内置 Chromium + Node + V8）-
+Echophrase 的完整安装比这个「空底盘」还小约 **6 倍**。实际的 Electron 应用
+安装后通常达 300-500 MB。
+
+Electron 运行环境数据来源（2026 年独立框架比较，非我们自行测量）：
+[Tech Insider](https://tech-insider.org/tauri-vs-electron-2026/)、
+[Hopp](https://www.gethopp.app/blog/tauri-vs-electron)、
+[codenote.net](https://codenote.net/en/posts/famous-electron-apps-2026-research/)。
+
+## 内存行为：不是泄漏
+
+前几次转录后 RAM 与 VRAM 会上升（226.6 → 390.7 MB RAM），看起来像内存泄漏。
+我们做了压力测试：不重启连续再转录约 5 句后，RAM 仅从 385.31 MB 变为
+385.48 MB，VRAM 维持持平。
+
+| | 内存 | GPU VRAM |
+|---|--------|----------|
+| 批量测试前 | 385.31 MB | ~5343 MiB |
+| 再约 5 句之后 | 385.48 MB | 5332 MiB |
+
+初始上升是**一次性的暖机缓冲/缓存**，之后便维持持平，不论后续转录多少句 -
+这是可长时间使用的常驻资源足迹，不会随使用时间劣化。
+
+## 测试方法
+
+<Note>
+**硬件：** NVIDIA GeForce RTX 5080。**模型：** NVIDIA Parakeet-TDT 0.6B v3。
+GPU 功耗/VRAM/使用率通过单一常驻的 `nvidia-smi --query-gpu ... -lms` 进程采样；
+内存/CPU 通过 PowerShell `Get-Process`，%CPU 以任务管理器方式计算
+（CPU 秒差 ÷ 实际秒差 ÷ 逻辑内核数）。采样工具的开销很小但不为零 -
+请将这些视为接近实际的估计值，而非实验室隔离数据。GPU 闲置基准也会因
+其他系统活动在不同测试间漂移，因此每次测试都重新取得基准线。
+</Note>
+
+<Tip>
+对数据有疑问，或想在不同硬件上运行测试？
+[加入 Discord](https://discord.com/invite/Er6NUcx)。
+</Tip>

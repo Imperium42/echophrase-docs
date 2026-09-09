@@ -1,0 +1,63 @@
+---
+title: 简介
+description: 隐私优先的桌面语音转文字工具
+---
+
+# 欢迎使用 Echophrase
+
+Echophrase 是一款**隐私优先的桌面应用程序**，使用最先进的 AI 将您的语音转换为文字 - 所有处理都在您的电脑上本地完成。
+
+免费方案提供**100% 离线转录、无限制使用、无需账号** - 安装后即可立即开始听写。只有想使用 Pro 功能时才需要登录。新账号享有 14 天免费 Pro 试用。
+
+## 为什么选择 Echophrase？
+
+<CardGroup cols={2}>
+  <Card title="免费且无限制，无需账号" icon="infinity">
+    无限次转录、一次性下载模型后即可 100% 离线转录、完全免注册。免费方案的转录永远不需要登录或连接至服务器。
+  </Card>
+  <Card title="100% 隐私" icon="lock">
+    您的语音永远不会离开您的电脑。没有云端处理，永远不收集您的音频或转录内容。
+  </Card>
+  <Card title="更换引擎，应用程序不变" icon="microphone">
+    基于特征界面（trait）的可替换转录后端，默认搭载 **NVIDIA Parakeet-TDT 0.6B v3**，并内置支持 52 种语言的 Qwen3-ASR 0.6B，以及适用于低级硬件的 Parakeet Lite 120M。
+  </Card>
+  <Card title="快速、原生、跨平台" icon="feather">
+    以 Tauri + Rust 打造，而非 Electron 封装，在 Windows、macOS、Linux（[Alpha 阶段](/zh-CN/download)）上都是轻量、快速的原生应用程序。
+  </Card>
+  <Card title="GPU 加速" icon="bolt">
+    在 Windows 上通过 DirectML、在 macOS 上通过 Metal 提供快速的本地转录，其他情况则回退至 CPU。
+  </Card>
+  <Card title="随处可用" icon="keyboard">
+    在任何应用程序中输入 - 浏览器、编辑器、聊天软件，无所不能。
+  </Card>
+  <Card title="语法与标点自动校正（Pro）" icon="wand-magic-sparkles">
+    选用的转换模型会自动修正语法与标点，这是许多竞品缺乏的功能。
+  </Card>
+  <Card title="保存为文件与 JSON 导出（Pro）" icon="file-export">
+    自动将转录结果保存为文件，或导出为带有自定义元数据的 JSON，方便串接后续工具。
+  </Card>
+  <Card title="自助式隐私保护" icon="shield-check">
+    完全自助符合 GDPR：您可以随时自行导出数据或删除账号，无需提交客服工单。
+  </Card>
+</CardGroup>
+
+还有大量贴心的客制化选项，从快捷键到赘词过滤、数字范式，详见[设置](/zh-CN/config/settings)。
+
+## 运作方式
+
+1. **按下快捷键**开始录音
+2. **自然说话** - Echophrase 会聆听
+3. **再按一次**，您的话语就会以文字形式出现在光标所在位置
+
+无需复制粘贴。无需切换窗口。只需说话，它就会帮您打字。
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="快速入门" icon="rocket" href="/zh-CN/quickstart">
+    5 分钟内完成设置
+  </Card>
+  <Card title="下载" icon="download" href="/zh-CN/download">
+    取得 Windows、macOS 或 Linux 版本的 Echophrase
+  </Card>
+</CardGroup>

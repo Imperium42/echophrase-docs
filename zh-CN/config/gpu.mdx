@@ -1,0 +1,49 @@
+---
+title: GPU 加速
+description: Echophrase 如何为转录选择最快的设备
+---
+
+# GPU 加速
+
+Echophrase 使用 ONNX Runtime 的自动设备选择功能，在运行时选择最快的可用硬件
+进行转录。**您无需进行任何设置** - 应用程序会在首次启动时检测您的 GPU 并
+自动使用它。
+
+## 支持的硬件
+
+| 平台 | 默认加速器 | 所需条件 |
+|------|---------|---------|
+| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel） - 无需安装 |
+| **Windows（Copilot+ PC）** | NPU | Snapdragon X 或 Intel Core Ultra - 自动选择 |
+| **macOS** | CoreML（Metal） | Apple Silicon（M1+），macOS 13.3+ |
+| **Linux / WSL** | CPU | GPU 加速已列入规划 |
+
+## CUDA（选用，Windows + NVIDIA）
+
+Windows 上默认使用 DirectML，因为它内置于操作系统，可在所有现代 GPU 上运行
+（不分品牌），无需对齐驱动程序与 Toolkit 版本。
+
+若您已安装 **CUDA Toolkit 13.0+** 与 **cuDNN 9.19+**，可于「**设置 → GPU
+加速**」选择激活 CUDA 运行提供者。Echophrase 会将 CUDA 运行环境以独立插件
+下载（约 650 MB），并在重新启动后激活。这完全是选用功能：不激活即维持
+DirectML。
+
+已发布的 Linux 版本仅支持 CPU。
+
+## 验证 GPU 使用
+
+1. 打开 Echophrase 设置
+2. 查看 **GPU 加速** - 最上方会显示目前使用的设备
+   （例如：「目前使用：Using DirectML (NVIDIA GeForce RTX 3080)」）
+3. 转录一个片段并确认转录速度很快
+
+如果目前使用的设备显示「Using CPU」但您有安装 DirectX 12 GPU，请查看
+[GPU 故障排除](/zh-CN/troubleshooting/gpu)。
+
+## 故障排除
+
+如果 GPU 加速无法运作：
+
+- 将显卡驱动程序更新至供应商提供的最新版本（NVIDIA / AMD / Intel）
+- 确认您的 GPU 支持 DirectX 12（大多数 2015 年后推出的显卡都支持）
+- 查看 [GPU 故障排除](/zh-CN/troubleshooting/gpu) 以获得特定平台的协助

@@ -66,3 +66,4 @@ Reference: https://mintlify.com/docs/content/components
 
 1. Create `.mdx` file with frontmatter (`title`, `description`)
 2. Add page path to `docs.json` navigation under appropriate group
+3. Create the `zh-Hant/` and `zh-CN/` twins of the page (same path under each language dir) and add both to their language's navigation in `docs.json` - the three page lists must mirror each other page-for-page

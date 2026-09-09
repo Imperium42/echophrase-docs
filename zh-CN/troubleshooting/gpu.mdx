@@ -1,0 +1,65 @@
+---
+title: GPU 故障排除
+description: 修复 DirectML 与 GPU 加速问题
+---
+
+# GPU 故障排除
+
+GPU 加速问题的解决方案。
+
+## GPU 未检测到
+
+Echophrase 会在运行时自动检测最快的可用 GPU。如果**设置 → GPU 加速**在
+有 DirectX 12 GPU 的机器上显示「Using CPU」，请按以下步骤检查。
+
+### 更新显卡驱动程序
+
+大多数 GPU 检测问题都源自过时的驱动程序。请从显卡供应商安装最新版本：
+
+- **NVIDIA**：[GeForce / Studio 驱动程序](https://www.nvidia.com/Download/index.aspx)
+- **AMD**：[Adrenalin](https://www.amd.com/en/support)
+- **Intel**：[Arc / Iris 驱动程序](https://www.intel.com/content/www/us/en/download-center/home.html)
+
+更新后请重新启动电脑并重新启动 Echophrase。
+
+### 确认 DirectX 12 支持
+
+DirectML 需要 DirectX 12。按 **Win + R**，输入 `dxdiag`，然后查看
+**显示**标签页 - 在「驱动程序」项目下，**功能等级**这一行应包含 `12_0`
+或更高。约 2015 年后推出的任何 GPU 都应符合条件。
+
+### 想使用 CUDA？
+
+Windows 上默认使用 DirectML，无需任何设置。若您已安装 **CUDA Toolkit 13.0+**
+与 **cuDNN 9.19+**，可于「**设置 → GPU 加速**」选择激活 CUDA 运行提供者：
+Echophrase 会下载 CUDA 运行环境插件（约 650 MB），重新启动后生效。
+即使不使用 CUDA，也一样能获得 GPU 加速。
+
+## GPU 已检测但未使用
+
+打开「**设置 → GPU 加速**」并确认：
+
+1. 已选择「**自动（推荐）**」 - 这让 Echophrase 在工作阶段开始时选择最快
+   的设备。
+2. 顶部的内嵌状态显示您的 GPU（例如：「目前使用：Using DirectML
+   (NVIDIA GeForce RTX 3080)」）。
+
+如果状态仍显示「Using CPU」，更新驱动程序后重新启动应用程序。运行提供者
+是在工作阶段启动时选择一次。
+
+## 内存不足错误
+
+如果出现 GPU 内存不足的错误：
+
+1. 改用较小的模型 - 从 **Parakeet-TDT 0.6B v3** 切换为
+   **Parakeet Lite**（完整对照表请见[系统需求](/zh-CN/requirements)）
+2. 关闭其他 GPU 密集型应用程序
+3. 重新启动 Echophrase 以释放 GPU 内存
+
+## 性能问题
+
+如果 GPU 转录速度很慢：
+
+1. 确认目前使用的提供者是 DirectML（在 Copilot+ PC 上则为 NPU），而非 CPU
+2. 确保 GPU 在高负载下没有发生热节流
+3. 在较低级硬件上尝试使用 Parakeet Lite，以获得更快的结果

@@ -1,0 +1,77 @@
+---
+title: CLI
+description: 通过命令行访问录音、转码与转录功能
+---
+
+# CLI
+
+Echophrase 随桌面应用程序一同提供一个小型命令行工具，名为 `echophrase`。
+它让您无需打开应用程序窗口即可在终端机中录制麦克风音频、转换音频格式，
+并提供 [MCP 服务器模式](/zh-CN/mcp)，让 Claude Code 等 AI 代理可以直接驱动语音截取。
+
+## 在哪里找到它
+
+CLI 会与桌面应用程序一起安装，无需另外下载。在已安装桌面应用程序的同一台机器上运行：
+
+```bash
+echophrase --help
+```
+
+如果该可执行文件不在您的 `PATH` 中，请在已安装应用程序的目录旁寻找，
+或从 [Echophrase 源代码](https://github.com/dylanh724/echophrase/tree/main/cli) 的 `cli/` 文件夹自行构建。
+
+## 指令
+
+| 指令 | 功能 |
+|------|------|
+| `record` | 在背景开始录制麦克风 |
+| `stop` | 停止目前的录音并完成 WAV 文件 |
+| `status` | 显示目前是否正在录音 |
+| `transcode` | 将现有 WAV 文件转换为 16 kHz 单声道（降混、重采样、范式） |
+| `transcribe` | 使用运行中桌面应用程序已加载的模型转录 WAV 文件 |
+| `mcp` | 以 MCP 服务器模式运行，让 AI 代理可以驱动语音截取 |
+
+## 各指令的需求
+
+**可独立运作，不需要应用程序或账号：**
+
+- `record` / `stop` / `status`：在背景截取麦克风并将 WAV 文件写入磁盘。免费。
+- `transcode`：将现有 WAV 文件范式为转录流程所需的 16 kHz 单声道格式。免费，完全离线运作。
+
+**需要桌面应用程序与 Pro 订阅：**
+
+- `transcribe`：通过仅限本机的连接将 WAV 文件发送给已在运行的桌面应用程序，
+  并返回转录文字。需要：
+  1. Echophrase 桌面应用程序正在运行
+  2. 在设置中激活 **MCP 服务器**开关（默认关闭，需要 Pro）
+  3. 有效的 Pro 订阅
+
+  <Note>
+  若应用程序未运行，`transcribe` 会结束并显示：「The Echophrase desktop
+  app must be running to transcribe. Start the app and try again.」
+  </Note>
+
+## 快速范例
+
+```bash
+# 錄音，然後停止並完成
+echophrase record
+echophrase status
+echophrase stop
+
+# 正規化現有錄音
+echophrase transcode meeting.wav
+
+# 轉錄（需要桌面應用程序執行中、已啟用 MCP 伺服器、需要 Pro）
+echophrase transcribe meeting.16k.wav
+```
+
+每个指令都有各自的详细说明，例如 `echophrase record --help`。
+
+<Card title="MCP 服务器" icon="robot" href="/zh-CN/mcp">
+  在 Claude Code 及其他 AI 代理中使用这些相同的指令。
+</Card>
+
+如需完整的参数说明（背景与前景录音、设备选择、复原卡住的工作阶段等），
+请参阅源代码保存库中的
+[CLI README](https://github.com/dylanh724/echophrase/blob/main/cli/README.md)。

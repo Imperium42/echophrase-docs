@@ -1,0 +1,53 @@
+---
+title: 常见问题
+description: 常见问题的解决方案
+---
+
+# 常见问题
+
+Echophrase 最常见问题的快速修复方法。
+
+## 转录无法运作
+
+<AccordionGroup>
+  <Accordion title="说话后没有出现文字">
+    1. 在设置 → 音频中确认已选择您的麦克风
+    2. 确保 Echophrase 具有麦克风权限
+    3. 尝试提高音量或靠近麦克风
+  </Accordion>
+
+  <Accordion title="检测到错误的语言">
+    1. 打开设置 → 语言
+    2. 明确设置您偏好的语言
+    3. 如果自动检测造成问题，请禁用它
+  </Accordion>
+
+  <Accordion title="转录速度很慢">
+    1. 改用较小的 **Parakeet Lite** 模型
+    2. 确认「设置 → GPU 加速」中的 GPU 加速已激活
+       （Windows 上为 DirectML，Apple Silicon 上为 Metal）
+    3. 关闭其他高资源消耗的应用程序
+  </Accordion>
+</AccordionGroup>
+
+## 应用程序问题
+
+<AccordionGroup>
+  <Accordion title="Echophrase 无法启动">
+    1. 确认它是否已在系统匣中运行
+    2. 尝试以系统管理员身份运行（Windows）
+    3. 在设置 → 高级 → 日志中查看记录
+  </Accordion>
+
+  <Accordion title="快捷键无法使用">
+    1. 确保 Echophrase 正在运行（查看系统匣）
+    2. 检查是否与其他应用程序冲突
+    3. 尝试在设置中将快捷键重置为默认值
+  </Accordion>
+</AccordionGroup>
+
+## 仍需要帮助？
+
+- 查看 [GPU 故障排除](/zh-CN/troubleshooting/gpu)以解决显卡问题
+- 查看[音频故障排除](/zh-CN/troubleshooting/audio)以解决麦克风问题
+- 在 GitHub 上[打开 issue](https://github.com/dylanh724/echophrase/issues)

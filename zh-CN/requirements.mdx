@@ -1,0 +1,59 @@
+---
+title: 系统需求
+description: 系统需求、GPU 支持以及 Echophrase 内置的模型
+---
+
+# 系统需求
+
+Echophrase 可在多种硬件上运行。默认模型针对中阶游戏 GPU 调校；另有更轻量的
+「Lite」变体，可在没有独立 GPU 的设备上顺畅运作。
+
+## 系统
+
+| 资源 | 最低需求 | 建议配备 |
+|------|---------|---------|
+| **操作系统** | Windows 10 (22H2) | Windows 11 |
+| **macOS** | macOS 13.3（仅限 Apple Silicon） | macOS 14+ |
+| **Linux** | Ubuntu 22.04+（仅 CPU） | Ubuntu 24.04+ |
+| **内存** | 4 GB | 8 GB+ |
+| **磁盘空间** | 2 GB 可用 | 4 GB 可用 |
+| **GPU** | 无 - CPU 即可 | Windows 上的 DirectX 12 GPU |
+
+<Note>
+**Linux 目前处于 Alpha 阶段** - 功能可用但仍有粗糙之处（仅支持 CPU，尚无 GPU 加速），
+且尚未进行代码签署。Linux 上也尚未支持全局快捷键，请改用「开放麦克风」模式。
+Windows 与 macOS 皆为完整支持、已完成代码签署的版本。详见[下载页面](/zh-CN/download)。
+</Note>
+
+## GPU 加速
+
+Echophrase 会在首次启动时自动检测最快的可用设备 - 无需任何设置。
+
+| 平台 | 加速方式 | 所需条件 |
+|------|---------|---------|
+| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm） |
+| **macOS** | Metal | Apple Silicon，macOS 13.3+ |
+| **Linux** | CPU | GPU 加速已列入规划 |
+
+<Note>
+Windows 上默认使用 DirectML：内置于操作系统、不分 GPU 品牌皆可运作、
+无需对齐驱动程序 / Toolkit / cuDNN 版本。已安装 CUDA 13.0+ 与 cuDNN 9.19+ 的
+NVIDIA 用户，可于「设置 → GPU 加速」选择激活，详见 [GPU 加速](/zh-CN/config/gpu)。
+</Note>
+
+## 支持的模型
+
+以下数据直接来自桌面应用程序的模型登录表 - 这就是目前实际出货的模型。
+
+| 模型 | 参数量 | 最低 VRAM | 建议 GPU | 实时速度 |
+|------|--------|----------|----------|---------|
+| **Parakeet-TDT 0.6B v3** *（默认）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
+| **Qwen3-ASR 0.6B** *（国际多语言，52 种语言）* | 0.6B | 4 GB | RTX 3060 或更佳 | 2-6× |
+| **Parakeet Lite** | 120M | 无（GPU 可选） | 任何现代 GPU，内置显卡亦可 | 2-5× |
+| **T5-Mini Grammar** *（后处理）* | Mini | - | 任何 GPU | - |
+
+<Tip>
+**更多模型即将推出。** Echophrase 采模型无关架构，因此添加后端无需重写。我们正在评估更多多语言语音模型。
+想投票决定下一个推出的模型吗？
+[加入我们的 Discord](https://discord.com/invite/Er6NUcx)。
+</Tip>
