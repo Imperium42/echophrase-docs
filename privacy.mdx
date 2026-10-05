@@ -5,7 +5,9 @@ description: What Echophrase collects, what it doesn't, and how your data stays 
 
 ## Your voice never leaves your computer
 
-Echophrase runs **entirely on your device**. Your microphone audio is processed by AI models running locally on your GPU - nothing is uploaded, streamed, or sent to any server. Ever.
+Transcription runs **entirely on your device**. Your microphone audio and the text it produces are processed by AI models running locally on your GPU - no audio and no transcript is ever uploaded, streamed, or sent to any server.
+
+That guarantee is about your audio and text, not about the app being silent on the network. Echophrase also downloads models you pick, checks for updates, syncs entitlements if you sign in, and sends anonymous app stats by default (opt-out below). None of those requests contain audio or transcripts - the full host list is [below](#what-the-app-talks-to).
 
 <Card title="We never see your voice or text" icon="shield-halved">
   Audio recordings are deleted immediately after transcription. Transcription text stays in your clipboard or file - we have zero access to it. There is no "cloud processing" option. This is by design.
@@ -22,6 +24,19 @@ Echophrase runs **entirely on your device**. Your microphone audio is processed 
 | IP addresses | **Never stored** |
 | Device fingerprints | **Never** |
 | Cookies | **None** |
+
+## What the app talks to
+
+Transcription never touches the network. These are the only hosts the desktop app contacts - check them against a packet capture if you like:
+
+| Destination | When | Carries audio or text? |
+|------|------|------|
+| `huggingface.co` | Downloading a model you selected | No |
+| `cdn.crabnebula.app` | Update check on launch | No |
+| `api.echophrase.com` | Health check on launch; sign-in and subscription checks (account data only if you sign in) | No |
+| `telemetry.echophrase.com` | Anonymous app stats, on by default (see below) | No |
+| `www.google.com`, `one.one.one.one` | Empty connectivity probe | No |
+| `fonts.googleapis.com`, `fonts.gstatic.com` | Emoji web font for the app window | No |
 
 ## What we do collect
 
