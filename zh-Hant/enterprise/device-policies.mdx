@@ -1,0 +1,72 @@
+---
+title: 裝置原則
+description: 透過登錄機碼、設定描述檔或原則檔在公司裝置上管理 Echophrase
+---
+
+# 裝置原則
+
+IT 部門可在受管理裝置上設定原則。Echophrase 在啟動時讀取一次，先於其他任何設定套用，並向使用者顯示該設定由組織管理，而不是讓他們更改。原則的讀取位置與 Chrome、VS Code 相同，因此可搭配任何 MDM。
+
+<Note>
+裝置原則只控制應用程式行為，無法讀取音訊或逐字稿，它們永遠不會離開裝置。請參閱[隱私](/zh-Hant/privacy)。
+</Note>
+
+## 可用原則
+
+| 鍵 | 類型 | 效果 |
+|----|------|------|
+| `TelemetryEnabled` | 布林值（DWORD 時為 `0`/`1`） | 在此裝置上強制開啟或關閉匿名應用程式統計。「設定 > 資料」中的開關變成唯讀，並說明這是 IT 的決定。 |
+
+更多原則（更新頻道、預填 SSO 網域）已在規劃中，將使用相同位置。
+
+## 設定位置
+
+Echophrase 依下列順序檢查來源，每個鍵取第一個找到的值。
+
+<Tabs>
+  <Tab title="Windows">
+    登錄，全機範圍：
+
+    ```
+    HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Imperium42\Echophrase
+      TelemetryEnabled   REG_DWORD   0
+    ```
+
+    可透過群組原則喜好設定、Intune（登錄 CSP）或任何能寫入 HKLM 的 MDM 部署。
+  </Tab>
+  <Tab title="macOS">
+    網域 `com.imperium42.echophrase` 的受管理偏好設定，以設定描述檔派送：
+
+    ```xml
+    <key>TelemetryEnabled</key>
+    <false/>
+    ```
+
+    使用 Jamf、Kandji、Mosyle 或任何支援自訂設定承載的 MDM 推送描述檔。
+  </Tab>
+  <Tab title="原則檔（所有平台）">
+    位於下列任一位置的 `policies.json` 檔案：
+
+    | 平台 | 路徑 |
+    |------|------|
+    | Windows | `%ProgramData%\Echophrase\policies.json` |
+    | macOS | `/Library/Application Support/Echophrase/policies.json` |
+    | Linux | `/etc/echophrase/policies.json` |
+
+    ```json
+    { "TelemetryEnabled": false }
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+原則檔只能把遙測**關閉**。在 Windows 上 `%ProgramData%` 可由標準使用者寫入，因此絕不允許以檔案凌駕組織原則或使用者本人的選擇來強制開啟遙測。若要強制開啟，請使用登錄或設定描述檔。
+</Warning>
+
+## 原則如何與組織設定合併
+
+1. **裝置原則**永遠優先。
+2. 否則，Teams 管理員設定的**組織原則**套用於該組織成員。
+3. 否則，套用使用者在「**設定 > 資料**」中的個人選擇。
+
+原則於下次啟動時生效。讀取原則前不會送出任何資料，因此被管理為關閉的裝置永遠不會送出任何事件。

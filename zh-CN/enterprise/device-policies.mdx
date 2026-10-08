@@ -1,0 +1,72 @@
+---
+title: 设备策略
+description: 通过注册表项、配置描述文件或策略文件在公司设备上管理 Echophrase
+---
+
+# 设备策略
+
+IT 部门可在受管理设备上设置策略。Echophrase 在启动时读取一次，先于其他任何设置应用，并向用户显示该设置由组织管理，而不是让他们更改。策略的读取位置与 Chrome、VS Code 相同，因此可搭配任何 MDM。
+
+<Note>
+设备策略只控制应用程序行为，无法读取音频或转录文本，它们永远不会离开设备。请参阅[隐私](/zh-CN/privacy)。
+</Note>
+
+## 可用策略
+
+| 键 | 类型 | 效果 |
+|----|------|------|
+| `TelemetryEnabled` | 布尔值（DWORD 时为 `0`/`1`） | 在此设备上强制开启或关闭匿名应用程序统计。"设置 > 数据"中的开关变为只读，并说明这是 IT 的决定。 |
+
+更多策略（更新通道、预填 SSO 域名）已在规划中，将使用相同位置。
+
+## 设置位置
+
+Echophrase 按下列顺序检查来源，每个键取第一个找到的值。
+
+<Tabs>
+  <Tab title="Windows">
+    注册表，全机范围：
+
+    ```
+    HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Imperium42\Echophrase
+      TelemetryEnabled   REG_DWORD   0
+    ```
+
+    可通过组策略首选项、Intune（注册表 CSP）或任何能写入 HKLM 的 MDM 部署。
+  </Tab>
+  <Tab title="macOS">
+    域 `com.imperium42.echophrase` 的受管理首选项，以配置描述文件下发：
+
+    ```xml
+    <key>TelemetryEnabled</key>
+    <false/>
+    ```
+
+    使用 Jamf、Kandji、Mosyle 或任何支持自定义设置负载的 MDM 推送描述文件。
+  </Tab>
+  <Tab title="策略文件（所有平台）">
+    位于下列任一位置的 `policies.json` 文件：
+
+    | 平台 | 路径 |
+    |------|------|
+    | Windows | `%ProgramData%\Echophrase\policies.json` |
+    | macOS | `/Library/Application Support/Echophrase/policies.json` |
+    | Linux | `/etc/echophrase/policies.json` |
+
+    ```json
+    { "TelemetryEnabled": false }
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+策略文件只能把遥测**关闭**。在 Windows 上 `%ProgramData%` 可由标准用户写入，因此绝不允许以文件凌驾组织策略或用户本人的选择来强制开启遥测。若要强制开启，请使用注册表或配置描述文件。
+</Warning>
+
+## 策略如何与组织设置合并
+
+1. **设备策略**永远优先。
+2. 否则，Teams 管理员设置的**组织策略**应用于该组织成员。
+3. 否则，应用用户在"**设置 > 数据**"中的个人选择。
+
+策略于下次启动时生效。读取策略前不会发送任何数据，因此被管理为关闭的设备永远不会发送任何事件。

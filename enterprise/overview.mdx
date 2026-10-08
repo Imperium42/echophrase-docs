@@ -1,0 +1,54 @@
+---
+title: Echophrase for Teams
+description: Seats, roles, SSO and admin controls for organizations - with transcription that still never leaves the device
+---
+
+# Echophrase for Teams
+
+Echophrase for Teams is the Enterprise tier: a per-seat plan for an **organization**. Every seat gets the full Pro feature set, signs in with a work identity, and is managed centrally by the organization's admins.
+
+<Note>
+**Early access.** Teams is rolling out to organizations by invitation. [Contact us](https://echophrase.com/contact) to set up your organization and single sign-on.
+</Note>
+
+## What your team gets
+
+<CardGroup cols={2}>
+  <Card title="Pro for every seat" icon="users">
+    Members get every Pro feature through their organization membership. No personal subscription, no expense reports.
+  </Card>
+  <Card title="Single sign-on" icon="key">
+    Members sign in with your identity provider (Okta first). See [Single Sign-On](/enterprise/sso).
+  </Card>
+  <Card title="Seats and roles" icon="id-badge">
+    Owners and admins invite or remove members and see seat usage. Members just use the app.
+  </Card>
+  <Card title="IT controls" icon="building-shield">
+    Turn telemetry off for the whole organization, or lock it per device with a registry key, a configuration profile or a policy file. See [Device Policies](/enterprise/device-policies).
+  </Card>
+</CardGroup>
+
+## What does not change
+
+Transcription is exactly as private on a Teams seat as on the Free tier. Audio is processed on the member's own GPU and never reaches our servers or the organization. The organization never sees transcript content, and neither do we.
+
+The only per-seat signals the organization can see are the ones needed to run the plan: who holds a seat, their role, and sign-in and seat-change events in the audit log. If your organization turns on usage reporting, it also receives daily totals per member (minutes dictated and word count), and the app tells you so in **Settings > Organization**.
+
+## What members see in the app
+
+- **Sign in with SSO** on the login screen. Enter your work email and Echophrase takes you to your organization's sign-in page.
+- **Settings > Organization** shows the organization name, your role (Member, Admin or Owner), a "Your account is managed by" notice and the seat count.
+- **Settings > Data** shows a small lock on the anonymous app stats toggle when your organization or your IT department has decided it for you.
+- Everything else is the regular Pro experience, including the 90-day offline grace period described in [Working Offline](/features/offline).
+
+## Roles
+
+| Role | Can |
+|------|-----|
+| Member | Use Echophrase with Pro features |
+| Admin | Everything a member can, plus invite and remove members and change roles |
+| Owner | Everything an admin can, plus seat and plan changes |
+
+## Setting up an organization
+
+Today we create the organization for you, set the seat count and connect SSO. Self-serve checkout, email-domain auto-join and SCIM provisioning are on the roadmap. [Contact us](https://echophrase.com/contact) with your identity provider and the number of seats you need.

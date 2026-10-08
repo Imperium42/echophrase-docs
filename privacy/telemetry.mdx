@@ -24,6 +24,8 @@ A launch with either variable set sends nothing **and** does not consume the one
 
 Development builds (`bun run tauri:dev`) never send telemetry at all.
 
+**On a work device or a Teams seat** the decision may already be made for you: a Teams admin can turn telemetry off for the whole organization, and an IT department can force it on or off per device. The toggle then shows a lock and says who decided. See [Device Policies](/enterprise/device-policies).
+
 ## The events
 
 Events are queued locally and sent in batches only while the app is idle (at least 10 minutes since the last recording or transcription), on settings save, and on app exit. Echophrase never makes a telemetry request during or right after a transcription. Each event is a few hundred bytes of metadata.
