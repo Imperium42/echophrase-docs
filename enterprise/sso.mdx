@@ -14,9 +14,9 @@ Teams organizations can sign in through their own identity provider (IdP). Okta 
 3. Your browser opens your organization's sign-in page. Sign in as you normally would, including any second factor your IdP requires.
 4. The browser hands you back to Echophrase. You are signed in and your seat's Pro features are active.
 
-<Tip>
-Echophrase finds your organization from the domain of your email address. If you have a personal account under the same address, SSO still signs you into the organization seat.
-</Tip>
+<Note>
+**Already have an Echophrase account under your work email?** SSO creates a separate account for your organization seat; it does not merge into the Google or magic-link account you signed up with. Cloud-synced settings and any personal Pro subscription stay with the old account. Sign in the old way to reach them, and cancel a personal Pro plan you no longer need. Linking the two identities is on the roadmap.
+</Note>
 
 ## "Your organization has not set up single sign-on yet"
 
@@ -31,6 +31,10 @@ SSO is configured for you during onboarding. You will need:
 - One owner account to receive the organization.
 
 We send you the SAML metadata to paste into the IdP app and verify the round trip with you on a test account before any member signs in. [Contact us](https://echophrase.com/contact) to start.
+
+## Leaving an organization
+
+When an admin removes your seat, suspends you, or the organization itself is suspended, your Pro features fall back to the Free tier or to your own subscription the next time the app syncs entitlements: within a day while online, immediately on relaunch. A device that stays offline keeps the organization tier for up to 90 days, like any Pro grace period.
 
 ## Staying signed in
 

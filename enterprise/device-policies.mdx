@@ -15,7 +15,7 @@ Device policies control app behavior only. They cannot read audio or transcripts
 
 | Key | Type | Effect |
 |-----|------|--------|
-| `TelemetryEnabled` | boolean (`0`/`1` as a DWORD) | Forces anonymous app stats on or off on this device. The toggle in Settings > Data becomes read-only and explains that IT decided it. |
+| `TelemetryEnabled` | boolean (`0`/`1` as a DWORD) | Forces anonymous app stats on or off on this device. The toggle in Settings > Data disappears and a note takes its place saying your IT department turned stats on or off. |
 
 More policies (update channel, pre-filled SSO domain) are planned and will use the same locations.
 
@@ -65,8 +65,9 @@ A policy file can only turn telemetry **off**. On Windows `%ProgramData%` is wri
 
 ## How policies combine with organization settings
 
-1. A **device policy** always wins.
-2. Otherwise an **organization policy** set by your Teams admin applies to members of that organization.
-3. Otherwise the user's own choice in **Settings > Data** applies.
+1. The launch-time kill switches `DO_NOT_TRACK=1` and `ECHOPHRASE_NO_TELEMETRY=1` always turn telemetry off, even over a device policy that forces it on. See [What We Collect](/privacy/telemetry).
+2. Otherwise a **device policy** decides, overriding both the organization and the user.
+3. Otherwise an **organization policy** set by your Teams admin applies to members of that organization. The toggle shows a lock and the organization name.
+4. Otherwise the user's own choice in **Settings > Data** applies.
 
 Policies take effect on the next launch. Nothing is sent before they are read, so a device that is managed off never sends a single event.
