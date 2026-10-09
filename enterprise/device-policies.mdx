@@ -1,0 +1,73 @@
+---
+title: Device Policies
+description: Manage Echophrase on company devices with a registry key, a configuration profile or a policy file
+---
+
+# Device Policies
+
+IT departments can set policies on managed devices. Echophrase reads them once at launch, applies them before anything else, and shows the user that the setting is managed instead of letting them change it. Policies are read from the same kinds of places Chrome and VS Code use, so they fit any MDM.
+
+<Note>
+Device policies control app behavior only. They cannot read audio or transcripts, which never leave the device. See [Privacy](/privacy).
+</Note>
+
+## Available policies
+
+| Key | Type | Effect |
+|-----|------|--------|
+| `TelemetryEnabled` | boolean (`0`/`1` as a DWORD) | Forces anonymous app stats on or off on this device. The toggle in Settings > Data disappears and a note takes its place saying your IT department turned stats on or off. |
+
+More policies (update channel, pre-filled SSO domain) are planned and will use the same locations.
+
+## Where to set them
+
+Echophrase checks the sources in this order and takes the first value it finds for each key.
+
+<Tabs>
+  <Tab title="Windows">
+    Registry, machine-wide:
+
+    ```
+    HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Imperium42\Echophrase
+      TelemetryEnabled   REG_DWORD   0
+    ```
+
+    Deploy with Group Policy Preferences, Intune (registry CSP) or any MDM that writes HKLM.
+  </Tab>
+  <Tab title="macOS">
+    Managed preferences in the domain `com.imperium42.echophrase`, delivered as a configuration profile:
+
+    ```xml
+    <key>TelemetryEnabled</key>
+    <false/>
+    ```
+
+    Push the profile with Jamf, Kandji, Mosyle or any MDM that supports custom settings payloads.
+  </Tab>
+  <Tab title="Policy file (any platform)">
+    A `policies.json` file at one of these locations:
+
+    | Platform | Path |
+    |----------|------|
+    | Windows | `%ProgramData%\Echophrase\policies.json` |
+    | macOS | `/Library/Application Support/Echophrase/policies.json` |
+    | Linux | `/etc/echophrase/policies.json` |
+
+    ```json
+    { "TelemetryEnabled": false }
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+A policy file can only turn telemetry **off**. On Windows `%ProgramData%` is writable by standard users, so a file is never allowed to force telemetry on over an organization policy or the user's own choice. Use the registry or a configuration profile to force it on.
+</Warning>
+
+## How policies combine with organization settings
+
+1. The launch-time kill switches `DO_NOT_TRACK=1` and `ECHOPHRASE_NO_TELEMETRY=1` always turn telemetry off, even over a device policy that forces it on. See [What We Collect](/privacy/telemetry).
+2. Otherwise a **device policy** decides, overriding both the organization and the user.
+3. Otherwise an **organization policy** set by your Teams admin applies to members of that organization. The toggle shows a lock and the organization name.
+4. Otherwise the user's own choice in **Settings > Data** applies.
+
+Policies take effect on the next launch. Nothing is sent before they are read, so a device that is managed off never sends a single event.
