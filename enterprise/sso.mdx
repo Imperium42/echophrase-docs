@@ -1,0 +1,41 @@
+---
+title: Single Sign-On
+description: Sign in to Echophrase with your organization's identity provider
+---
+
+# Single Sign-On
+
+Teams organizations can sign in through their own identity provider (IdP). Okta is supported first; other SAML providers follow. Once SSO is connected, members never create an Echophrase password or use a magic link.
+
+## Signing in as a member
+
+1. Open Echophrase and choose **Sign in with SSO** on the login screen.
+2. Enter your **work email** and choose **Continue with SSO**.
+3. Your browser opens your organization's sign-in page. Sign in as you normally would, including any second factor your IdP requires.
+4. The browser hands you back to Echophrase. You are signed in and your seat's Pro features are active.
+
+<Note>
+**Already have an Echophrase account under your work email?** SSO creates a separate account for your organization seat; it does not merge into the Google or magic-link account you signed up with. Cloud-synced settings and any personal Pro subscription stay with the old account. Sign in the old way to reach them, and cancel a personal Pro plan you no longer need. Linking the two identities is on the roadmap.
+</Note>
+
+## "Your organization has not set up single sign-on yet"
+
+Echophrase did not find an SSO connection for your email domain. Either your organization has not connected its IdP yet, or you typed a personal address. Ask your admin, or sign in another way if your organization allows it.
+
+## For admins: connecting your IdP
+
+SSO is configured for you during onboarding. You will need:
+
+- An Okta (or other SAML 2.0) application you can create in your IdP admin console.
+- The email domains your members use, for example `acme.com`.
+- One owner account to receive the organization.
+
+We send you the SAML metadata to paste into the IdP app and verify the round trip with you on a test account before any member signs in. [Contact us](https://echophrase.com/contact) to start.
+
+## Leaving an organization
+
+When an admin removes your seat, suspends you, or the organization itself is suspended, your Pro features fall back to the Free tier or to your own subscription the next time the app syncs entitlements: within a day while online, immediately on relaunch. A device that stays offline keeps the organization tier for up to 90 days, like any Pro grace period.
+
+## Staying signed in
+
+An SSO session behaves like any Echophrase sign-in: it refreshes in the background while you are online and keeps working offline under the same 90-day grace period as Pro. See [Working Offline](/features/offline). Signing out of your IdP does not sign you out of Echophrase until the session expires or an admin removes your seat.

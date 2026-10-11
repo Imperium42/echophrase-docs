@@ -49,6 +49,14 @@
                 ]
               },
               {
+                "group": "Teams & Enterprise",
+                "pages": [
+                  "enterprise/overview",
+                  "enterprise/sso",
+                  "enterprise/device-policies"
+                ]
+              },
+              {
                 "group": "CLI & MCP",
                 "pages": [
                   "cli",
@@ -112,6 +120,14 @@
                 ]
               },
               {
+                "group": "團隊與企業",
+                "pages": [
+                  "zh-Hant/enterprise/overview",
+                  "zh-Hant/enterprise/sso",
+                  "zh-Hant/enterprise/device-policies"
+                ]
+              },
+              {
                 "group": "CLI 與 MCP",
                 "pages": [
                   "zh-Hant/cli",
@@ -172,6 +188,14 @@
                 "pages": [
                   "zh-CN/privacy",
                   "zh-CN/privacy/telemetry"
+                ]
+              },
+              {
+                "group": "团队与企业",
+                "pages": [
+                  "zh-CN/enterprise/overview",
+                  "zh-CN/enterprise/sso",
+                  "zh-CN/enterprise/device-policies"
                 ]
               },
               {
