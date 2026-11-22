@@ -5,7 +5,7 @@ description: How Echophrase behaves without an internet connection
 
 # Working Offline
 
-Echophrase is built to work offline - including in airplane mode. The **Free tier offers 100% offline transcription and is unlimited** - no account and no internet connection required, ever. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
+Echophrase is built to work offline - including in airplane mode. Echophrase is free and open source, and transcription is **100% offline and unlimited** - no account and no internet connection required, ever. Transcription itself never needs the internet - audio is processed locally on your GPU, and your voice never leaves your device.
 
 <Note>
 **One exception: the first run.** Models are downloaded on demand, so you need an
@@ -15,7 +15,7 @@ Parakeet-TDT 0.6B v3 is ~2.5 GB; see [Models](/config/models) for the others.
 </Note>
 
 <Note>
-**What about telemetry?** Separately from transcription, Echophrase collects anonymous, non-identifiable usage telemetry by default - things like GPU backend, selected model, and settings/session events, plus crash reports - never audio or transcript content. The consent box is pre-checked on first run, but every event honors your answer, and you can opt out anytime in Settings > Data > "Send anonymous app stats" (or launch with `DO_NOT_TRACK=1`). See the full event-by-event list at [What We Collect](/privacy/telemetry). With no internet connection (airplane mode included), there's nothing to send either way - transcription works exactly the same.
+**What about telemetry?** Separately from transcription, Echophrase collects anonymous, non-identifiable usage telemetry by default in official builds (builds compiled from source send nothing) - things like GPU backend, selected model, and settings/session events, plus crash reports - never audio or transcript content. The consent box is pre-checked on first run, but every event honors your answer, and you can opt out anytime in Settings > Data > "Send anonymous app stats" (or launch with `DO_NOT_TRACK=1`). See the full event-by-event list at [What We Collect](/privacy/telemetry). With no internet connection (airplane mode included), there's nothing to send either way - transcription works exactly the same.
 </Note>
 
 ## What Works Offline
@@ -35,42 +35,17 @@ Parakeet-TDT 0.6B v3 is ~2.5 GB; see [Models](/config/models) for the others.
   </Card>
 </CardGroup>
 
-There is nothing to verify, ever: the Free tier has no account, no login, no grace period, and no expiry. Transcription never contacts our servers, so there is no online requirement to fall out of compliance with. If you never sign in, this entire page could be one sentence: **it just works, offline, forever.**
+There is nothing to verify, ever: Echophrase has no account, no login, no license check, and no expiry. Transcription never contacts any server, so there is no online requirement to fall out of compliance with. **It just works, offline, forever.**
 
-## Pro Subscriptions & Offline (Pro Only)
+## What Needs a Connection
 
-If you've signed in for **Pro**, the app refreshes your entitlements online roughly once a day, silently in the background. If your device stays fully offline, Pro features keep working for a **90-day offline grace period**. Past that, the app simply runs as the (still unlimited) Free tier until you reconnect - nothing is deleted, your account stays active, and your subscription is not cancelled. Why 90 days? It's long enough for travel, outages, and air-gapped setups, while keeping entitlement state honest - and it applies only to Pro.
+Only a few things use the internet, and none of them touch your audio or transcripts:
 
-You can sign in with email (<Tooltip tip="A one-time sign-in link emailed to you - no password to create, remember, or leak.">magic link</Tooltip>) or Google. Once signed in, your <Tooltip tip="A background credential that keeps you signed in without re-entering your magic link or re-authenticating with Google. Valid for 30 days from your last successful reconnect.">refresh token</Tooltip> stays valid for 30 days - reconnect within that window and you're kept signed in silently. Past 30 days offline, you'll need to sign in again (your 90-day Pro grace period is a separate clock - the two don't have to line up).
+- Downloading a model you pick (from Hugging Face), once per model
+- The update check on launch (it talks to the update CDN directly)
+- Anonymous app stats, official builds only, if you allow them
 
-<Tip>
-  Reconnecting and signing in restores your paid entitlements **immediately** - no waiting, no re-purchase, no support ticket.
-</Tip>
-
-## What You Won't Lose
-
-**On the Free tier: nothing - there is no account or server dependency to lose.** For Pro subscribers past the 90-day grace period:
-
-<Warning>
-  Going past the 90-day Pro grace period **never** deletes your data, locks you out, or wipes your settings.
-</Warning>
-
-- Your transcriptions and any local content remain intact
-- Your account stays active
-- Your subscription is not cancelled
-- Your settings, hotkeys, and downloaded models are untouched
-
-The only thing that changes is which Pro-only features are available, and that reverses the moment you sign in again.
-
-## Cloud-Only Features
-
-A few features intentionally require a connection because they sync with our servers:
-
-- Cloud sync of application settings (Pro, opt-in - settings only, never audio or transcriptions)
-- Account management and billing
-- Subscription tier upgrades / downgrades
-
-These will simply be unavailable when offline. They do not affect transcription itself.
+Everything else - transcription, hotkeys, settings, paste-at-cursor, switching between downloaded models - works with no connection at all.
 
 ## See Also
 

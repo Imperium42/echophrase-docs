@@ -21,7 +21,7 @@ echophrase --help
 
 If the binary is not on your `PATH`, look for it next to the installed app,
 or build it yourself from the `cli/` folder of the
-[Echophrase source](https://github.com/dylanh724/echophrase/tree/main/cli).
+[Echophrase source](https://github.com/Imperium42/echophrase/tree/main/cli).
 
 ## Commands
 
@@ -36,20 +36,19 @@ or build it yourself from the `cli/` folder of the
 
 ## What each command needs
 
-**Work standalone, no app or account required:**
+**Work standalone, no app required:**
 
 - `record` / `stop` / `status`: capture the microphone in the background and
-  write a WAV file to disk. Free.
+  write a WAV file to disk.
 - `transcode`: normalizes an existing WAV file to the 16 kHz mono format the
-  transcription pipeline expects. Free, works fully offline.
+  transcription pipeline expects. Works fully offline.
 
-**Requires the desktop app and a Pro subscription:**
+**Requires the desktop app:**
 
 - `transcribe`: sends a WAV file to the already-running desktop app over a
   localhost-only connection and prints back the transcript. This needs:
   1. The Echophrase desktop app running
-  2. The **MCP Server** toggle enabled in Settings (off by default, Pro-gated)
-  3. An active Pro subscription
+  2. The **MCP Server** toggle enabled in Settings (off by default)
 
   <Note>
   If the app is not running, `transcribe` exits with: `The Echophrase desktop
@@ -67,7 +66,7 @@ echophrase stop
 # Normalize an existing recording
 echophrase transcode meeting.wav
 
-# Transcribe (desktop app running, MCP Server enabled, Pro required)
+# Transcribe (desktop app running, MCP Server enabled)
 echophrase transcribe meeting.16k.wav
 ```
 
@@ -79,5 +78,5 @@ Every command has its own detailed help, for example `echophrase record --help`.
 
 For the full flag-by-flag reference (background vs foreground recording,
 device selection, recovering a stuck session, and more), see the
-[CLI README](https://github.com/dylanh724/echophrase/blob/main/cli/README.md)
+[CLI README](https://github.com/Imperium42/echophrase/blob/main/cli/README.md)
 in the source repository.
