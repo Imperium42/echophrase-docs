@@ -6,34 +6,30 @@ description: Echophrase 如何為轉錄選擇最快的裝置
 # GPU 加速
 
 Echophrase 使用 ONNX Runtime 的自動裝置選擇功能，在執行時選擇最快的可用硬體
-進行轉錄。**您無需進行任何設定** — 應用程式會在首次啟動時偵測您的 GPU 並
+進行轉錄。**您無需進行任何設定** - 應用程式會在首次啟動時偵測您的 GPU 並
 自動使用它。
 
 ## 支援的硬體
 
 | 平台 | 預設加速器 | 所需條件 |
 |------|---------|---------|
-| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel）— 無需安裝 |
-| **Windows（Copilot+ PC）** | NPU | Snapdragon X 或 Intel Core Ultra — 自動選擇 |
+| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel）- 無需安裝 |
+| **Windows（Copilot+ PC）** | NPU | Snapdragon X 或 Intel Core Ultra - 自動選擇 |
 | **macOS** | CoreML（Metal） | Apple Silicon（M1+），macOS 13.3+ |
-| **Linux / WSL** | CPU | GPU 加速已列入規劃 |
+| **Linux / WSL** | CPU | 社群支援，需從原始碼建置 |
 
-## CUDA（選用，Windows + NVIDIA）
+## 為什麼沒有 CUDA？
 
 Windows 上預設使用 DirectML，因為它內建於作業系統，可在所有現代 GPU 上執行
-（不分品牌），無需對齊驅動程式與 Toolkit 版本。
+（不分品牌），無需對齊驅動程式與 Toolkit 版本。Echophrase 完全不使用 CUDA，
+您也不需要 CUDA Toolkit 或 cuDNN。NVIDIA GPU 在 Windows 上由 DirectML 完整支援。
 
-若您已安裝 **CUDA Toolkit 13.0+** 與 **cuDNN 9.19+**，可於「**設定 → GPU
-加速**」選擇啟用 CUDA 執行提供者。Echophrase 會將 CUDA 執行環境以獨立外掛
-下載（約 650 MB），並在重新啟動後啟用。這完全是選用功能：不啟用即維持
-DirectML。
-
-已發佈的 Linux 版本僅支援 CPU。
+Linux 版本僅支援 CPU。
 
 ## 驗證 GPU 使用
 
 1. 開啟 Echophrase 設定
-2. 查看 **GPU 加速** — 最上方會顯示目前使用的裝置
+2. 查看 **GPU 加速** - 最上方會顯示目前使用的裝置
    （例如：「目前使用：Using DirectML (NVIDIA GeForce RTX 3080)」）
 3. 轉錄一個片段並確認轉錄速度很快
 

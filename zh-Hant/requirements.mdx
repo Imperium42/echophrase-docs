@@ -14,43 +14,42 @@ Echophrase 可在多種硬體上執行。預設模型針對中階遊戲 GPU 調�
 |------|---------|---------|
 | **作業系統** | Windows 10 (22H2) | Windows 11 |
 | **macOS** | macOS 13.3（僅限 Apple Silicon） | macOS 14+ |
-| **Linux** | Ubuntu 22.04+（僅 CPU） | Ubuntu 24.04+ |
+| **Linux** | 社群支援，需從原始碼建置（僅 CPU） | - |
 | **記憶體** | 4 GB | 8 GB+ |
 | **磁碟空間** | 2 GB 可用 | 4 GB 可用 |
-| **GPU** | 無 — CPU 即可 | Windows 上的 DirectX 12 GPU |
+| **GPU** | 無 - CPU 即可 | Windows 上的 DirectX 12 GPU |
 
 <Note>
-**Linux 目前處於 Alpha 階段** - 功能可用但仍有粗糙之處（僅支援 CPU，尚無 GPU 加速），
-且尚未進行程式碼簽署。Linux 上也尚未支援全域快捷鍵，請改用「開放麥克風」模式。
-Windows 與 macOS 皆為完整支援、已完成程式碼簽署的版本。詳見[下載頁面](/zh-Hant/download)。
+**Linux 為社群支援。** 沒有官方 Linux 下載：請從原始碼建置（僅 CPU，無 GPU 加速）。
+Linux 上的全域快捷鍵可能無法使用，請改用「開放麥克風」模式。
+Windows 與 macOS 才是官方、已完成程式碼簽署的版本。詳見[下載頁面](/zh-Hant/download)。
 </Note>
 
 ## GPU 加速
 
-Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 無需任何設定。
+Echophrase 會在首次啟動時自動偵測最快的可用裝置 - 無需任何設定。
 
 | 平台 | 加速方式 | 所需條件 |
 |------|---------|---------|
 | **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm） |
-| **macOS** | Metal | Apple Silicon，macOS 13.3+ |
-| **Linux** | CPU | GPU 加速已列入規劃 |
+| **macOS** | CoreML / Metal | Apple Silicon，macOS 13.3+ |
+| **Linux** | CPU | 需從原始碼建置 |
 
 <Note>
-Windows 上預設使用 DirectML：內建於作業系統、不分 GPU 品牌皆可運作、
-無需對齊驅動程式 / Toolkit / cuDNN 版本。已安裝 CUDA 13.0+ 與 cuDNN 9.19+ 的
-NVIDIA 使用者，可於「設定 → GPU 加速」選擇啟用，詳見 [GPU 加速](/zh-Hant/config/gpu)。
+Windows 上預設使用 DirectML：內建於作業系統、不分 GPU 品牌皆可運作（NVIDIA、AMD、Intel、Qualcomm），
+除了一般的顯示卡驅動程式外無需其他安裝。沒有 CUDA 路徑。詳見 [GPU 加速](/zh-Hant/config/gpu)。
 </Note>
 
 ## 支援的模型
 
-以下資料直接來自桌面應用程式的模型登錄表 — 這就是目前實際出貨的模型。
+以下資料直接來自桌面應用程式的模型登錄表 - 這就是目前實際出貨的模型。
 
 | 模型 | 參數量 | 最低 VRAM | 建議 GPU | 即時速度 |
 |------|--------|----------|----------|---------|
 | **Parakeet-TDT 0.6B v3** *（預設）* | 0.6B | 6 GB | RTX 3080 或更佳 | 12× |
-| **Qwen3-ASR 0.6B** *（國際多語言，52 種語言）* | 0.6B | 4 GB | RTX 3060 或更佳 | 2–6× |
-| **Parakeet Lite** | 120M | 無（GPU 可選） | 任何現代 GPU，內建顯卡亦可 | 2–5× |
-| **T5-Mini Grammar** *（後處理）* | Mini | — | 任何 GPU | — |
+| **Qwen3-ASR 0.6B** *（國際多語言，52 種語言）* | 0.6B | 4 GB | RTX 3060 或更佳 | 2-6× |
+| **Parakeet Lite** | 120M | 無（GPU 可選） | 任何現代 GPU，內建顯卡亦可 | 2-5× |
+| **T5-Mini Grammar** *（後處理）* | Mini | - | 任何 GPU | - |
 
 <Tip>
 **更多模型即將推出。** Echophrase 採模型無關架構，因此新增後端無需重寫。我們正在評估更多多語言語音模型。

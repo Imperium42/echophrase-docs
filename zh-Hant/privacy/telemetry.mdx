@@ -3,7 +3,7 @@ title: 我們收集哪些資料
 description: Echophrase 傳送的每一個匿名遙測事件，逐項列出屬性，以及如何全部關閉。
 ---
 
-Echophrase 會在首次啟動時詢問是否傳送匿名應用程式統計，該選項預設為勾選。本頁完整列出勾選後會傳送的所有內容。這裡沒有任何省略：若某個事件未列於本頁，應用程式就不會傳送它。
+Echophrase 會在首次啟動時詢問是否傳送匿名應用程式統計，該選項預設為勾選（僅限官方建置版本 - 從原始碼建置的版本絕不會傳送任何資料）。本頁完整列出勾選後會傳送的所有內容。這裡沒有任何省略：若某個事件未列於本頁，應用程式就不會傳送它。
 
 <Card title="每個事件都遵守您的選擇" icon="shield-halved">
   沒有例外。關閉此設定後，Echophrase 什麼都不會傳送 - 連安裝數統計也不會。您選擇退出後唯一離開您裝置的，是一個 `telemetry_disabled` 通知，讓我們的儀表板停止將您計為活躍使用者。
@@ -22,7 +22,7 @@ ECHOPHRASE_NO_TELEMETRY=1 echophrase   # 我們自己的變數，若您想更明
 
 設定任一變數啟動時不會傳送任何資料，**且**不會消耗一次性的首次啟動標記，因此之後的正常啟動仍會被正確計數。
 
-開發版建置（`bun run tauri:dev`）完全不會傳送遙測。
+從原始碼建置的版本（包括 `bun run tauri:dev` 與 fork）完全不會傳送遙測：遙測僅在官方發布建置中才會編譯進去。
 
 ## 事件清單
 
@@ -33,10 +33,10 @@ ECHOPHRASE_NO_TELEMETRY=1 echophrase   # 我們自己的變數，若您想更明
 | `first_launch` | `arch`（x86_64/aarch64） | 機器上首次啟動，在您回答同意選項後（一生一次，以本機標記檔記錄） |
 | `app_updated` | `from`、`to`（版本字串） | 更新後的首次啟動 |
 | `daily_active` | `recording_mode`（push_to_talk/open_mic）、`arch` | 應用程式啟動，每 24 小時最多一次 |
-| `gpu_backend` | `backend`（cuda/directml/cpu/metal）、`vram_bucket`（&lt;4GB/4-8GB/8-16GB/&gt;16GB/unknown） | 每次工作階段的首次轉錄 |
+| `gpu_backend` | `backend`（directml/cpu/metal）、`vram_bucket`（&lt;4GB/4-8GB/8-16GB/&gt;16GB/unknown） | 每次工作階段的首次轉錄 |
 | `transcription_completed` | `model`、`transform_used`、`paste_at_cursor`、`remove_filler_words`、`gpu_backend`、`processing_ms` | 轉錄完成後 |
 | `transcription_failed` | `model`、`gpu_backend`、`error_category`（分類代碼，絕不含原始錯誤字串） | 轉錄失敗時 |
-| `model_changed` | `model`（例如「distil-large-v3」） | 您儲存模型選擇時 |
+| `model_changed` | `model`（例如「parakeet-tdt-0.6b-v3」） | 您儲存模型選擇時 |
 | `settings_saved` | `output_to`、`recording_mode`、`remove_filler_words`、`use_numeric_digits`、`transform_enabled`、`language` | 您變更上述設定時 |
 | `app_panic` | `location`（相對於原始碼庫的 `src/foo.rs:42`）、`thread`（執行緒名稱） | 應用程式崩潰時（僅正式版建置） |
 | `telemetry_disabled` | _(無)_ | 您選擇退出 - 追蹤停止前的最後一個通知 |
@@ -69,10 +69,10 @@ ECHOPHRASE_NO_TELEMETRY=1 echophrase   # 我們自己的變數，若您想更明
 - **後端**：[Aptabase](https://github.com/aptabase/aptabase)，自架於 `https://telemetry.echophrase.com` - 資料不會流向第三方分析廠商
 - **傳輸**：僅使用 HTTPS（TLS 1.3）
 - **保留期限**：原始事件於一年後刪除
-- **原始碼**：桌面應用程式的 [`src-tauri/src/telemetry/`](https://github.com/Imperium42/echophrase/tree/main/src-tauri/src/telemetry) - 上表與實際傳送事件的程式碼同源
+- **原始碼**：開源儲存庫中的 [`src-tauri/src/telemetry/`](https://github.com/Imperium42/echophrase/tree/main/src-tauri/src/telemetry) - 上表對應實際傳送事件的程式碼，儲存庫中的 [`TELEMETRY.md`](https://github.com/Imperium42/echophrase/blob/main/TELEMETRY.md) 為權威清單
 
 ## 沒有帳號
 
-Echophrase 沒有帳號也無需登入，因此不存在與您相關的個人資料。若您曾在舊版本中註冊帳號，可透過「**設定 > 關於 > 支援**」請求刪除舊帳號資料。
+Echophrase 沒有帳號也無需登入，因此不存在與您相關的個人資料。
 
 概觀請見[隱私與資料](/zh-Hant/privacy)，資料保留、第三方處理者及您的 GDPR/CCPA 權利詳情請見完整的[隱私政策](https://echophrase.com/privacy)。
