@@ -13,9 +13,8 @@ Echophrase 的 CLI 可以以 MCP 服务器模式运行，将录音、状态查�
 
 <Warning>
 `transcribe` 需要 Echophrase 桌面应用程序正在运行，且已在
-**设置 > MCP 服务器**中激活 **MCP 服务器**开关。此开关默认关闭，
-且需要有效的 **Pro** 订阅。其余四个工具（`record`、`stop`、`status`、
-`transcode`）可独立运作，免费，不需要应用程序或账号。
+**设置 > MCP 服务器**中激活 **MCP 服务器**开关。此开关默认关闭。
+其余四个工具（`record`、`stop`、`status`、`transcode`）可独立运作，不需要应用程序。
 </Warning>
 
 ## Claude Code 设置
@@ -40,11 +39,11 @@ Echophrase 的 CLI 可以以 MCP 服务器模式运行，将录音、状态查�
 
 | 工具 | 对应 CLI 指令 | 需求 |
 |------|--------------|------|
-| `record` | `echophrase record` | 无，免费 |
-| `stop` | `echophrase stop` | 无，免费 |
-| `status` | `echophrase status` | 无，免费 |
-| `transcode` | `echophrase transcode` | 无，免费 |
-| `transcribe` | `echophrase transcribe` | 桌面应用程序运行中、已激活 MCP 服务器开关、需要 Pro 订阅 |
+| `record` | `echophrase record` | 无 |
+| `stop` | `echophrase stop` | 无 |
+| `status` | `echophrase status` | 无 |
+| `transcode` | `echophrase transcode` | 无 |
+| `transcribe` | `echophrase transcribe` | 桌面应用程序运行中、已激活 MCP 服务器开关 |
 
 每个工具都与 CLI 指令共用相同的工作阶段与音频逻辑，因此无论是直接
 在终端机操作，还是由代理通过 MCP 调用相同动作，行为都不会有差异。
@@ -55,7 +54,7 @@ Echophrase 的 CLI 可以以 MCP 服务器模式运行，将录音、状态查�
 
 1. 打开 Echophrase 桌面应用程序并确认正在运行
 2. 前往**设置 > MCP 服务器**
-3. 激活开关（需要有效的 Pro 订阅）
+3. 激活开关
 
 <Note>
 桌面应用程序拥有已加载的转录模型，因此在整个工作阶段中都必须保持运行。
