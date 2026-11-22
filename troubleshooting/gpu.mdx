@@ -27,14 +27,14 @@ After updating, restart your machine and relaunch Echophrase.
 ### Confirm DirectX 12 support
 
 DirectML requires DirectX 12. Press **Win + R**, type `dxdiag`, and check
-the **Display** tab — under "Drivers" the **Feature Levels** line should
+the **Display** tab - under "Drivers" the **Feature Levels** line should
 include `12_0` or higher. Any GPU released since ~2015 should qualify.
 
 ## GPU Detected But Not Used
 
 Open **Settings → GPU Acceleration** and confirm:
 
-1. **Auto (Recommended)** is selected — this lets Echophrase pick the
+1. **Auto (Recommended)** is selected - this lets Echophrase pick the
    fastest device at session start.
 2. The inline status at the top shows your GPU (for example:
    "Active: Using DirectML (NVIDIA GeForce RTX 3080)").
@@ -46,7 +46,7 @@ update. The execution provider is selected once at session start.
 
 If you see GPU out-of-memory errors:
 
-1. Use a smaller model — switch from **Parakeet-TDT 0.6B** to **Parakeet
+1. Use a smaller model - switch from **Parakeet-TDT 0.6B** to **Parakeet
    Lite** (see [Requirements](/requirements) for the full matrix)
 2. Close other GPU-intensive applications
 3. Restart Echophrase to free GPU memory

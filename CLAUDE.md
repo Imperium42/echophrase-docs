@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-Mintlify documentation site for [Echophrase](https://github.com/dylanh724/echophrase), a privacy-first desktop speech-to-text application. This is a git submodule of the echophrase-mono monorepo.
+Mintlify documentation site for [Echophrase](https://github.com/Imperium42/echophrase), a privacy-first desktop speech-to-text application. This is a git submodule of the echophrase-mono monorepo.
 
 ## Deployment
 

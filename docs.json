@@ -218,7 +218,7 @@
       "angle": 135
     }
   },
-  "description": "Privacy-first AI dictation for Windows, macOS, and Linux. Speech-to-text runs 100% locally on your GPU - audio never leaves your machine. CLI + MCP for AI agents.",
+  "description": "Free, open-source, privacy-first AI dictation for Windows and macOS. Speech-to-text runs 100% locally - audio never leaves your machine. CLI + MCP for AI agents.",
   "appearance": {
     "default": "system"
   }
