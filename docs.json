@@ -26,7 +26,6 @@
                   "introduction",
                   "quickstart",
                   "download",
-                  "beta",
                   "requirements",
                   "benchmarks"
                 ]
@@ -89,7 +88,6 @@
                   "zh-Hant/introduction",
                   "zh-Hant/quickstart",
                   "zh-Hant/download",
-                  "zh-Hant/beta",
                   "zh-Hant/requirements",
                   "zh-Hant/benchmarks"
                 ]
@@ -152,7 +150,6 @@
                   "zh-CN/introduction",
                   "zh-CN/quickstart",
                   "zh-CN/download",
-                  "zh-CN/beta",
                   "zh-CN/requirements",
                   "zh-CN/benchmarks"
                 ]
