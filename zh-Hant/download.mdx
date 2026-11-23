@@ -11,7 +11,7 @@ Echophrase 免費且開源。取得適用於您平台的最新版本 - 無需帳
 
 | 平台 | 最低需求 | 建議配備 |
 |------|---------|---------|
-| **Windows** | Windows 10+ | Windows 11 |
+| **Windows** | Windows 11（Windows 10 或可執行，但不在官方支援範圍） | Windows 11 |
 | **macOS** | macOS 13.3+（僅 Apple Silicon） | macOS 14+ |
 | **Linux** | 社群支援，需從原始碼建置（僅 CPU） | - |
 | **記憶體** | 4 GB | 8 GB+ |
@@ -23,15 +23,15 @@ Echophrase 免費且開源。取得適用於您平台的最新版本 - 無需帳
 
 <CardGroup cols={2}>
   <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64">
-    Windows 10/11 (x64)
+    Windows 11 (x64)
   </Card>
   <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/dmg-aarch64">
     macOS 13.3+（Apple Silicon）
   </Card>
 </CardGroup>
 
-Windows 與 macOS 版本皆已完成程式碼簽署，macOS 版本並已通過 Apple 公證，因此安裝時無需任何
-Gatekeeper 或 SmartScreen 的繞過步驟。Echophrase 會自動更新（透過 winget、Scoop 或
+Windows 與 macOS 版本皆已完成程式碼簽署，macOS 版本並已通過 Apple 公證，因此 macOS 安裝時無需任何
+Gatekeeper 繞過步驟。Windows 上的新版本仍可能出現 SmartScreen 提示：點選**其他資訊**，再點選**仍要執行**。Echophrase 會自動更新（透過 winget、Scoop 或
 Homebrew 安裝的版本則改由對應的套件管理工具更新）。
 
 <Note>
@@ -43,7 +43,7 @@ Homebrew 安裝的版本則改由對應的套件管理工具更新）。
 ## Linux（社群支援）
 
 **沒有官方 Linux 下載。** Linux 為社群支援且僅支援 CPU：請依照儲存庫中的
-[建置說明](https://github.com/Imperium42/echophrase#building-from-source)從原始碼建置。
+[建置說明](https://github.com/Imperium42/echophrase#build-from-source)從原始碼建置。
 歡迎提交改進 Linux 支援的 pull request。視桌面環境而定，全域快捷鍵綁定可能無法使用 -
 若是如此，請改用「開放麥克風」模式（設定 → 音訊輸入）。
 
@@ -54,13 +54,15 @@ Homebrew 安裝的版本則改由對應的套件管理工具更新）。
     ```bash
     brew install --cask imperium42/tap/echophrase
     ```
-    安裝的是與上方直接下載連結相同、由 CrabNebula 託管的版本。
+    安裝的是與上方直接下載連結相同的已簽署版本，來自
+    [GitHub releases](https://github.com/Imperium42/echophrase-releases/releases)。
   </Card>
   <Card title="Windows：winget" icon="windows">
     ```bash
     winget install Imperium42.Echophrase
     ```
-    安裝的是與上方直接下載連結相同、由 CrabNebula 託管的版本。
+    安裝的是與上方直接下載連結相同的已簽署版本，來自
+    [GitHub releases](https://github.com/Imperium42/echophrase-releases/releases)。
   </Card>
   <Card title="Windows：Scoop" icon="windows">
     ```bash
@@ -78,7 +80,7 @@ Echophrase 會在首次啟動時自動偵測最快的可用裝置 - 您無需進
 也不需要安裝任何驅動程式。
 
 - **Windows**：在任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm）上
-  使用 DirectML。內建於 Windows，無需安裝。
+  使用 DirectML。DirectML 執行階段隨應用程式一併提供，無需安裝。
 - **macOS**：在 Apple Silicon、macOS 13.3+ 上使用 CoreML/Metal 加速。
 - **Linux**：僅支援 CPU。
 

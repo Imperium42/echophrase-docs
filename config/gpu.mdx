@@ -14,14 +14,14 @@ automatically.
 
 | Platform | Default Accelerator | What you need |
 |---|---|---|
-| **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel) - no install |
+| **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel) - bundled, no install |
 | **Windows (Copilot+ PC)** | NPU | Snapdragon X or Intel Core Ultra - auto-selected |
 | **macOS** | CoreML (Metal) | Apple Silicon (M1+), macOS 13.3+ |
 | **Linux / WSL** | CPU | Community-supported, build from source |
 
 ## Why no CUDA?
 
-DirectML is the default on Windows because it ships with the OS and works on
+DirectML is the default on Windows because the app bundles it (DirectML 1.15.4) and it works on
 every modern GPU regardless of vendor - no driver/toolkit version juggling.
 Echophrase does not use CUDA anywhere, and you do not need the CUDA Toolkit or
 cuDNN. NVIDIA GPUs are fully covered by DirectML on Windows.

@@ -59,9 +59,9 @@ Token lifecycle:
   `write_fresh_token()`, which draws 32 random bytes from `rand::thread_rng()`
   and hex-encodes them, on every single call to `start()` - not once at app
   install, not reused across restarts (`src-tauri/src/ipc/mod.rs`).
-- **Written with owner-only file permissions on Unix** (`0o600`) immediately
-  after generation (`src-tauri/src/ipc/mod.rs`). (Windows and macOS
-  currently rely on the per-user profile directory's default ACL rather than
+- **Written with owner-only file permissions on macOS and Linux** (`0o600`)
+  immediately after generation (`src-tauri/src/ipc/mod.rs`). (Windows
+  currently relies on the per-user profile directory's default ACL rather than
   an explicit chmod-equivalent call in this code path - see Limitations
   below.)
 - **Lives at** the same per-user data directory the CLI reads from -
@@ -69,8 +69,7 @@ Token lifecycle:
   The desktop app and the CLI resolve this path independently but identically,
   by design, so neither depends on the other's crate.
 - **Removed when the server stops**, not just left to rot: `stop()` calls
-  `clear_token_best_effort()` before returning (`src-tauri/src/ipc/mod.rs,
-  200-207`), and the same cleanup runs on force-exit. This is the detail worth
+  `clear_token_best_effort()` before returning (`src-tauri/src/ipc/mod.rs`), and the same cleanup runs on force-exit. This is the detail worth
   underlining: a stopped server is **unauthenticatable**, not merely
   unreachable. Even if something cached a valid token from a previous session,
   it stops working the moment the app (or just the toggle) is turned off,
@@ -134,10 +133,10 @@ Verified boundaries of that surface:
 ## Where the audio and the transcript go
 
 Transcription runs inside the already-running desktop app process, using
-whichever backend it already loaded (Candle, ONNX/parakeet-rs) for local
+whichever backend it already loaded (ONNX Runtime) for local
 GPU/CPU inference - the same code path the desktop UI's own dictation feature
 uses. There is no HTTP client in any of the transcription backend
-implementations (`src-tauri/src/transcription/{mod,candle_whisper,onnx_backend,parakeet}.rs`
+implementations (`src-tauri/src/transcription/{mod,backend,onnx_backend}.rs` and `qwen3_asr/`
 contain no networking calls beyond doc-comment URLs), so nothing about the
 audio, its path, or the resulting text is sent to any Echophrase server as
 part of this flow. The only network traffic involved is the loopback HTTP
@@ -159,9 +158,9 @@ and no accounts, and audio never leaves your machine.
   you shouldn't trust this token file to be secret from them either - and
   that's true of basically every local dev tool with a bearer-token-over-
   loopback design, not something unique to Echophrase.
-- **We did not verify Windows/macOS file ACLs.** The `0o600` permission call
-  is `#[cfg(unix)]`-gated (`src-tauri/src/ipc/mod.rs`); on Windows and
-  macOS the token file inherits whatever default permissions your OS applies
+- **We did not verify Windows file ACLs.** The `0o600` permission call
+  is `#[cfg(unix)]`-gated (`src-tauri/src/ipc/mod.rs`), so it applies on macOS
+  and Linux; on Windows the token file inherits whatever default permissions your OS applies
   to files in your per-user data directory, which we have not independently
   audited here.
 - **A stale `"running"` state file can outlive a hard crash.** The state file

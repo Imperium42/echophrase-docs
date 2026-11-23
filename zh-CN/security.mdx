@@ -46,16 +46,16 @@ let std_listener = std::net::TcpListener::bind(&addr)...
 （`src-tauri/src/ipc/server.rs`，`constant_time_eq`）。不需验证的
 `GET /v1/health` 路由只回报应用程序版本 - 从不透露任何关于权杖或用户的
 信息，因此探测这个端口不会得到「应用程序正在运行」以外的任何情报
-（`src-tauri/src/ipc/server.rs, 65-71`）。
+（`src-tauri/src/ipc/server.rs`）。
 
 权杖的生命周期：
 
 - **每次启动服务器都全新产生。** `start()` 每次被调用时都会调用
   `write_fresh_token()`，从 `rand::thread_rng()` 取出 32 个随机字节并
   以十六进位编码 - 不是安装时产生一次，也不会跨重启重复使用
-  （`src-tauri/src/ipc/mod.rs, 176-194`）。
-- **产生后立即以仅拥有者可读写的权限写入**（Unix 上为 `0o600`）
-  （`src-tauri/src/ipc/mod.rs`）。（目前 Windows 与 macOS 依赖的是
+  （`src-tauri/src/ipc/mod.rs`）。
+- **产生后立即以仅拥有者可读写的权限写入**（macOS 与 Linux 上为 `0o600`）
+  （`src-tauri/src/ipc/mod.rs`）。（目前 Windows 依赖的是
   每位用户设置档目录的默认 ACL，而非此程序路径中明确的等效 chmod
   调用 - 详见下方「限制」一节。）
 - **存放位置**与 CLI 读取的相同每位用户数据目录 -
@@ -63,8 +63,7 @@ let std_listener = std::net::TcpListener::bind(&addr)...
   （`src-tauri/src/ipc/paths.rs`）。桌面应用程序与 CLI 各自独立
   解析这个路径，但刻意设计为完全一致，避免任一方依赖另一方的 crate。
 - **服务器停止时即移除**，而非放着不管：`stop()` 在返回前会调用
-  `clear_token_best_effort()`（`src-tauri/src/ipc/mod.rs,
-  200-207`），强制结束时也会运行同样的清除。这一点值得特别强调：
+  `clear_token_best_effort()`（`src-tauri/src/ipc/mod.rs`），强制结束时也会运行同样的清除。这一点值得特别强调：
   停止的服务器是**无法验证**的，而不只是无法连接。即使有东西缓存了
   前一个工作阶段的有效权杖，只要应用程序（或仅是开关）关闭，该权杖
   立刻失效，因为支撑它的权杖文件已不存在，且下次 `start()` 会产生
@@ -118,9 +117,9 @@ MCP 服务器（`echophrase mcp`）仅公开五个工具，通过 `#[tool_router
 ## 音频与转录结果会流向哪里
 
 转录作业在已经运行中的桌面应用程序进程内进行，使用它已加载的后端
-（Candle、ONNX/parakeet-rs）在本机 GPU/CPU 上推理 - 与桌面界面本身的
+（ONNX Runtime）在本机 GPU/CPU 上推理 - 与桌面界面本身的
 听写功能使用完全相同的程序路径。转录后端的任何实作中都没有 HTTP 用户端
-（`src-tauri/src/transcription/{mod,candle_whisper,onnx_backend,parakeet}.rs`
+（`src-tauri/src/transcription/{mod,backend,onnx_backend}.rs` 与 `qwen3_asr/`
 除了文档注解中的网址外，不含任何网络调用），因此在这个流程中，音频、
 路径或最终文字都不会发送到任何 Echophrase 服务器。这里涉及的唯一网络
 流量,就是同一台机器上 CLI/MCP 进程与桌面应用程序之间的 loopback HTTP
@@ -140,9 +139,9 @@ Echophrase 没有服务器也没有账号，音频永远不会离开您的电脑
   进程,那么也不该信任这个权杖文件对它们保密 - 而这其实是几乎所有采用
   「本机权杖 over loopback」设计的开发工具都有的共通事实，并非
   Echophrase 特有。
-- **我们未验证 Windows/macOS 的文件 ACL。** `0o600` 权限设置调用是
-  `#[cfg(unix)]` 条件式编译（`src-tauri/src/ipc/mod.rs`）；在
-  Windows 与 macOS 上，权杖文件继承的是您每位用户数据目录的默认
+- **我们未验证 Windows 的文件 ACL。** `0o600` 权限设置调用是
+  `#[cfg(unix)]` 条件式编译（`src-tauri/src/ipc/mod.rs`），因此适用于 macOS 与 Linux；在
+  Windows 上，权杖文件继承的是您每位用户数据目录的默认
   操作系统权限，我们在此并未独立审核。
 - **硬崩溃可能让过期的「running」状态文件残留。** 用来回报服务器
   「为何」停止服务的状态档（`disabled` / `running`），

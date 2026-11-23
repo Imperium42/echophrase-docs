@@ -12,11 +12,11 @@ Echophrase 可在多种硬件上运行。默认模型针对中阶游戏 GPU 调�
 
 | 资源 | 最低需求 | 建议配备 |
 |------|---------|---------|
-| **操作系统** | Windows 10 (22H2) | Windows 11 |
+| **操作系统** | Windows 11（Windows 10 或可运行，但不在官方支持范围） | Windows 11 |
 | **macOS** | macOS 13.3（仅限 Apple Silicon） | macOS 14+ |
 | **Linux** | 社区支持，需从源代码构建（仅 CPU） | - |
 | **内存** | 4 GB | 8 GB+ |
-| **磁盘空间** | 2 GB 可用 | 4 GB 可用 |
+| **磁盘空间** | 4 GB 可用（默认模型约 2.5 GB） | 8 GB 可用 |
 | **GPU** | 无 - CPU 即可 | Windows 上的 DirectX 12 GPU |
 
 <Note>
@@ -36,7 +36,7 @@ Echophrase 会在首次启动时自动检测最快的可用设备 - 无需任何
 | **Linux** | CPU | 需从源代码构建 |
 
 <Note>
-Windows 上默认使用 DirectML：内置于操作系统、不分 GPU 品牌皆可运作（NVIDIA、AMD、Intel、Qualcomm），
+Windows 上默认使用 DirectML：随应用程序捆绑提供（DirectML 1.15.4）、不分 GPU 品牌皆可运作（NVIDIA、AMD、Intel、Qualcomm），
 除了一般的显卡驱动程序外无需其他安装。没有 CUDA 路径。详见 [GPU 加速](/zh-CN/config/gpu)。
 </Note>
 

@@ -13,14 +13,14 @@ Echophrase 使用 ONNX Runtime 的自動裝置選擇功能，在執行時選擇�
 
 | 平台 | 預設加速器 | 所需條件 |
 |------|---------|---------|
-| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel）- 無需安裝 |
+| **Windows** | DirectML | 任何 DirectX 12 GPU（NVIDIA、AMD、Intel）- 已隨附，無需安裝 |
 | **Windows（Copilot+ PC）** | NPU | Snapdragon X 或 Intel Core Ultra - 自動選擇 |
 | **macOS** | CoreML（Metal） | Apple Silicon（M1+），macOS 13.3+ |
 | **Linux / WSL** | CPU | 社群支援，需從原始碼建置 |
 
 ## 為什麼沒有 CUDA？
 
-Windows 上預設使用 DirectML，因為它內建於作業系統，可在所有現代 GPU 上執行
+Windows 上預設使用 DirectML，因為應用程式已隨附它（DirectML 1.15.4），可在所有現代 GPU 上執行
 （不分品牌），無需對齊驅動程式與 Toolkit 版本。Echophrase 完全不使用 CUDA，
 您也不需要 CUDA Toolkit 或 cuDNN。NVIDIA GPU 在 Windows 上由 DirectML 完整支援。
 

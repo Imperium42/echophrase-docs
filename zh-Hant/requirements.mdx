@@ -12,11 +12,11 @@ Echophrase 可在多種硬體上執行。預設模型針對中階遊戲 GPU 調�
 
 | 資源 | 最低需求 | 建議配備 |
 |------|---------|---------|
-| **作業系統** | Windows 10 (22H2) | Windows 11 |
+| **作業系統** | Windows 11（Windows 10 或可執行，但不在官方支援範圍） | Windows 11 |
 | **macOS** | macOS 13.3（僅限 Apple Silicon） | macOS 14+ |
 | **Linux** | 社群支援，需從原始碼建置（僅 CPU） | - |
 | **記憶體** | 4 GB | 8 GB+ |
-| **磁碟空間** | 2 GB 可用 | 4 GB 可用 |
+| **磁碟空間** | 4 GB 可用（預設模型約 2.5 GB） | 8 GB 可用 |
 | **GPU** | 無 - CPU 即可 | Windows 上的 DirectX 12 GPU |
 
 <Note>
@@ -36,7 +36,7 @@ Echophrase 會在首次啟動時自動偵測最快的可用裝置 - 無需任何
 | **Linux** | CPU | 需從原始碼建置 |
 
 <Note>
-Windows 上預設使用 DirectML：內建於作業系統、不分 GPU 品牌皆可運作（NVIDIA、AMD、Intel、Qualcomm），
+Windows 上預設使用 DirectML：隨應用程式一併提供（DirectML 1.15.4）、不分 GPU 品牌皆可運作（NVIDIA、AMD、Intel、Qualcomm），
 除了一般的顯示卡驅動程式外無需其他安裝。沒有 CUDA 路徑。詳見 [GPU 加速](/zh-Hant/config/gpu)。
 </Note>
 

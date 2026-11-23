@@ -13,11 +13,11 @@ no dedicated GPU at all.
 
 | Resource | Minimum | Recommended |
 |----------|---------|-------------|
-| **OS** | Windows 10 (22H2) | Windows 11 |
+| **OS** | Windows 11 (Windows 10 may work, not officially supported) | Windows 11 |
 | **OS (macOS)** | macOS 13.3 (Apple Silicon only) | macOS 14+ |
 | **OS (Linux)** | Community-supported, build from source (CPU only) | - |
 | **RAM** | 4 GB | 8 GB+ |
-| **Disk** | 2 GB free | 4 GB free |
+| **Disk** | 4 GB free (default model is ~2.5 GB) | 8 GB free |
 | **GPU** | None - CPU works | DirectX 12 GPU on Windows |
 
 <Note>
@@ -39,8 +39,8 @@ is nothing to configure.
 | **Linux** | CPU | Build from source |
 
 <Note>
-DirectML is the Windows default: built into the
-OS, works on any vendor's GPU (NVIDIA, AMD, Intel, Qualcomm), and needs no
+DirectML is the Windows default: bundled with the
+app (DirectML 1.15.4), works on any vendor's GPU (NVIDIA, AMD, Intel, Qualcomm), and needs no
 drivers beyond your normal GPU driver. There is no CUDA path. See
 [GPU Acceleration](/config/gpu).
 </Note>

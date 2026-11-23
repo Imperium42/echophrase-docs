@@ -6,7 +6,7 @@ description: Choose the right transcription model for your hardware
 # Model Selection
 
 Echophrase ships with a small registry of pre-vetted models. The values below
-mirror the desktop app's model registry — they are the exact models you can
+mirror the desktop app's model registry: they are the exact models you can
 pick from in Settings.
 
 ## Available Models
@@ -14,22 +14,22 @@ pick from in Settings.
 | Model | Parameters | Min VRAM | Recommended GPU | Realtime speed |
 |-------|------------|----------|-----------------|----------------|
 | **Parakeet-TDT 0.6B v3** *(default)* | 0.6B | 6 GB | RTX 3080 or better | 12× |
-| **Qwen3-ASR 0.6B** *(international)* | 0.6B | 4 GB | RTX 3060 or better | 2–6× |
-| **Parakeet Lite** | 120M | None (GPU optional) | Any modern GPU, even integrated | 2–5× |
-| **T5-Mini Grammar** *(post-process)* | Mini | — | Any GPU | — |
+| **Qwen3-ASR 0.6B** *(international)* | 0.6B | 4 GB | RTX 3060 or better | 2-6× |
+| **Parakeet Lite** | 120M | None (GPU optional) | Any modern GPU, even integrated | 2-5× |
+| **T5-Mini Grammar** *(post-process)* | Mini | - | Any GPU | - |
 
 ### Language coverage
 
 - **Parakeet-TDT 0.6B v3**: 25 European languages with automatic detection
 - **Qwen3-ASR 0.6B**: **52 languages** including Chinese (Mandarin, Cantonese,
   and 20+ dialects), Japanese, Korean, Arabic, Hindi, Thai, Vietnamese, and
-  the major European languages — with strong mixed English/Chinese
+  the major European languages, with strong mixed English/Chinese
   code-switching in a single sentence
 - **Parakeet Lite**: English only
 
 <Tip>
 **Speak Chinese, Japanese, Korean, or another non-European language?** Pick
-**Qwen3-ASR 0.6B** — it's the only model in the registry that covers Eastern
+**Qwen3-ASR 0.6B**: it's the only model in the registry that covers Eastern
 languages. Echophrase auto-recommends it on non-English systems with a capable
 GPU, and pairs it with an optional Simplified ↔ Traditional Chinese output
 toggle (Settings → Voice Model → Chinese script).
@@ -55,7 +55,7 @@ models in this release.
 1. Open Echophrase settings
 2. Navigate to **Voice Model**
 3. Click **Change** and pick a model
-4. Wait for the download to complete (~1–2 minutes)
+4. Wait for the download to complete (~1-2 minutes)
 
 <Note>
 Models are downloaded once and cached locally. Switching between downloaded

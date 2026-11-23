@@ -11,7 +11,7 @@ Echophrase is free and open source. Get the latest version for your platform - n
 
 | Platform | Minimum | Recommended |
 |----------|---------|-------------|
-| **Windows** | Windows 10+ | Windows 11 |
+| **Windows** | Windows 11 (Windows 10 may work, not officially supported) | Windows 11 |
 | **macOS** | macOS 13.3+ (Apple Silicon only) | macOS 14+ |
 | **Linux** | Community-supported, build from source (CPU only) | - |
 | **RAM** | 4 GB | 8 GB+ |
@@ -23,7 +23,7 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
 
 <CardGroup cols={2}>
   <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64">
-    Windows 10/11 (x64)
+    Windows 11 (x64)
   </Card>
   <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/dmg-aarch64">
     macOS 13.3+ (Apple Silicon)
@@ -31,7 +31,9 @@ The latest builds are available at [echophrase.com/download](https://echophrase.
 </CardGroup>
 
 Windows and macOS builds are code-signed, and macOS builds are notarized with
-Apple, so they install without Gatekeeper or SmartScreen workarounds. Echophrase
+Apple, so macOS installs without Gatekeeper workarounds. On Windows, SmartScreen
+may still show a prompt for a new release: click **More info**, then **Run
+anyway**. Echophrase
 updates itself (installs from winget, Scoop, or Homebrew update through that
 package manager instead).
 
@@ -46,7 +48,7 @@ so Echophrase ships outside the store, signed and notarized instead.
 
 There are **no official Linux downloads**. Linux is community-supported and
 CPU-only: build it from source by following the
-[build instructions](https://github.com/Imperium42/echophrase#building-from-source)
+[build instructions](https://github.com/Imperium42/echophrase#build-from-source)
 in the repository. Pull requests that improve Linux support are welcome. Global
 hotkey bindings may be unavailable depending on your desktop environment - use
 Open Mic mode instead (Settings -> Audio Input) if so.
@@ -58,13 +60,15 @@ Open Mic mode instead (Settings -> Audio Input) if so.
     ```bash
     brew install --cask imperium42/tap/echophrase
     ```
-    Installs the same CrabNebula-hosted build as the direct download above.
+    Installs the same signed build as the direct download above, pulled from
+    [GitHub releases](https://github.com/Imperium42/echophrase-releases/releases).
   </Card>
   <Card title="Windows: winget" icon="windows">
     ```bash
     winget install Imperium42.Echophrase
     ```
-    Installs the same CrabNebula-hosted build as the direct download above.
+    Installs the same signed build as the direct download above, pulled from
+    [GitHub releases](https://github.com/Imperium42/echophrase-releases/releases).
   </Card>
   <Card title="Windows: Scoop" icon="windows">
     ```bash
@@ -82,7 +86,7 @@ Echophrase auto-detects the fastest available device on first launch - you
 don't need to configure anything, and there's no driver setup to do.
 
 - **Windows**: DirectML on any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm).
-  Built into Windows, no install required.
+  The DirectML runtime ships bundled with the app, no install required.
 - **macOS**: CoreML/Metal acceleration on Apple Silicon, macOS 13.3+.
 - **Linux**: CPU only.
 
