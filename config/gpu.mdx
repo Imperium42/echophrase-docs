@@ -7,35 +7,31 @@ description: How Echophrase picks the fastest device for transcription
 
 Echophrase uses ONNX Runtime's automatic device selection to pick the fastest
 available hardware for transcription at runtime. **You don't need to configure
-anything** — the app detects your GPU on first launch and uses it
+anything** - the app detects your GPU on first launch and uses it
 automatically.
 
 ## Supported Hardware
 
 | Platform | Default Accelerator | What you need |
 |---|---|---|
-| **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel) - no install |
+| **Windows** | DirectML | Any DirectX 12 GPU (NVIDIA, AMD, Intel) - bundled, no install |
 | **Windows (Copilot+ PC)** | NPU | Snapdragon X or Intel Core Ultra - auto-selected |
 | **macOS** | CoreML (Metal) | Apple Silicon (M1+), macOS 13.3+ |
-| **Linux / WSL** | CPU | GPU acceleration on the roadmap |
+| **Linux / WSL** | CPU | Community-supported, build from source |
 
-## CUDA (optional, Windows + NVIDIA)
+## Why no CUDA?
 
-DirectML is the default on Windows because it ships with the OS and works on
+DirectML is the default on Windows because the app bundles it (DirectML 1.15.4) and it works on
 every modern GPU regardless of vendor - no driver/toolkit version juggling.
+Echophrase does not use CUDA anywhere, and you do not need the CUDA Toolkit or
+cuDNN. NVIDIA GPUs are fully covered by DirectML on Windows.
 
-If you already have the **CUDA Toolkit 13.0+** and **cuDNN 9.19+** installed,
-you can opt in to the CUDA execution provider from **Settings -> GPU
-Acceleration**. Echophrase downloads the CUDA runtime as a separate plugin
-(~650 MB) and activates it after a restart. It is entirely optional: leaving it
-alone keeps you on DirectML.
-
-The published Linux build is CPU-only.
+The Linux build is CPU-only.
 
 ## Verifying GPU Usage
 
 1. Open Echophrase Settings
-2. Look at **GPU Acceleration** — the top line shows the active device
+2. Look at **GPU Acceleration** - the top line shows the active device
    (for example: "Active: Using DirectML (NVIDIA GeForce RTX 3080)")
 3. Transcribe a clip and confirm the transcription is fast
 

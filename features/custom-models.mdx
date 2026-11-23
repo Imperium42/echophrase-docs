@@ -3,17 +3,16 @@ title: Custom Models
 description: Bring your own ONNX speech-to-text model
 ---
 
-# Custom Models <sup>Pro</sup>
+# Custom Models
 
-Pro subscribers can import their own speech-to-text model instead of using one
+You can import their own speech-to-text model instead of using one
 of the models in Echophrase's built-in registry. This is for advanced users
 who want a specific model - a fine-tune, a niche-language model, or something
 not yet in our registry.
 
 <Note>
-This is a Pro feature. See the [beta page](/beta) for a tier comparison, or
-the [Model Selection](/config/models) page for the bundled models available
-on every tier.
+Custom models are free for everyone. See the [Model Selection](/config/models)
+page for the bundled models.
 </Note>
 
 ## What's an ONNX model?
@@ -113,14 +112,14 @@ mel-spectrogram or log-mel features computed outside the model.
 A second custom model slot - for **Transform** models, which post-process
 transcribed text (grammar correction, custom rewriting rules, and similar) -
 is planned for a future release. Custom Transform models are not yet
-supported; see [Transform Model](/config/settings#transform-model-pro) for
+supported; see [Transform Model](/config/settings#transform-model) for
 the built-in version.
 
 ## Security notes
 
 Custom models run **entirely on your device** through ONNX Runtime, the same
 engine that powers Echophrase's built-in models - nothing about a custom
-model is uploaded or sent to Echophrase's servers.
+model is uploaded or sent anywhere.
 
 That said, please keep a few things in mind:
 

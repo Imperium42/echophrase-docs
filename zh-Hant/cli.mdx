@@ -18,7 +18,7 @@ echophrase --help
 ```
 
 如果該執行檔不在您的 `PATH` 中，請在已安裝應用程式的目錄旁尋找，
-或從 [Echophrase 原始碼](https://github.com/dylanh724/echophrase/tree/main/cli) 的 `cli/` 資料夾自行建置。
+或從 [Echophrase 原始碼](https://github.com/Imperium42/echophrase/tree/main/cli) 的 `cli/` 資料夾自行建置。
 
 ## 指令
 
@@ -33,18 +33,17 @@ echophrase --help
 
 ## 各指令的需求
 
-**可獨立運作，不需要應用程式或帳號：**
+**可獨立運作，不需要應用程式：**
 
-- `record` / `stop` / `status`：在背景擷取麥克風並將 WAV 檔案寫入磁碟。免費。
-- `transcode`：將現有 WAV 檔案正規化為轉錄流程所需的 16 kHz 單聲道格式。免費，完全離線運作。
+- `record` / `stop` / `status`：在背景擷取麥克風並將 WAV 檔案寫入磁碟。
+- `transcode`：將現有 WAV 檔案正規化為轉錄流程所需的 16 kHz 單聲道格式。完全離線運作。
 
-**需要桌面應用程式與 Pro 訂閱：**
+**需要桌面應用程式：**
 
 - `transcribe`：透過僅限本機的連線將 WAV 檔案傳送給已在執行的桌面應用程式，
   並回傳轉錄文字。需要：
   1. Echophrase 桌面應用程式正在執行
-  2. 在設定中啟用 **MCP 伺服器**開關（預設關閉，需要 Pro）
-  3. 有效的 Pro 訂閱
+  2. 在設定中啟用 **MCP 伺服器**開關（預設關閉）
 
   <Note>
   若應用程式未執行，`transcribe` 會結束並顯示：「The Echophrase desktop
@@ -62,7 +61,7 @@ echophrase stop
 # 正規化現有錄音
 echophrase transcode meeting.wav
 
-# 轉錄（需要桌面應用程式執行中、已啟用 MCP 伺服器、需要 Pro）
+# 轉錄（需要桌面應用程式執行中、已啟用 MCP 伺服器）
 echophrase transcribe meeting.16k.wav
 ```
 
@@ -74,4 +73,4 @@ echophrase transcribe meeting.16k.wav
 
 如需完整的參數說明（背景與前景錄音、裝置選擇、復原卡住的工作階段等），
 請參閱原始碼儲存庫中的
-[CLI README](https://github.com/dylanh724/echophrase/blob/main/cli/README.md)。
+[CLI README](https://github.com/Imperium42/echophrase/blob/main/cli/README.md)。

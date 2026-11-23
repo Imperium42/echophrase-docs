@@ -7,37 +7,40 @@ description: Privacy-first speech-to-text for your desktop
 
 Echophrase is a **privacy-first desktop application** that transforms your voice into text using state-of-the-art AI - all processed locally on your machine.
 
-The free tier offers **100% offline transcription, is unlimited, and requires no account** - install, grab a model (a one-time download on first run), and start dictating. Signing in is only needed if you want Pro features. New accounts include a 14-day free Pro trial.
+Echophrase is **free, open-source software** (MPL-2.0) with no account, no sign-in, and no tiers. Every feature is free for everyone, commercial use included. Install, grab a model (a one-time download on first run), and start dictating - transcription works 100% offline after that.
 
 ## Why Echophrase?
 
 <CardGroup cols={2}>
   <Card title="Free & Unlimited, No Account" icon="infinity">
-    Unlimited transcriptions, 100% offline transcription after a one-time model download, zero sign-up. The free tier never requires a login or a server connection for transcription.
+    Unlimited transcriptions, 100% offline after a one-time model download, zero sign-up. Echophrase never needs a login or a server connection.
   </Card>
   <Card title="100% Private" icon="lock">
-    Your audio and transcripts never leave your computer. No cloud transcription, no audio or text collection - ever. Anonymous app stats are separate and opt-out.
+    Your audio and transcripts never leave your computer. No cloud transcription, no audio or text collection - ever. The app has no telemetry and no analytics.
+  </Card>
+  <Card title="Open Source (MPL-2.0)" icon="code-branch">
+    Read it, build it, fork it. The source lives at [github.com/Imperium42/echophrase](https://github.com/Imperium42/echophrase), and contributions are welcome.
   </Card>
   <Card title="Swap the Engine, Keep the App" icon="microphone">
-    Swappable transcription backends built on a trait-based architecture. Ships with **NVIDIA Parakeet-TDT 0.6B v3** by default, plus Qwen3-ASR 0.6B for 52 languages and Parakeet Lite 120M for low-end hardware.
+    Swappable transcription backends built on a trait-based architecture. Ships with **NVIDIA Parakeet-TDT 0.6B v3** by default, plus Qwen3-ASR 0.6B for 52 languages and Parakeet Lite 120M for low-end hardware. You can also bring your own [custom ONNX model](/features/custom-models).
   </Card>
-  <Card title="Fast, Native, Cross-Platform" icon="feather">
-    Built on Tauri + Rust, not Electron. A polished, lightweight, genuinely native app on Windows, macOS, and Linux ([alpha](/download)) with a tiny footprint and instant startup.
+  <Card title="Fast, Native, Lightweight" icon="feather">
+    Built on Tauri + Rust, not Electron. A polished, lightweight, genuinely native app on Windows and macOS (Apple Silicon), with a tiny footprint and instant startup. Linux is community-supported - see [Download](/download).
   </Card>
   <Card title="GPU Accelerated" icon="bolt">
-    Fast on-device transcription via DirectML on Windows, Metal on macOS, with CPU fallback everywhere.
+    Fast on-device transcription via DirectML on Windows and CoreML/Metal on macOS, with CPU fallback everywhere.
   </Card>
   <Card title="Works Anywhere" icon="keyboard">
     Type in any application - browsers, editors, chat apps, you name it.
   </Card>
-  <Card title="Grammar & Punctuation Cleanup (Pro)" icon="wand-magic-sparkles">
+  <Card title="Grammar & Punctuation Cleanup" icon="wand-magic-sparkles">
     Optional transform models automatically clean up grammar and punctuation, something many competitors leave entirely to you.
   </Card>
-  <Card title="Save to File & JSON Export (Pro)" icon="file-export">
-    Auto-save transcripts to a file, or export as JSON with custom metadata for downstream tooling.
+  <Card title="Save to File & JSON Output" icon="file-export">
+    Auto-save transcripts to a file, or output JSON with custom metadata for downstream tooling.
   </Card>
-  <Card title="Self-Serve Privacy" icon="shield-check">
-    Fully self-serve GDPR compliant. Export your data or delete your account yourself, anytime, no support ticket required.
+  <Card title="CLI & MCP for AI Agents" icon="robot">
+    A small command-line tool and MCP server so agents like Claude Code can capture your voice. See [CLI](/cli) and [MCP Server](/mcp).
   </Card>
 </CardGroup>
 
@@ -58,6 +61,12 @@ No copy-paste. No switching windows. Just speak and it types.
     Get up and running in 5 minutes
   </Card>
   <Card title="Download" icon="download" href="/download">
-    Get Echophrase for Windows, macOS, or Linux
+    Get Echophrase for Windows or macOS
+  </Card>
+  <Card title="Source & Contributing" icon="github" href="https://github.com/Imperium42/echophrase">
+    Browse the code, file issues, or send a pull request
+  </Card>
+  <Card title="Support Echophrase" icon="heart" href="https://github.com/sponsors/imperium42">
+    Free forever. If it saves your fingers, you can chip in via GitHub Sponsors
   </Card>
 </CardGroup>

@@ -15,9 +15,8 @@ transcript back without you writing any glue code.
 <Warning>
 `transcribe` requires the Echophrase desktop app to be running, with the
 **MCP Server** toggle enabled in **Settings > MCP Server**. The toggle is
-off by default and requires an active **Pro** subscription. The other four
-tools (`record`, `stop`, `status`, `transcode`) work standalone, free, with
-no app or account needed.
+off by default. The other four tools (`record`, `stop`, `status`,
+`transcode`) work standalone, with no app needed.
 </Warning>
 
 ## Setup for Claude Code
@@ -43,11 +42,11 @@ the tools below become available.
 
 | Tool | Mirrors CLI command | Requirements |
 |------|---------------------|--------------|
-| `record` | `echophrase record` | None, free |
-| `stop` | `echophrase stop` | None, free |
-| `status` | `echophrase status` | None, free |
-| `transcode` | `echophrase transcode` | None, free |
-| `transcribe` | `echophrase transcribe` | Desktop app running, MCP Server toggle enabled, Pro subscription |
+| `record` | `echophrase record` | None |
+| `stop` | `echophrase stop` | None |
+| `status` | `echophrase status` | None |
+| `transcode` | `echophrase transcode` | None |
+| `transcribe` | `echophrase transcribe` | Desktop app running, MCP Server toggle enabled |
 
 Every tool shares the same session and audio logic as the CLI commands, so
 behavior never drifts between using the terminal directly and having an
@@ -59,7 +58,7 @@ To let an agent transcribe audio (not just record and transcode it):
 
 1. Open the Echophrase desktop app and make sure it's running
 2. Go to **Settings > MCP Server**
-3. Enable the toggle (requires an active Pro subscription)
+3. Enable the toggle
 
 <Note>
 The desktop app owns the loaded transcription model, so it must stay running

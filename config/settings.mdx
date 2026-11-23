@@ -7,10 +7,6 @@ description: Configure Echophrase to your preferences
 
 Open settings from the gear icon in the main window. Settings are organized into the following sections.
 
-## Account
-
-Signing in is entirely optional and only needed for Pro features - the Free tier transcribes fully offline with no account. If you do sign in, view your email, linked providers (Google, email), and current plan tier. You can enter a license key, link additional sign-in providers, or sign out.
-
 ## Audio Input
 
 - **Input Device**: pick your microphone, or leave it on System Default
@@ -24,11 +20,11 @@ Signing in is entirely optional and only needed for Pro features - the Free tier
 ## Recording
 
 - **Max duration**: 5 seconds-3 minutes per recording (default 30 seconds; same
-  ceiling on every tier, no account required to change it). The slider fades from
+  ceiling for everyone). The slider fades from
   green to yellow to red past 1 minute - transcription isn't streaming, so longer
   recordings take longer to process and show nothing until they finish.
-- **Remove filler words**: Filter out "umm", "uh", "like", etc. <sup>Pro</sup>
-- **Normalize numbers to digits**: Convert "three" → "3" <sup>Pro</sup>
+- **Remove filler words**: Filter out "umm", "uh", "like", etc.
+- **Normalize numbers to digits**: Convert "three" → "3"
 - **Append space to incomplete sentences**: Adds a trailing space when a transcription doesn't end with `.`, `!`, or `?`, so you can pause mid-sentence and keep dictating without manually adding a space (on by default)
 
 ## Hotkeys
@@ -41,15 +37,15 @@ Set the global **Toggle Recording** hotkey. It works globally whenever the app i
 
 View and change the active transcription model. Shows your detected GPU and the active model. Click **Change** to browse and download other models.
 
-<Note>Available models depend on your tier. See the [beta page](/beta) for a comparison.</Note>
+<Note>Every model is available to everyone. See [Model Selection](/config/models) for what each one is good at.</Note>
 
-## Custom Model <sup>Pro</sup>
+## Custom Model
 
 Bring your own ONNX transcription model - import a local `.onnx` file or pull one straight from a HuggingFace repo URL. Echophrase validates the model before switching to it. See [Custom Models](/features/custom-models) for supported formats and where to find models.
 
-## Transform Model <sup>Pro</sup>
+## Transform Model
 
-Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses the lightweight **T5-Mini Grammar** model (~60 MB), downloaded on demand and run entirely on-device. This is a **Pro-only** feature - the toggle is locked on the Free tier. You can write custom transformation rules or use the default grammar correction.
+Enable an optional post-processing step that applies grammar and punctuation correction to transcriptions. Uses the lightweight **T5-Mini Grammar** model (~60 MB), downloaded on demand and run entirely on-device. You can write custom transformation rules or use the default grammar correction.
 
 ## GPU Acceleration
 
@@ -63,13 +59,11 @@ You can force a specific provider if you need to:
 - **Auto (Recommended)**: Let Echophrase pick the fastest device at session start
 - **DirectML**: Force Windows DirectML (any DirectX 12 GPU)
 - **CoreML**: Force Apple Metal (macOS 13.3+ on Apple Silicon)
-- **CUDA** *(Windows, NVIDIA, opt-in)*: Download the CUDA plugin and force the CUDA provider - requires CUDA Toolkit 13.0+ and cuDNN 9.19+, and a restart
 - **CPU**: Force CPU - useful for battery savings or when the GPU is busy elsewhere
 
-<Note>DirectML covers NVIDIA GPUs on Windows with no driver/toolkit version
-juggling, so it is the default. NVIDIA users with CUDA 13.0+ and cuDNN 9.19+
-installed can opt in to a downloadable CUDA plugin here. See
-[GPU Acceleration](/config/gpu).</Note>
+<Note>DirectML covers NVIDIA, AMD, and Intel GPUs on Windows with no
+driver/toolkit version juggling, so it is the default. There is no CUDA option.
+See [GPU Acceleration](/config/gpu).</Note>
 
 <Note>Changing the active provider requires restarting Echophrase to take effect. The settings UI shows a "Restart to apply" banner when a change needs a relaunch.</Note>
 
@@ -81,21 +75,19 @@ installed can opt in to a downloadable CUDA plugin here. See
 
 Control what happens after a transcription completes.
 
-- **Format**: Plain Text (all tiers), JSON with custom metadata template <sup>Pro</sup>
+- **Format**: Plain Text, or JSON with a custom metadata template
 - **Post-record actions** (choose one or more):
   - Copy to Clipboard (default)
-  - Paste at Cursor (free for everyone, but requires signing in - it's the one Free-tier
-    output action gated behind an account rather than Pro; everything else on the
-    Free tier, including transcription itself, stays fully account-free)
-  - Save as File <sup>Pro</sup> - configure an auto-save directory and export transcripts, including JSON with custom metadata <sup>Pro</sup>
+  - Paste at Cursor
+  - Save as File - configure an auto-save directory and export transcripts, including JSON with custom metadata
 
 ## Language
 
-Choose the UI language. Currently supported: **English** and **Traditional Chinese** (beta).
+Choose the UI language. Currently supported: **English**, **Simplified Chinese**, and **Traditional Chinese** (beta).
 
 ## Customize
 
-Toggle visibility of UI elements <sup>Pro</sup>:
+Toggle visibility of UI elements:
 
 - Show Hotkey Changer
 - Show Transcription Preview
@@ -118,29 +110,18 @@ Scale the entire interface to your preference - useful on high-DPI displays or i
 
 <Note>In rare environments where OS scaling can't be detected reliably, Auto falls back to 100% and the app suggests switching to Manual.</Note>
 
-## Cloud Sync <sup>Pro</sup>
-
-Opt in, per device, to syncing your application settings to our servers so they
-follow you across every machine you sign in on. Off by default. Settings only -
-voice data, audio, and transcriptions never sync, and neither do API keys,
-hardware settings, or local file paths. You can push this device's settings up
-or pull the server's copy down at any time.
-
-## MCP Server <sup>Pro</sup>
+## MCP Server
 
 Enable this toggle to let AI agents (like Claude Code) drive Echophrase's
 recording and transcription through the [CLI's MCP server](/mcp) mode. Off by
-default and requires an active Pro subscription. The desktop app must stay
+default. The desktop app must stay
 running for the whole agent session, since it owns the loaded transcription
 model. See [CLI](/cli) and [MCP Server](/mcp) for the full tool list and setup.
 
 ## Data
 
-- **Send anonymous app stats**: toggle anonymous crash reports and usage stats (no audio or text is ever collected). Asked on first run, pre-checked; every event honors it, and `DO_NOT_TRACK=1` overrides it. See [What We Collect](/privacy/telemetry)
-- **Get Data**: GDPR data export (rate-limited to once every 30 days)
-- **Delete Account**: Anonymizes your account data and signs you out (processed within a separate 30-day SLA - a different 30-day window than the export rate limit above)
 - **Legal**: Links to Terms of Service and Privacy Policy
 
 ## About
 
-View the current app version, check for updates, and access quick links to the website, support, docs, and Discord.
+View the current app version, check for updates, and access quick links to the website, support, docs, Discord, and the [source code](https://github.com/Imperium42/echophrase). Echophrase is free and open source (MPL-2.0); the **Support Us &lt;3** button near the bottom opens [GitHub Sponsors](https://github.com/sponsors/imperium42) if you'd like to chip in.

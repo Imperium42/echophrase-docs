@@ -1,54 +1,51 @@
 ---
 title: 下載
-description: 下載適用於 Windows、macOS 或 Linux 的 Echophrase
+description: 下載適用於 Windows 或 macOS 的 Echophrase，或在 Linux 上從原始碼建置
 ---
 
 # 下載 Echophrase
 
-取得適用於您平台的最新版本。
+Echophrase 免費且開源。取得適用於您平台的最新版本 - 無需帳號或授權金鑰。
 
 ## 系統需求
 
 | 平台 | 最低需求 | 建議配備 |
 |------|---------|---------|
-| **Windows** | Windows 10+ | Windows 11 |
+| **Windows** | Windows 11（Windows 10 或可執行，但不在官方支援範圍） | Windows 11 |
 | **macOS** | macOS 13.3+（僅 Apple Silicon） | macOS 14+ |
-| **Linux** | Ubuntu 22.04+ | Ubuntu 24.04+ |
-| **記憶體** | 4 GB | 8 GB+ |
+| **Linux** | 社群支援，需從原始碼建置（僅 CPU） | - |
+| **記憶體** | 8 GB | 16 GB |
 | **GPU** | 無（CPU 即可） | Windows 上的 DirectX 12 GPU；macOS 上的 Apple Silicon（Metal） |
 
 ## 下載連結
 
 最新版本可於 [echophrase.com/download](https://echophrase.com/download) 取得，會自動偵測您的平台。
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Windows" icon="windows" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/nsis-x86_64">
-    Windows 10/11 (x64)
+    Windows 11 (x64)
   </Card>
   <Card title="macOS" icon="apple" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/dmg-aarch64">
     macOS 13.3+（Apple Silicon）
   </Card>
-  <Card title="Linux（Alpha）" icon="linux" href="https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/appimage-x86_64">
-    AppImage (x64)
-  </Card>
 </CardGroup>
 
-Linux 版本與其他平台一樣，皆來自同一個 CrabNebula CDN，提供兩種格式供您選擇。
-Debian/Ubuntu 使用者可以改用 `.deb` 套件，而非 AppImage：
-
-```bash
-# 下載後執行：
-sudo dpkg -i echophrase.deb
-```
-
-[下載 echophrase.deb（x64）](https://cdn.crabnebula.app/download/imperium42/echophrase/latest/platform/debian-x86_64)
+Windows 與 macOS 版本皆已完成程式碼簽署，macOS 版本並已通過 Apple 公證，因此 macOS 安裝時無需任何
+Gatekeeper 繞過步驟。Windows 上的新版本仍可能出現 SmartScreen 提示：點選**其他資訊**，再點選**仍要執行**。Echophrase 會自動更新（透過 winget、Scoop 或
+Homebrew 安裝的版本則改由對應的套件管理工具更新）。
 
 <Note>
-**Linux 目前處於 Alpha 階段** - 功能可用但仍有粗糙之處
-（僅支援 CPU），且尚未進行程式碼簽署。Windows 與 macOS 版本皆已完成程式碼簽署，
-macOS 版本並已通過 Apple 公證，因此安裝時無需任何 Gatekeeper 或 SmartScreen 的
-繞過步驟。所有下載連結皆透過 CrabNebula Cloud 的 CDN 解析至最新版本（目前版本號仍帶有 beta 標記）。
+**為什麼 Echophrase 不在 Mac App Store 上架？** App Store 應用程式必須在 Apple 的沙盒中執行，
+而沙盒會阻擋 Echophrase 將轉錄文字貼到其他應用程式所需的輔助使用權限。自動貼上是核心功能，
+因此 Echophrase 在商店之外發行，並經過簽署與公證。
 </Note>
+
+## Linux（社群支援）
+
+**沒有官方 Linux 下載。** Linux 為社群支援且僅支援 CPU：請依照儲存庫中的
+[建置說明](https://github.com/Imperium42/echophrase#build-from-source)從原始碼建置。
+歡迎提交改進 Linux 支援的 pull request。視桌面環境而定，全域快捷鍵綁定可能無法使用 -
+若是如此，請改用「開放麥克風」模式（設定 → 音訊輸入）。
 
 ## 套件管理工具
 
@@ -57,13 +54,15 @@ macOS 版本並已通過 Apple 公證，因此安裝時無需任何 Gatekeeper �
     ```bash
     brew install --cask imperium42/tap/echophrase
     ```
-    安裝的是與上方直接下載連結相同、由 CrabNebula 託管的版本。
+    安裝的是與上方直接下載連結相同的已簽署版本，來自
+    [GitHub releases](https://github.com/Imperium42/echophrase-releases/releases)。
   </Card>
   <Card title="Windows：winget" icon="windows">
     ```bash
     winget install Imperium42.Echophrase
     ```
-    安裝的是與上方直接下載連結相同、由 CrabNebula 託管的版本。
+    安裝的是與上方直接下載連結相同的已簽署版本，來自
+    [GitHub releases](https://github.com/Imperium42/echophrase-releases/releases)。
   </Card>
   <Card title="Windows：Scoop" icon="windows">
     ```bash
@@ -77,18 +76,20 @@ macOS 版本並已通過 Apple 公證，因此安裝時無需任何 Gatekeeper �
 
 ## GPU 加速
 
-Echophrase 會在首次啟動時自動偵測最快的可用裝置 — 您無需進行任何設定，
+Echophrase 會在首次啟動時自動偵測最快的可用裝置 - 您無需進行任何設定，
 也不需要安裝任何驅動程式。
 
 - **Windows**：在任何 DirectX 12 GPU（NVIDIA、AMD、Intel、Qualcomm）上
-  使用 DirectML。內建於 Windows，無需安裝。
-- **macOS**：在 Apple Silicon、macOS 13.3+ 上使用 Metal 加速。
-- **Linux**：CPU。GPU 加速已列入規劃。
-
-### Linux 目前限制
-
-- **僅支援 CPU** - GPU（CUDA）加速將於日後版本推出。
-- **尚未支援全域快捷鍵綁定** - 請改用「開放麥克風」模式（設定 → 音訊輸入）。
+  使用 DirectML。DirectML 執行階段隨應用程式一併提供，無需安裝。
+- **macOS**：在 Apple Silicon、macOS 13.3+ 上使用 CoreML/Metal 加速。
+- **Linux**：僅支援 CPU。
 
 請參閱[系統需求](/zh-Hant/requirements)以查看硬體建議與模型支援表格。
-Windows 上的 NVIDIA 使用者可於「設定 → GPU 加速」選擇啟用 CUDA。
+
+## 開源
+
+Echophrase 以 [MPL-2.0](https://github.com/Imperium42/echophrase/blob/main/LICENSE) 授權。
+原始碼、issue 與貢獻指南位於
+[github.com/Imperium42/echophrase](https://github.com/Imperium42/echophrase)。
+如果它成為您工作流程的一部分，歡迎透過
+[GitHub Sponsors](https://github.com/sponsors/imperium42) 支持開發。
