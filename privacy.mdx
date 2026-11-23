@@ -7,7 +7,7 @@ description: What Echophrase collects, what it doesn't, and how your data stays 
 
 Transcription runs **entirely on your device**. Your microphone audio and the text it produces are processed by AI models running locally on your GPU - no audio and no transcript is ever uploaded, streamed, or sent to any server.
 
-That guarantee is about your audio and text, not about the app being silent on the network. Echophrase also downloads models you pick, checks for updates, and, in official builds, sends anonymous app stats if you allow it (see below). None of those requests contain audio or transcripts - the full host list is [below](#what-the-app-talks-to).
+That guarantee is about your audio and text, not about the app being silent on the network. Echophrase also downloads models you pick and, in official builds, checks for updates. None of those requests contain audio or transcripts - the full host list is [below](#what-the-app-talks-to).
 
 <Card title="We never see your voice or text" icon="shield-halved">
   Audio recordings are deleted immediately after transcription. Transcription text stays in your clipboard or file - we have zero access to it. There is no "cloud processing" option. This is by design.
@@ -33,31 +33,19 @@ Transcription never touches the network. These are the only hosts the desktop ap
 |------|------|------|
 | `huggingface.co` | Downloading a model you selected | No |
 | `cdn.crabnebula.app` | Update check on launch | No |
-| `telemetry.echophrase.com` | Anonymous app stats, official builds only and only if you allow it (see below) | No |
 
-## What we do collect
+## No telemetry, no analytics
 
-We collect **anonymous, non-identifiable telemetrics** to make better product decisions - like which GPU backends people use, which AI models are most popular, and what the best default settings should be. None of this is tied to a user ID or account.
+The desktop app has **no telemetry and no analytics**: no usage stats, no crash reports, no install counts. The only network traffic is model downloads and update checks, listed above. Details are on [No Telemetry](/privacy/telemetry).
 
-<CardGroup cols={2}>
-  <Card title="Desktop app (Aptabase)" icon="desktop">
-    GPU backend, selected model, recording mode, feature toggles (paste-at-cursor, filler word removal). Sent to our self-hosted [Aptabase](https://github.com/aptabase/aptabase) instance - data never leaves our infrastructure.
-  </Card>
-  <Card title="Website (Umami)" icon="globe">
-    Page views, referrer, browser type, country. Sent to our self-hosted [Umami](https://github.com/umami-software/umami) instance - cookieless, no tracking across sites, and it honors your browser's Global Privacy Control signal (the site tells you when it does).
-  </Card>
-</CardGroup>
+Our website uses cookieless [Umami](https://github.com/umami-software/umami) page-view analytics (page views, referrer, browser type, country), self-hosted, with no tracking across sites. It honors your browser's Global Privacy Control signal. This applies to the website only, never to the app.
 
-Every single event is listed, property by property, on [What We Collect](/privacy/telemetry).
-
-### Consent and opting out
-
-Echophrase asks on first run, with the box pre-checked, and **every event respects your answer** - including the install count. You can change it anytime in **Settings > Data > "Send anonymous app stats"**: one toggle, no confirmation prompt. One final event is sent to confirm the opt-out, then all tracking stops. Launching with `DO_NOT_TRACK=1` (or `ECHOPHRASE_NO_TELEMETRY=1`) overrides the setting entirely. Disabling telemetrics does not affect app functionality in any way.
+Older versions of the app (before this change) could send anonymous usage stats if you allowed it. Updating removes that.
 
 ## No accounts
 
-Echophrase has no accounts, sign-in, or payments, so we hold no personal profile of you. Builds compiled from source never send usage stats at all.
+Echophrase has no accounts, sign-in, or payments, so we hold no personal profile of you. The app sends no usage stats.
 
 ### GDPR & data rights
 
-Because app stats carry no user or device identifier, we cannot link them to you. To stop sending them, turn off **Settings > Data > "Send anonymous app stats"**. See our full [Privacy Policy](https://echophrase.com/privacy) for your rights under GDPR and CCPA.
+The app collects no personal data, so there is nothing to link to you. See our full [Privacy Policy](https://echophrase.com/privacy) for your rights under GDPR and CCPA.
