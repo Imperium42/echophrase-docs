@@ -37,7 +37,7 @@ Events are queued locally and sent in batches only while the app is idle (at lea
 | `transcription_completed` | `model`, `transform_used`, `paste_at_cursor`, `remove_filler_words`, `gpu_backend`, `processing_ms` | After a transcription |
 | `transcription_failed` | `model`, `gpu_backend`, `error_category` (bucketed category, never a raw error string) | A transcription errors out |
 | `model_changed` | `model` (e.g. "parakeet-tdt-0.6b-v3") | You save a model selection |
-| `settings_saved` | `output_to`, `recording_mode`, `remove_filler_words`, `use_numeric_digits`, `transform_enabled`, `language` | You change one of those settings |
+| `settings_saved` | `output_to`, `recording_mode`, `remove_filler_words`, `use_numeric_digits`, `append_space_incomplete`, `transform_enabled`, `language` | You change one of those settings |
 | `app_panic` | `location` (repo-relative `src/foo.rs:42`), `thread` (thread name) | The app crashes (release builds only) |
 | `telemetry_disabled` | _(none)_ | You opt out - the final ping before tracking stops |
 

@@ -37,7 +37,7 @@ ECHOPHRASE_NO_TELEMETRY=1 echophrase   # 我們自己的變數，若您想更明
 | `transcription_completed` | `model`、`transform_used`、`paste_at_cursor`、`remove_filler_words`、`gpu_backend`、`processing_ms` | 轉錄完成後 |
 | `transcription_failed` | `model`、`gpu_backend`、`error_category`（分類代碼，絕不含原始錯誤字串） | 轉錄失敗時 |
 | `model_changed` | `model`（例如「parakeet-tdt-0.6b-v3」） | 您儲存模型選擇時 |
-| `settings_saved` | `output_to`、`recording_mode`、`remove_filler_words`、`use_numeric_digits`、`transform_enabled`、`language` | 您變更上述設定時 |
+| `settings_saved` | `output_to`、`recording_mode`、`remove_filler_words`、`use_numeric_digits`、`append_space_incomplete`、`transform_enabled`、`language` | 您變更上述設定時 |
 | `app_panic` | `location`（相對於原始碼庫的 `src/foo.rs:42`）、`thread`（執行緒名稱） | 應用程式崩潰時（僅正式版建置） |
 | `telemetry_disabled` | _(無)_ | 您選擇退出 - 追蹤停止前的最後一個通知 |
 
