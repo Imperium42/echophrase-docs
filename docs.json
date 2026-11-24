@@ -73,6 +73,50 @@
                 ]
               }
             ]
+          },
+          {
+            "tab": "Developers",
+            "groups": [
+              {
+                "group": "Contributing",
+                "pages": [
+                  "developers/contributing",
+                  "developers/building",
+                  "developers/testing"
+                ]
+              },
+              {
+                "group": "Architecture",
+                "pages": [
+                  "developers/architecture/overview",
+                  "developers/architecture/audio-pipeline",
+                  "developers/architecture/gpu-and-models",
+                  "developers/architecture/cli-and-mcp"
+                ]
+              },
+              {
+                "group": "Deep dives",
+                "pages": [
+                  "developers/deep-dives/macos-dictation-key",
+                  "developers/deep-dives/windows-tray-icon",
+                  "developers/deep-dives/silero-vad-v5",
+                  "developers/deep-dives/model-load-baselines",
+                  "developers/deep-dives/audio-normalization"
+                ]
+              },
+              {
+                "group": "Decisions",
+                "pages": [
+                  "developers/decisions/index",
+                  "developers/decisions/0001-no-cuda",
+                  "developers/decisions/0002-ort-load-dynamic",
+                  "developers/decisions/0003-force-exit-on-windows",
+                  "developers/decisions/0004-tray-icon-fork",
+                  "developers/decisions/0005-in-memory-capture",
+                  "developers/decisions/0006-open-source"
+                ]
+              }
+            ]
           }
         ]
       },
