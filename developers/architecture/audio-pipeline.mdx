@@ -1,0 +1,99 @@
+---
+title: Audio pipeline
+description: How audio is captured, resampled and routed in memory through crates/echo-audio
+---
+
+# Audio pipeline
+
+All audio handling flows through one shared crate, `crates/echo-audio`, a member of the cargo workspace alongside `src-tauri` and `cli`. Live capture is **fully in memory** on every platform: there are no temporary WAV files in the recording path. The reasoning is in [ADR 0005](/developers/decisions/0005-in-memory-capture).
+
+## Rules
+
+- Never re-implement resample, downmix, normalize or WAV reading anywhere else. Import from `echo_audio`.
+- The model dispatch lives only in `src-tauri/src/transcription/mod.rs::transcribe_source`.
+- Open mic (VAD) works on all platforms. Its state machine consumes 256-sample chunks from `echo_audio::capture`, which is what Silero v5 requires.
+
+## What the crate contains
+
+- Sample math: downmix, peak normalize, peak and RMS.
+- Linear and streaming resamplers.
+- WAV reading and writing.
+- Live capture through `cpal` (cargo feature `capture`).
+- `AudioSource`, the switch between disk and memory.
+
+### The `AudioSource` switch
+
+`echo_audio::AudioSource { File(PathBuf) | Memory(AudioBuffer) }` is the single point where disk and memory meet. Live capture produces `Memory`. A dropped file or an explicit path produces `File`. `samples_mono_16k()` resolves either to canonical 16 kHz mono f32, borrowing rather than copying a buffer that is already at 16 kHz.
+
+The `TranscriptionBackend` trait has one required method, `transcribe_samples`, plus a provided `transcribe(&AudioSource)`. Backends never touch files.
+
+## Capture pipeline
+
+```text
+device (native rate and format, N channels)
+  -> downmix per callback
+  -> StreamingResampler (to 16 kHz)
+  -> fixed-size chunks
+  -> mpsc channel
+  -> AudioRecorder buffer (plain recording) or VAD state machine (open mic)
+```
+
+- Chunk sizes: 1024 samples for plain recording (`RECORD_CHUNK_SAMPLES` in `src-tauri/src/audio/recorder.rs`), 256 for Silero VAD v5.
+- The `StreamingResampler` is tested for equivalence against the batch resampler across arbitrary chunk boundaries.
+- On macOS an AVFoundation microphone-permission request runs before capture, because `cpal` silently sees no devices until access is granted.
+
+## WSL capture (`parec`)
+
+`cpal`'s Linux host is ALSA only. WSLg exposes the passed-through Windows microphone as a **PulseAudio source** (`RDPSource` on `/mnt/wslg/PulseServer`), not an ALSA device. On a stock WSL box `cpal::default_host().default_input_device()` therefore returns nothing even though `pactl` lists the mic.
+
+`crates/echo-audio/src/capture.rs` adds a `#[cfg(target_os = "linux")]` runtime branch. When `echo_audio::wsl::wslg_pulse_available()` is true (WSL environment markers and the `/mnt/wslg/PulseServer` socket), the capture thread spawns:
+
+```text
+parec --format=float32le --rate=16000 --channels=1 [--device=<pulse source>]
+```
+
+and feeds its stdout into the same `Chunker` the `cpal` path uses. Asking `parec` for 16 kHz mono f32 makes the resampler a passthrough. Everything downstream is shared.
+
+Why `parec` rather than the alternatives:
+
+- `libpulse-simple` would add a `libpulse-dev` build dependency. `parec` needs no new build or CI dependency; it ships in `pulseaudio-utils`, the package that already provides `pactl`.
+- An ALSA-to-Pulse configuration (`~/.asoundrc`, `libasound2-plugins`) is per user and fragile.
+
+Scope: macOS and Windows binaries never compile the branch. Native Linux compiles it, but the runtime gate is false, so it keeps the plain `cpal`/ALSA path. The `.deb` declares `pulseaudio-utils` and `libasound2-plugins` as dependencies in `src-tauri/tauri.conf.json5`.
+
+The persisted `input_device` setting (mapped in `src-tauri/src/audio/recorder.rs`) becomes `parec --device=<name>`; `default` or unset omits the flag. On WSL the value is a Pulse source name; on Windows and macOS it is a `cpal` device display name.
+
+Smoke test on a WSL machine:
+
+```bash
+PULSE_SERVER=/mnt/wslg/PulseServer \
+  parec --device=RDPSource --format=s16le --rate=16000 --channels=1 \
+  | head -c 64000 | wc -c   # non-zero means PCM is flowing
+```
+
+The standalone `echophrase` CLI still uses `cpal` and ALSA directly.
+
+## Normalization
+
+Two normalizers exist, for different jobs. See [Audio normalization](/developers/deep-dives/audio-normalization) for the Whisper details.
+
+- `echo_audio` provides peak normalization for the canonical 16 kHz form (used by the CLI `transcode` command, which has `--no-normalize`).
+- The Candle Whisper path applies its own amplify-only normalization, because Whisper is not scale invariant.
+
+## Hands-free end to end test
+
+On macOS you can verify record, transcribe and paste with no human interaction, using the speakers as the audio source:
+
+```bash
+osascript -e 'tell application "System Events" to key code 105'  # F13 = record hotkey (start)
+sleep 1
+say -r 170 "Testing the unified in memory audio pipeline, one two three"
+sleep 1
+osascript -e 'tell application "System Events" to key code 105'  # F13 again (stop and transcribe)
+sleep 5
+pbpaste   # the app pastes the transcript, so the clipboard holds the proof
+```
+
+`key code 105` is F13, the remapped Dictation key and the default macOS record hotkey (shown as "F5" in the UI; see [macOS dictation key](/developers/deep-dives/macos-dictation-key)). `say` plays through the speakers and the microphone picks it up, so real audio goes through the real capture stack. To assert in-memory behavior, check that stdout has no temp-file lines and no new `*.wav` appears under the app data or temp directories during the cycle.
+
+Requirements: the dev app running, microphone and accessibility permission granted to the terminal, and speakers audible to the microphone. Fixture-based tests are described in `tests/audio/CLAUDE.md`.

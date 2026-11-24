@@ -1,0 +1,78 @@
+---
+title: CLI and MCP internals
+description: How the echophrase CLI, its MCP mode and the desktop app's localhost IPC server fit together
+---
+
+# CLI and MCP internals
+
+This page covers how the pieces are built. For using them, see the user-facing [CLI](/cli) and [MCP Server](/mcp) pages; the flag-by-flag reference is `cli/docs/cli.md` in the repo.
+
+## What it is
+
+`cli/` is a standalone workspace crate (`echophrase-cli`) that produces the `echophrase` binary. It captures the microphone and converts audio files to the canonical transcription format without touching the Tauri build. `echophrase mcp` runs the same logic as a minimal MCP server over stdio, so AI agents can call `record`, `stop`, `status`, `transcode` and `transcribe` as tools. A hidden `worker` subcommand is the detached capture process spawned by `record`; it is never exposed as an MCP tool.
+
+All output is 16 kHz, 16-bit, mono WAV, the exact format the transcription pipeline expects, so files drop straight in with no downstream resample.
+
+`transcribe` does not run inside the CLI process. It calls the already-running desktop app over a localhost-only connection so it reuses the loaded model instead of loading a second copy.
+
+## Layout
+
+State and coordination are file based (no OS signals), identical on Linux, macOS and Windows. The base directory is `$ECHOPHRASE_HOME` if set, otherwise the platform data directory plus `echophrase-cli`, and the system temp directory as a last resort.
+
+```text
+<base>/
+  run/       session.json, stop.flag, worker.log, ipc-token, ipc-state.json
+  recordings/
+```
+
+Modules in `cli/src/`:
+
+- `recorder.rs` - capture glue. The audio logic lives in `echo_audio` (see [Audio pipeline](/developers/architecture/audio-pipeline)); the CLI does not carry its own resample or WAV code.
+- `session.rs`, `paths.rs` - session and stop-flag state, filesystem layout.
+- `cli.rs` - clap argument shapes.
+- `ops.rs` - structured, printless core logic (`RecordStarted`, `StopResult`, `StatusResult`, `TranscodeResult`). Both `commands/*.rs` (the CLI, which prints text) and `commands/mcp.rs` (the MCP tools, which return JSON) call into it, so the two front ends cannot drift.
+- `commands/*.rs` - one file per subcommand, plus `commands/mcp.rs` for the MCP tool router (`rmcp` with the stdio transport).
+
+### Feature flags
+
+`mic` (default) enables real capture through `echo-audio/capture`. Build with `--no-default-features` for a headless or CI build: the recorder writes silence, so the record, stop and session flow and `transcode` still compile and run without audio hardware.
+
+| Platform | `mic` build requirement |
+|----------|-------------------------|
+| Linux | ALSA headers: `sudo apt install libasound2-dev` |
+| macOS | none beyond the OS |
+| Windows | none beyond the OS |
+
+## IPC transport
+
+The desktop app runs a small HTTP server (`src-tauri/src/ipc/`, built on axum) bound to `127.0.0.1` only, never `0.0.0.0`, on port **1424** (`IPC_PORT` in `src-tauri/src/ipc/server.rs`).
+
+| Route | Auth | Body | Response |
+|-------|------|------|----------|
+| `GET /v1/health` | none | - | `{"version": "<app version>"}` |
+| `POST /v1/transcribe` | `Authorization: Bearer <token>` | `{"wav_path": "..."}` | `{"text": "..."}` |
+
+On startup the app generates a random token and writes it to `<base>/run/ipc-token` (mode 0600 on unix), the same directory the CLI's `paths::ipc_token_file()` resolves to. `src-tauri/src/ipc/paths.rs` duplicates the CLI's path-resolution logic by hand, so **keep the two in sync** if either changes. The token file is removed on shutdown, best effort, from `shutdown::force_exit` because that path skips normal drop order.
+
+The CLI's `ops::transcribe` reads the token file and POSTs to `http://127.0.0.1:1424/v1/transcribe` with `ureq` (synchronous, no TLS needed on loopback). The handler checks that `wav_path` canonicalizes to an existing `.wav` file, then calls `transcription::transcribe_source`, the same entry point in-app dictation uses. It honors the user's selected model exactly as if the UI had triggered the transcription; there is no separate IPC-only code path.
+
+## The MCP Server toggle
+
+The IPC server is opt-in. The `mcp_server_enabled` field in `AppSettings` (`src-tauri/src/settings/mod.rs`, persisted in `settings.yaml`) defaults to `false`, so the server only runs while the setting is on and the app is running. In the UI it is **Settings > MCP Server**.
+
+- **Startup.** `ipc::spawn` is only called when `mcp_server_enabled` is true.
+- **Toggle on** (the `set_mcp_server_enabled` command): the setting is saved, then the server starts live. `ipc::spawn` generates a fresh token, writes the token file, binds `127.0.0.1:1424` and serves the router.
+- **Toggle off:** the setting is saved, then the server stops through graceful shutdown (a `oneshot` signal into axum's `with_graceful_shutdown`, so in-flight requests finish), and the token file is deleted explicitly rather than relied on via `Drop`.
+- **Down-state file.** Next to the token file the app writes `ipc-state.json` (`ipc_state_file()` in `ipc/paths.rs`) recording why the server is down: `disabled`, or `running` while serving (cleared on graceful exit). When the token is missing or the connection fails, the CLI and the MCP `transcribe` tool read it and report one of two errors:
+  - `disabled`: "Enable it in Settings > MCP Server in the Echophrase app."
+  - missing, unreadable, or `running` (a crash): "The Echophrase desktop app must be running to transcribe. Start the app and try again."
+
+Key files: `src-tauri/src/ipc/mod.rs` (`spawn`, `clear_token_best_effort`, shutdown wiring), `src-tauri/src/ipc/server.rs` (router), `src-tauri/src/settings/mod.rs` (the field and `set_mcp_server_enabled`), `src-tauri/src/lib.rs` (startup call site).
+
+## Testing
+
+See [Testing](/developers/testing#cli-crate) for the commands. App-side, `src-tauri/src/ipc/server.rs` unit-tests auth (missing or wrong token), path validation (missing file, non-`.wav` file), the health route and success and error responses from an **injected** transcribe closure, so no GPU or model is needed.
+
+## Roadmap
+
+Broadening work is tracked as inline `// TODO:` markers, aggregated in `cli/TODO.md`: compressed input formats (mp3, m4a, flac, ogg), higher-fidelity resampling, multi-channel downmix weighting, batch input, configurable output format, and stdin or stdout audio streaming for the MCP server.

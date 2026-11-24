@@ -1,0 +1,143 @@
+---
+title: Architecture overview
+description: Tech stack, code layout, the speech-to-text pipeline and the trait-based backends
+---
+
+# Architecture overview
+
+Echophrase is a **Tauri 2** desktop app with a **Svelte 5** frontend and a **Rust** backend. It does GPU-accelerated speech-to-text entirely on the user's machine. There is no server, no account and no telemetry; the only network traffic is model downloads from `huggingface.co` and update checks against `cdn.crabnebula.app`.
+
+<Note>
+Where this section and the code disagree, the code wins. The repo's `CLAUDE.md` is the maintained source of truth for architecture notes.
+</Note>
+
+## Tech stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Svelte 5, SvelteKit, TypeScript, Tailwind CSS 4 |
+| Backend | Tauri 2 (Rust 2024 edition) |
+| ML inference | Candle (Whisper, safetensors), ONNX Runtime via `ort`, `parakeet-rs` |
+| Audio | `crates/echo-audio` (shared capture, resampling, WAV I/O) and a self-implemented Silero VAD V5 |
+| GPU | DirectML (Windows), CoreML/Metal (macOS), CPU (Linux/WSL). No CUDA; see [ADR 0001](/developers/decisions/0001-no-cuda) |
+| Build | Vite and Bun |
+
+## Cargo workspace
+
+The root `Cargo.toml` is a workspace with three members: `src-tauri` (the app), `cli` (the terminal helper) and `crates/echo-audio`. Build output is pinned to `src-tauri/target` through `.cargo/config.toml` so CI paths never move.
+
+## Frontend layout
+
+```text
+src/lib/
+  components/     Svelte components
+    settings/     Settings modal, one file per section
+    ui/           Reusable primitives
+  stores/         Svelte stores (model, settings, theme, ...)
+  services/       Backend communication layer
+  config/         environment.ts (website and docs links only)
+  composables/    Reusable reactive logic
+  hooks/          Lifecycle hooks
+  types/          TypeScript types
+  utils/          Helpers
+```
+
+## Backend layout
+
+```text
+src-tauri/src/
+  commands/            Tauri command handlers
+    transcription.rs   Main transcription logic
+    recording.rs       Recording control
+    model_detection.rs VRAM analysis and model auto-selection
+    vad.rs             VAD test commands
+    output.rs          Paste simulation, file save
+  transcription/       ML backends (trait-based)
+    backend.rs         TranscriptionBackend trait
+    candle_whisper.rs  Candle backend (Metal on macOS, CPU elsewhere)
+    onnx_backend.rs    ONNX backend (including Parakeet TDT via parakeet-rs)
+    chunking.rs        Long-audio chunking
+    idle.rs            Optional idle model unload
+  vad.rs               VadBackend trait and SileroVad
+  model_detection/     vram_analyzer.rs, model_selector.rs
+  ipc/                 Localhost server used by the CLI (see CLI and MCP)
+  setup/               Startup: tray, window, splash, ORT runtime selection
+  shutdown.rs          The single exit path
+  tray_status.rs       Tray icon status overlays
+```
+
+## Frontend to backend
+
+Tauri commands bridge JavaScript and Rust. Every command is registered in the `invoke_handler` in `src-tauri/src/lib.rs`.
+
+```typescript
+import { invoke } from '@tauri-apps/api/core';
+const result = await invoke('command_name', { param: value });
+```
+
+Real-time updates (download progress, VAD status) use Tauri's event system.
+
+## Speech-to-text pipeline
+
+1. **Recording.** The Rust `AudioRecorder` (built on `echo-audio` and `cpal`) captures 16 kHz mono f32 chunks in memory on every platform. See [Audio pipeline](/developers/architecture/audio-pipeline).
+2. **VAD (optional).** Silero VAD V5 detects speech segments. See [Silero VAD V5](/developers/deep-dives/silero-vad-v5).
+3. **Backend selection.** The `TranscriptionBackend` trait dispatches to the active ML backend.
+4. **Preprocessing.** Audio becomes a mel spectrogram: 80 bins for Whisper, 128 for Parakeet.
+5. **Inference.** DirectML on Windows, CoreML/Metal on macOS, CPU on Linux/WSL. See [GPU and models](/developers/architecture/gpu-and-models).
+6. **Output.** The transcript goes to the clipboard or is pasted at the cursor.
+
+## Trait-based backends
+
+Swappable systems sit behind traits, so backends can change without touching business logic.
+
+```rust
+// One required method plus a provided entry point that resolves
+// echo_audio::AudioSource { File | Memory } to 16 kHz mono samples.
+pub trait TranscriptionBackend: Send + Sync {
+    fn transcribe_samples(&self, samples: &[f32]) -> Result<String>;  // required
+    fn backend_name(&self) -> &'static str;
+    fn transcribe(&self, source: &AudioSource) -> Result<String>;     // provided
+}
+
+pub trait VadBackend: Send {
+    fn predict(&mut self, samples: &[f32]) -> f32;  // 0.0-1.0 probability
+    fn reset(&mut self);
+    fn name(&self) -> &'static str;
+}
+```
+
+All transcription dispatch goes through one router, `transcription::transcribe_source` in `src-tauri/src/transcription/mod.rs`. Commands call that and never pick a backend themselves.
+
+<Warning>
+**Parakeet TDT gotcha.** Always pass `TimestampMode::Words` when calling `transcribe_samples()` on the Parakeet backend. Without it the TDT decoder's beam search can collapse tokens and silently drop whole sentences ("He saves the world with his brother, Luigi" becomes "Luigi"). Nothing fails if you remove it, so leave the comment in `onnx_backend.rs` in place.
+</Warning>
+
+Backend rules: Candle models are safetensors only (no GGUF, no PyTorch `.bin`). Platform-specific code uses `#[cfg(target_os = "...")]`.
+
+## Settings
+
+Settings live in `settings.yaml`, modelled by `AppSettings` in `src-tauri/src/settings/mod.rs`. The per-recording cap is a plain user setting (5 to 180 seconds, default 30), enforced by `getMaxRecordingTime()` in `useRecording.ts` against a hard 180 second ceiling. `ECHOPHRASE_CONFIG_DIR` relocates the settings directory for tests.
+
+
+
+## System tray and lifecycle
+
+The tray icon (`src-tauri/src/setup/tray.rs`, `src-tauri/src/tray_status.rs`) is the app's lifecycle anchor and a status indicator.
+
+**Close to tray.** The window's close button hides the window instead of exiting. The process, the recorder and the global hotkeys keep running. Hidden-window recording is intentional: nothing in the frontend or backend stops a recording when the window hides or loses focus. The only way out is the tray menu's **Quit**, which goes through `shutdown::force_exit` ([ADR 0003](/developers/decisions/0003-force-exit-on-windows)).
+
+**Tray menu.** **Show**, **Start Recording** / **Stop Recording** (the label follows state), and **Quit**. Double-clicking the icon restores the window.
+
+**Status overlay.**
+
+| State | Icon | Tooltip |
+|-------|------|---------|
+| Idle | Stock icon | `Echophrase (Idle)` |
+| Recording | Red dot, bottom right | `Echophrase (Recording)` |
+| Transcribing | Yellow dot, bottom right | `Echophrase (Transcribing)` |
+
+At startup `icons/32x32.png` is decoded once and two RGBA copies with anti-aliased dots are composited. State changes are driven from `commands/recording.rs`: starting a recording sets Recording, stopping sets Idle, and stop-and-transcribe sets Transcribing and returns to Idle on every exit path through an RAII `StatusGuard`, so errors and panics still reset the tray. Open-mic mode stays Recording for the whole session. On Windows the icon carries a fixed GUID; see [Windows tray icon](/developers/deep-dives/windows-tray-icon).
+
+## Platform notes
+
+The app also handles: a macOS dictation-key takeover ([deep dive](/developers/deep-dives/macos-dictation-key)), a WSL capture path ([Audio pipeline](/developers/architecture/audio-pipeline#wsl-capture-parec)) and a localhost IPC server for the CLI ([CLI and MCP](/developers/architecture/cli-and-mcp)).

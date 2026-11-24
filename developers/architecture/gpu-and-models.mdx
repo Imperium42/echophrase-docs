@@ -1,0 +1,83 @@
+---
+title: GPU and models
+description: Execution providers per platform, ONNX Runtime bundling, supported models and memory guards
+---
+
+# GPU and models
+
+For the user-facing view, see [GPU Acceleration](/config/gpu) and [Models](/config/models).
+
+<Note>
+There is no CUDA. Echophrase has no CUDA code, cargo feature, plugin or setup anywhere. Windows runs on bundled DirectML, macOS on CoreML and Metal, Linux and WSL on CPU. The reasoning is recorded in [ADR 0001](/developers/decisions/0001-no-cuda).
+</Note>
+
+## Execution providers by platform
+
+| Platform | Execution provider | Requirements |
+|----------|--------------------|--------------|
+| Windows | **DirectML** | Any DirectX 12 GPU (NVIDIA, AMD, Intel, Qualcomm). Bundled with the app; falls back to CPU. |
+| macOS | CoreML (ONNX Runtime), Metal (Candle) | Apple Silicon (M1 or newer), macOS 13.3 or newer |
+| Copilot+ PCs | NPU, selected automatically | Snapdragon X or Intel Core Ultra |
+| Linux and WSL | CPU | Nothing extra. GPU acceleration is not supported today. |
+
+Linux GPU acceleration is a wanted future feature (see the TODO in `env.yaml.template`). It has no DirectML or CoreML equivalent, so it needs its own design, not a flag flip.
+
+## Auto-selection
+
+When the user has no explicit preference, the app uses ort's `SessionBuilder::with_auto_device(AutoDevicePolicy::MaxPerformance)` (see `src-tauri/src/transcription/onnx_backend.rs`). ort enumerates devices at session creation and picks the best provider the build ships: DirectML, then CoreML, then NPU, then CPU.
+
+The Settings > GPU Acceleration control lets the user override with Auto (recommended), DirectML (Windows), CoreML (macOS) or CPU. Auto clears the override. See `src-tauri/src/transcription/execution_provider.rs` and the `get_execution_provider_status` command. A settings file written by an old build that contains `execution_provider: "cuda"` is ignored and treated as auto-detect.
+
+## Models
+
+| Backend | Models | Format | GPU provider | VRAM |
+|---------|--------|--------|--------------|------|
+| Candle | Distil-Whisper Large-v3 (recommended), Whisper variants | safetensors | Metal (macOS), CPU | 2 to 6 GB |
+| parakeet-rs | NVIDIA Parakeet-TDT 0.6B v3 | ONNX (TDT decoding) | DirectML, CoreML, CPU | 2 GB |
+| ONNX (generic) | Any ONNX model | ONNX | DirectML, CoreML, NPU, CPU | Varies |
+
+Models download to `~/.cache/huggingface/hub/` on first use, with progress streamed through Tauri events. Candle models are safetensors only. Parakeet models are ONNX with TDT decoding.
+
+Automatic model selection lives in `src-tauri/src/model_detection/`: `vram_analyzer.rs` detects the GPU and VRAM, and `model_selector.rs` recommends a model from that.
+
+## ONNX Runtime bundling
+
+The app uses `ort 2.0.0-rc.12` in `load-dynamic` mode: the ONNX Runtime library is loaded at startup instead of being linked statically. This avoids MSVC STL ABI coupling ([ADR 0002](/developers/decisions/0002-ort-load-dynamic)). Runtime selection is `select_ort_runtime()` in `src-tauri/src/setup/ort_runtime.rs`, which runs before any ORT API is touched and sets `ORT_DYLIB_PATH`. Precedence: a dev override from `env.yaml`, otherwise the bundled DirectML runtime.
+
+`scripts/ensure-ort.mjs` stages the runtime on every platform; see [Building from source](/developers/building#onnx-runtime-staging) for what it writes where. Versions today are ONNX Runtime 1.24.4 and DirectML 1.15.4 (the version the ORT DirectML package depends on).
+
+| Platform | Dev runtime | Production runtime |
+|----------|-------------|--------------------|
+| Windows | Staged DirectML payload in `src-tauri/resources/ort/directml/` | Same files, bundled in the installer |
+| macOS | CoreML build in `.ort/` and `src-tauri/macos-frameworks/` | Bundled by `tauri build` (`bundle.macOS.frameworks`) |
+| Linux and WSL | CPU build in `.ort/` | Not shipped (no official Linux builds) |
+
+`DirectML.dll` is bundled and preloaded by absolute path before ORT starts. Do not rely on the copy in System32; even current Windows 11 ships one that is too old. Details and the version table are in the repo's `KNOWN_ISSUES.md`.
+
+Nothing beyond the OS itself is required at runtime: DirectML and CoreML ship with, or are bundled for, the platform. If `ORT_DYLIB_PATH` is missing, a CPU-only runtime can load silently and Parakeet takes far longer to preload, which is why staging is automated.
+
+## Memory: long recordings and idle unload
+
+Parakeet's encoder working memory grows much faster than clip length, and ORT keeps the peak for the life of the session. A real Windows install reached about 4.5 GB after one 300 second recording and held it while hidden in the tray.
+
+Measured on `parakeet-rs` 0.3.4 and `ort` rc.12 (Linux CPU provider; peak resident memory above the loaded model, which DirectML keeps on the GPU instead):
+
+| Audio length | Extra memory, one call | Extra memory, chunked |
+|--------------|------------------------|-----------------------|
+| 10 s | +0.3 GB | same (not split) |
+| 60 s | +0.6 GB | +0.5 GB |
+| 120 s | +0.8 GB | +0.5 GB |
+| 293 s (real speech) | +3.2 GB | +0.54 GB |
+
+Two guards, both in the Parakeet and ONNX path. The measured numbers and repro method are in `BENCHMARKS.md` in the repo.
+
+- **Chunking** (`src-tauri/src/transcription/chunking.rs`). Audio over 40 s is split into chunks of about 30 s, each cut at the quietest 50 ms frame within 5 s of the boundary, and the transcripts are joined with a space. Clips up to 40 s run as a single call, unchanged. On 293 s of real speech, whole versus chunked scored 633 of 633 words and 98.7% versus 98.6% against the reference, and the chunked run took 13.8 s instead of 27.1 s.
+- **Idle unload** (`src-tauri/src/transcription/idle.rs`). Opt-in and off by default (Settings > Optimization; `idle_unload_enabled`, and `idle_unload_minutes` defaulting to 10, clamped to 1 to 120). When enabled, after N minutes with no recording or transcription a watcher unloads the model. It re-reads the settings every 30 s, so toggling needs no restart. The next recording start reloads the model in the background (about 7 s on a warm DirectML shader cache, longer cold), which is why it is not on by default. It never unloads while the tray reports Recording or Transcribing, and never during a transcription.
+
+The per-recording cap (a user setting, 5 to 180 s) and the hard 180 s ceiling are a separate, earlier line of defence.
+
+<Note>
+Chunking and the memory numbers are for Parakeet TDT only. Qwen3-ASR and Candle Whisper still take the whole clip in one call. Idle unload covers all backends because it calls the shared `unload_model`.
+</Note>
+
+See also [Model load baselines](/developers/deep-dives/model-load-baselines).
