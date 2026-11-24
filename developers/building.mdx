@@ -1,0 +1,166 @@
+---
+title: Building from source
+description: Set up a development environment and build Echophrase on Windows, macOS, Linux and WSL
+---
+
+# Building from source
+
+## Prerequisites
+
+- [Rust](https://rustup.rs) (stable, 1.88 or newer)
+- [Bun](https://bun.sh). It is the only package manager; never use npm or yarn.
+- The [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your OS
+- [Node.js](https://nodejs.org), needed only to run the frontend tests (Vitest runs on Node)
+
+```bash
+git clone https://github.com/Imperium42/echophrase.git
+cd echophrase
+bun install
+bun run tauri:dev        # auto-detects your platform
+```
+
+## Commands
+
+```bash
+bun run tauri:dev          # recommended default, auto-detects platform
+bun run tauri:dev:wsl      # force WSL (CPU)
+bun run tauri:dev:windows  # force Windows native
+bun run tauri:dev:mac      # force macOS (Apple Silicon)
+
+bun run tauri:build        # production build
+```
+
+Production bundles land in `src-tauri/target/release/bundle/`. Windows builds bundle DirectML at build time, macOS builds use CoreML, and Linux builds run on CPU. See [GPU and models](/developers/architecture/gpu-and-models).
+
+## ONNX Runtime staging
+
+Echophrase loads ONNX Runtime dynamically (see [ADR 0002](/developers/decisions/0002-ort-load-dynamic)), so the runtime library has to be on disk before the app starts. You do not do this by hand. `scripts/ensure-ort.mjs` runs before every `tauri:dev*` and `tauri:build*` command, and standalone as `bun run setup:ort`.
+
+It is the only place the ORT version and the NuGet SHA-256 hashes live. It verifies each package hash before extracting (a mismatch fails loudly and stages nothing), and it is a fast no-op when the staged files still match the stamp in `.ort/stamps/`.
+
+| Platform | What it stages | Where |
+|----------|----------------|-------|
+| Windows (x64, arm64) | `onnxruntime.dll`, `onnxruntime_providers_shared.dll`, `DirectML.dll` | `src-tauri/resources/ort/directml/` (the path the production app probes, so dev needs no `ORT_DYLIB_PATH`) |
+| Linux/WSL (x64, arm64) | CPU build of ONNX Runtime | gitignored `.ort/<platform>/lib/`; an absolute `ORT_DYLIB_PATH` is written into `env.yaml` |
+| macOS (arm64) | CoreML build of ONNX Runtime | `.ort/<platform>/lib/`, plus a copy at `src-tauri/macos-frameworks/libonnxruntime.dylib` |
+
+On Linux, WSL and macOS the script writes `ORT_DYLIB_PATH` into the matching section of `env.yaml`, overwriting manual values. To use a custom ONNX Runtime build, call `bun x tauri dev` directly. On Windows only a placeholder value is removed; any other value in `env.yaml` is kept as a manual override (a warning prints if its path does not exist).
+
+<Warning>
+On macOS, `tauri.conf.json5` declares `macos-frameworks/libonnxruntime.dylib` under `bundle.macOS.frameworks`, and `tauri_build` checks it exists at compile time. A bare `cargo build` on a fresh clone fails with `Library not found` until the script has staged it. Run `bun run setup:ort` first.
+</Warning>
+
+## Environment configuration
+
+`env.yaml` is gitignored. Create it from `env.yaml.template`. It is hierarchical (shared values first, then platform overrides), loaded by `scripts/env/load.mjs` before Tauri starts and validated by `scripts/env/schema.ts`. When you change `env.yaml`, update `env.yaml.template` too.
+
+There are no CUDA variables and no server URL in it. The frontend link config in `src/lib/config/environment.ts` covers website and docs links only.
+
+### Dev server port
+
+The Vite dev server uses `DEV_PORT` (default `8420`), with HMR on `DEV_PORT + 1`. Tauri's `devUrl` follows it. Do not edit ports in tracked files. If your machine cannot bind 8420, set `DEV_PORT` in your gitignored `env.yaml` (`shared:` or the platform section); for any non-default value the launcher generates a gitignored `.tauri-dev-port.json` and passes it to `tauri dev --config`.
+
+Windows Hyper-V silently reserves random port ranges, and the reservations move. The symptom is a bind failure with nothing visible in `netstat`. Run `python scripts/check-ports.py` to check.
+
+## Windows
+
+- Windows 11 is the supported version. Windows 10 should work but is untested.
+- Install Visual Studio 2022 (or Build Tools) with the **Desktop development with C++** workload.
+- Run `bun run tauri:dev:windows`, or `scripts/win/dev.ps1`.
+- DirectML is bundled; there is nothing else to install. `DirectML.dll` is bundled rather than taken from System32 because even current Windows 11 ships a copy that is too old for ORT 1.24. See `KNOWN_ISSUES.md` in the repo.
+
+## macOS (Apple Silicon)
+
+- Apple Silicon only (M1 or newer). Intel Macs are not supported. macOS 13.3 or newer is required, because ONNX Runtime 1.24 uses C++20 `std::to_chars`.
+- Install the Xcode Command Line Tools (`xcode-select --install`), then run `bun run tauri:dev:mac`.
+- Auto-paste sends a synthetic Cmd+V and needs the Accessibility permission. This is also why there is no Mac App Store build: the sandbox blocks that keystroke.
+
+<AccordionGroup>
+<Accordion title="macOS dev-tool shortcuts and hotkey notes">
+- `F5` does nothing on macOS in the dev app: the function-key row is reserved by the OS. Use `Ctrl + Shift + R` (a cache-clearing hard refresh) with the window focused. Use the literal Control key; Cmd-modified combos are swallowed by the responder chain before the web view sees them.
+- `ctrl` in a stored hotkey maps to Tauri's `CommandOrControl`, which resolves to Cmd on macOS. The default `ctrl+shift+space` therefore fires as Shift+Cmd+Space, and the UI shows Mac glyphs. The macOS default hotkey is the dictation key; see [macOS dictation key](/developers/deep-dives/macos-dictation-key).
+</Accordion>
+<Accordion title="WKWebView rendering quirks">
+- Tailwind v4 gradients use `in oklab` interpolation, which needs Safari 16.2 or newer (macOS 13.1+). Override rules live in `src/app.css`.
+- An element with both `overflow: hidden` and `will-change: transform` clips its `box-shadow`. Put `overflow-hidden` on an inner wrapper.
+- Do not force `transform: translateZ(0)` or `will-change` globally; it can suppress gradient and shadow rendering.
+</Accordion>
+</AccordionGroup>
+
+## Linux
+
+Linux is community-supported: there are no official binaries, and CI only compile-checks it. Transcription runs on CPU.
+
+Audio capture links ALSA through `cpal`, so builds need the ALSA development package (CI installs it too).
+
+```bash
+# Ubuntu/Debian
+sudo apt install build-essential curl wget file libwebkit2gtk-4.1-dev libgtk-3-dev \
+  libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev libasound2-dev
+
+# Fedora
+sudo dnf install webkit2gtk4.1-devel openssl-devel curl wget file \
+  libappindicator-gtk3-devel librsvg2-devel libxdo-devel alsa-lib-devel
+
+# Arch
+sudo pacman -S webkit2gtk-4.1 base-devel curl wget file openssl \
+  appmenu-gtk-module libappindicator-gtk3 librsvg xdotool alsa-lib
+```
+
+At runtime, if capture finds no device, install `libasound2-plugins` so ALSA can route to PulseAudio. The `.deb` package declares `pulseaudio-utils` and `libasound2-plugins` as dependencies.
+
+On GNOME the tray icon needs the AppIndicator extension:
+
+```bash
+sudo apt install gnome-shell-extension-appindicator
+gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
+```
+
+Development builds on Linux and WSL run with `--no-default-features`. The only optional cargo feature is `devtools`.
+
+## WSL
+
+WSL2 works as a CPU-only development environment. There is no GPU setup: no NVIDIA driver, CUDA Toolkit, cuDNN or GCC pin is needed (see [ADR 0001](/developers/decisions/0001-no-cuda)). Follow the Linux package list above, then:
+
+```bash
+bun run tauri:dev:wsl
+```
+
+`LD_LIBRARY_PATH` keeps `/usr/lib/wsl/lib` only so the GPU probe can read VRAM size through NVML.
+
+### Microphone
+
+WSLg exposes the Windows microphone as a PulseAudio source (`RDPSource` on `/mnt/wslg/PulseServer`), not as an ALSA device. When the app detects WSLg it captures through `parec` instead of opening a `cpal` stream. Install the tools if they are missing:
+
+```bash
+sudo apt install pulseaudio-utils
+```
+
+The design is in [Audio pipeline](/developers/architecture/audio-pipeline#wsl-capture-parec). The standalone `echophrase` CLI still uses `cpal` directly, so `cargo run -p echophrase-cli -- record` on WSL can additionally need `libasound2-plugins` and an ALSA default that points at PulseAudio.
+
+### Rendering tearing
+
+In the WSL dev app, rows can vanish or tear when you sweep the pointer across a list or scroll with the cursor over it, most visibly in the Settings modal. This is a WebKitGTK and WSLg DMA-BUF artifact, not a CSS bug. `env.yaml.template` sets `WEBKIT_DISABLE_DMABUF_RENDERER: "1"` under `wsl:`; copy that line into your `env.yaml` if it predates the template. If it still recurs, try in order:
+
+1. `WEBKIT_DISABLE_COMPOSITING_MODE: "1"` (costs animation smoothness).
+2. Dropping `LIBGL_ALWAYS_SOFTWARE` so WSLg's d3d12 passthrough provides hardware GL. Be ready to revert this one; a broken GL path can stop the window rendering at all.
+
+Do not chase it in `src/app.css`: that ships to every platform. It reproduces only in the WSL dev build; shipped Windows builds use WebView2.
+
+### Calling Windows from WSL
+
+A few features have to reach Windows executables from inside WSL. The traps below are the reason the code looks the way it does.
+
+- **Opening URLs in the Windows browser.** The user's default Windows browser is where links should open, so the app launches `cmd.exe /c start "" <url>` with each argument passed separately, `&`, `|`, `<` and `>` escaped with `^`, and the working directory set to `/mnt/c`. WSL converts argv to a Windows command line using MSVC quoting rules, which `cmd.exe` does not share: an unquoted `&` becomes a command separator, and `\"` is not an escape for `cmd.exe`. The empty title argument stops `start` treating the URL as a window title. `rundll32.exe url.dll,FileProtocolHandler` is the fallback; it uses standard argument parsing, so it needs no escaping. Approaches that fail: `explorer.exe <url>` (opens File Explorer), PowerShell `Start-Process` (slow cold start, `&` handling), `wslview` (discontinued, not preinstalled) and `xdg-open` (fails in headless WSL2).
+- **UNC working directories.** A Windows process spawned from WSL inherits `\\wsl.localhost\<distro>\...` as its working directory, which `cmd.exe` and `start` cannot handle. Always spawn Windows executables with a `/mnt/*` working directory such as `/mnt/c`.
+- **Showing a folder in Explorer.** Convert the path with `wslpath -w`; `explorer.exe` handles UNC paths fine for browsing.
+- **Clipboard.** The Linux-side clipboard does not bridge to Windows. Text can be piped to `clip.exe` on stdin.
+- **`'DOSKEY' is not recognized` warnings** when spawning `cmd.exe` are harmless. They come from the Windows AutoRun registry key.
+
+### WSL detection
+
+The backend treats the environment as WSL if `WSL_DISTRO_NAME` or `WSL_INTEROP` is set, or `/mnt/wslg/PulseServer` exists. The frontend asks once at startup (through the `get_system_info` command) and caches the result in `src/lib/stores/platformCache.ts`, so later platform checks need no IPC round trip.
+
+## Checks before a PR
+
+See [Testing](/developers/testing) and [Contributing](/developers/contributing).

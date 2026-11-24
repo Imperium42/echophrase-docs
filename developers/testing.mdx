@@ -1,0 +1,89 @@
+---
+title: Testing
+description: How to run the frontend, Rust and CLI test suites and the code-quality checks
+---
+
+# Testing
+
+Run all commands from the repository root unless noted.
+
+<Warning>
+Full suites and `bun run check` can take 10 minutes or more. Run them in the background (or a second terminal) rather than blocking your session, and prefer `bun run test:chunked` for the frontend suite: it runs in 5-file chunks with a 2 minute hard timeout each, so a hang is capped and the stuck files are named. Do not pipe a suite through `tail`; it buffers everything, so a hang looks like silence.
+</Warning>
+
+## What CI runs
+
+```bash
+bun run check && bun run lint && bun run test:run
+cargo clippy --workspace --all-targets --no-default-features -- -D warnings
+cargo test --workspace --no-default-features
+```
+
+Run these before opening a PR.
+
+## Frontend (Vitest)
+
+| Command | What it does |
+|---------|--------------|
+| `bun test` | Vitest in watch mode |
+| `bun run test:run` | Single run (runs on Node, not `--bun`; see `vitest.config.js`) |
+| `bun run test:chunked` | Single run in 5-file chunks with a 2 minute timeout each |
+
+Node.js must be installed for the frontend tests.
+
+## Rust
+
+| Command | What it does |
+|---------|--------------|
+| `bun run test:rust` | All Rust backend tests |
+| `bun run test:transcription` | Transcription test (WSL/Linux) |
+| `bun run test:transcription:win` | Transcription test on Windows (DirectML; needs a native Windows path) |
+| `bun run test:vad` | VAD tests |
+
+The repo is a cargo workspace, so you can also target one member from the root:
+
+```bash
+cargo test -p echo-audio
+cargo test -p echophrase-cli
+cargo test -p echophrase
+```
+
+Tests that touch settings state set `ECHOPHRASE_CONFIG_DIR` to a temp sandbox so they never read or write real user settings (see `CONFIG_DIR_ENV` in `src-tauri/src/settings/mod.rs`).
+
+## CLI crate
+
+```bash
+cd cli
+cargo build                       # default (mic)
+cargo build --no-default-features # headless/CI: the recorder writes silence
+cargo clippy --all-targets
+cargo test
+cargo test --no-default-features  # must also pass without cpal
+```
+
+The CLI suite covers the pure audio helpers, path resolution (via `ECHOPHRASE_HOME`), session round-trips, the `ops` layer and integration tests that drive the real binary through `transcode`, the MCP server and `transcribe`. The `transcribe` tests stand up a fake local HTTP server in place of the desktop app. Tests that mutate the environment are serialized because `ECHOPHRASE_HOME` is process-global. See [CLI and MCP internals](/developers/architecture/cli-and-mcp).
+
+## Code quality
+
+```bash
+bun run check        # Svelte type checking
+bun run lint         # ESLint
+bun run lint:fix     # ESLint auto-fix
+bun run format       # Prettier
+cd src-tauri && cargo clippy
+cd src-tauri && cargo fmt
+```
+
+## Audio fixtures and the hands-free E2E test
+
+`tests/audio/` holds fixture WAVs (for example `test-1-2.wav`) and its own notes in `tests/audio/CLAUDE.md`.
+
+On macOS you can verify the whole record -> transcribe -> paste pipeline with no human interaction, using the speakers as the audio source. See [Audio pipeline](/developers/architecture/audio-pipeline#hands-free-end-to-end-test).
+
+## Manual QA for the CLI `transcribe` path
+
+The automated tests use a fake IPC server. To check the real path:
+
+1. Run `bun run tauri:dev`, enable **Settings > MCP Server**, and wait for the model to load.
+2. From `cli/`, run `cargo run -- transcribe ../tests/audio/test-1-2.wav` and confirm a transcript prints.
+3. Quit the app and run the same command again. It should print the friendly "desktop app must be running" error.

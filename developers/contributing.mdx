@@ -1,0 +1,108 @@
+---
+title: Contributing
+description: How to report issues, propose changes and get a pull request merged
+---
+
+# Contributing
+
+Echophrase is free, open-source software under the [Mozilla Public License 2.0](https://github.com/Imperium42/echophrase/blob/main/LICENSE). The code lives at [github.com/Imperium42/echophrase](https://github.com/Imperium42/echophrase).
+
+<Note>
+The project is community-maintained. There is no support team and no guaranteed response time. Issues and PRs are reviewed on a best-effort basis, and small, clear, well-tested PRs are the ones that get merged.
+</Note>
+
+## Ground rules
+
+- Follow the [Code of Conduct](https://github.com/Imperium42/echophrase/blob/main/CODE_OF_CONDUCT.md) (Contributor Covenant).
+- Report security problems through the private channel described in [SECURITY.md](https://github.com/Imperium42/echophrase/blob/main/SECURITY.md), not in a public issue.
+- The app has no server, no account and no telemetry. Do not add analytics, crash reporting or any phone-home call. The only allowed network destinations are listed in [TELEMETRY.md](https://github.com/Imperium42/echophrase/blob/main/TELEMETRY.md); changing that list means updating that file, the README privacy section and the public privacy docs in the same PR.
+- Everything is free for everyone. Do not add feature gating.
+
+## Getting set up
+
+```bash
+git clone https://github.com/<you>/echophrase.git
+cd echophrase
+bun install
+bun run tauri:dev
+```
+
+Use **Bun** for JavaScript tooling, never npm or yarn. Per-OS prerequisites are on the [Building from source](/developers/building) page.
+
+## Before you open a PR
+
+1. **Open an issue first** for anything bigger than a bug fix, so the approach can be agreed before you spend time on it. Decisions that change how the app is built are recorded as [ADRs](/developers/decisions).
+2. Branch from `main` and keep the change focused.
+3. Run the checks CI runs (see [Testing](/developers/testing)):
+   ```bash
+   bun run check && bun run lint && bun run test:run
+   cargo clippy --workspace --all-targets --no-default-features -- -D warnings
+   cargo test --workspace --no-default-features
+   ```
+4. Add tests for new behavior and bug fixes.
+5. Update the changelog if users will notice the change (see below).
+6. Localize any user-facing string (see below).
+7. Open the PR with a conventional-commit title.
+
+## Conventions
+
+### Commits and PR titles
+
+Use conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+
+### Changelog
+
+If a user would notice the change, add a very short entry to `CHANGELOG.md` under `## [Unreleased]` (`### Added`, `### Fixed` or `### Improved`) in the same PR. The release notes are generated from that section, so anything missing at merge time is missing from the release.
+
+- Write for users: what they will notice, in plain language. No file names, function names or internal mechanics.
+- Match bullet length to impact. A tiny cosmetic fix gets a tiny bullet.
+- Skip it for anything invisible to users: refactors, tests, CI, dev-only tooling.
+- Do not add Fixed or Improved bullets for features that are still in `[Unreleased]`. Fold the polish into that feature's own `### Added` bullet instead.
+
+### Localization
+
+All user-facing strings must be localized. Update all three locale files together:
+
+- `src/lib/locales/en.json`
+- `src/lib/locales/zh-TW.json`
+- `src/lib/locales/zh-CN.json`
+
+A parity test fails when keys drift. Use `t('key')` in templates and `translate('key')` in JavaScript.
+
+### Code style
+
+- Rust: `cargo fmt`, idiomatic error handling, no `unwrap()` on user-reachable paths.
+- Frontend: TypeScript and Svelte 5, Tailwind for styling, `bun run format` (Prettier).
+- Icons: import `<Icon>` from `$lib/icons` only, never straight from `@lucide/svelte` or `simple-icons`. Register new icons in `src/lib/icons/registry.ts`.
+- Use forward slashes in paths for cross-platform compatibility.
+- Use plain hyphens (`-`) in code, comments and copy. Do not use em or en dashes; they cause shell encoding problems.
+- When you change `env.yaml`, change `env.yaml.template` too.
+- New source files start with the SPDX header (`reuse lint` must pass):
+  ```text
+  // SPDX-FileCopyrightText: 2025-2026 Imperium42 LLC
+  // SPDX-License-Identifier: MPL-2.0
+  ```
+
+### Dependencies
+
+New dependencies must be permissively licensed.
+
+- **Rust crates:** the license must be on the `accepted` list in `src-tauri/about.toml` (no GPL, AGPL or LGPL). If it is a license that is not on the list yet, confirm it is permissive before adding it. Attribution text is generated from `Cargo.lock` at release time, never written by hand.
+- **Frontend packages:** covered automatically by the license plugin in `vite.config.js`.
+
+### Workarounds for bugs you do not own
+
+Read `KNOWN_ISSUES.md` before "cleaning up" code that looks pointlessly defensive. Most of those workarounds guard failures that are completely silent. When you work around an upstream bug, add an entry with the symptom, the real cause, where the workaround lives and what would let it be dropped.
+
+## Platforms
+
+- **Windows 11 and macOS on Apple Silicon** have official builds. Windows 10 should work but is not tested or officially supported.
+- **Linux** is community-supported and built from source. Linux fixes and packaging PRs are welcome; please test them on a real Linux machine.
+
+## License
+
+By contributing you agree that your contributions are licensed under the Mozilla Public License 2.0. The "Echophrase" name and logo are not covered by the code license; see [TRADEMARKS.md](https://github.com/Imperium42/echophrase/blob/main/TRADEMARKS.md).
+
+## AI coding agents
+
+The repo's `CLAUDE.md` is written for human contributors and AI coding agents alike. It holds the architecture notes, conventions and gotchas that this section summarizes. Where a doc and the code disagree, the code wins; fix the doc in the same change.
