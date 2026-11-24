@@ -1,0 +1,31 @@
+---
+title: "0001: No CUDA"
+description: Why every CUDA code path was removed and GPU acceleration is DirectML and CoreML only
+---
+
+# 0001: No CUDA
+
+**Status:** Accepted
+**Date:** 2026-11-21
+
+## Context
+
+Echophrase used to ship CUDA execution providers on Linux and WSL, and as an optional override on Windows. The install matrix was a constant source of "works on my machine" breakage:
+
+- **Driver, Toolkit and cuDNN triangulation.** Every install needed a matching NVIDIA driver, CUDA Toolkit and cuDNN, and any one drifting broke things.
+- **WSL, GCC and two CUDA majors.** GPU passthrough, nvcc's host-compiler limit (which pinned native dependencies to an older GCC), and juggling CUDA 12 and 13 when both were installed.
+- **Diminishing returns versus DirectML.** For these speech models DirectML on a modern NVIDIA GPU is in the same performance bracket, ships with Windows, and also covers AMD, Intel and Qualcomm.
+- **Contributor friction.** An open-source app that needs a CUDA toolchain to build is a poor fit for outside contributors.
+
+## Decision
+
+Remove CUDA entirely, ahead of the v1.0.0 release. Windows uses DirectML, macOS uses CoreML and Metal, Linux and WSL run on CPU.
+
+## Consequences
+
+- Nothing CUDA-related remains in the tree: the plugin downloader, the `cuda` cargo feature, the execution-provider code and the UI are gone. The build and runtime CUDA environment variables are absent from `env.yaml.template` and `scripts/env/schema.ts`.
+- On WSL, `LD_LIBRARY_PATH` keeps `/usr/lib/wsl/lib` because the GPU probe reads VRAM size through NVML.
+- A settings file from an older build containing `execution_provider: "cuda"` is ignored and treated as auto-detect.
+- Linux has no GPU acceleration. Adding it would be new design work (it has no DirectML or CoreML equivalent), not a flag flip, and bringing CUDA back would likewise be new work.
+
+See [GPU and models](/developers/architecture/gpu-and-models).

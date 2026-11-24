@@ -1,0 +1,27 @@
+---
+title: "0002: Load ONNX Runtime dynamically"
+description: Why the ort crate runs in load-dynamic mode and ORT is staged by a script
+---
+
+# 0002: Load ONNX Runtime dynamically
+
+**Status:** Accepted
+**Date:** Not recorded in the sources
+
+## Context
+
+Linking ONNX Runtime statically on Windows couples the app to the MSVC STL ABI and causes mismatches ([pykeio/ort#361](https://github.com/pykeio/ort/issues/361)).
+
+## Decision
+
+Use the `ort` crate with its `load-dynamic` feature. The app loads `onnxruntime.dll`, `.so` or `.dylib` at runtime through the C API instead of linking it. The runtime is selected by `select_ort_runtime()` in `src-tauri/src/setup/ort_runtime.rs`, which sets `ORT_DYLIB_PATH` before any ORT API is touched.
+
+## Consequences
+
+- A runtime library must be present on disk. `scripts/ensure-ort.mjs` stages a pinned, SHA-256-verified ONNX Runtime on every platform before `tauri:dev*` and `tauri:build*`, and is the only place the versions and hashes live. See [Building from source](/developers/building#onnx-runtime-staging).
+- A missing or wrong `ORT_DYLIB_PATH` fails quietly: a CPU-only runtime can load and Parakeet takes far longer to preload. Automating the staging replaced hand-editing the path for this reason.
+- On Windows the bundled `DirectML.dll` must sit next to `onnxruntime.dll` and be preloaded by absolute path, because the copy in System32 is too old for ORT 1.24 (see `KNOWN_ISSUES.md`).
+- On macOS, the staged dylib is also copied to `src-tauri/macos-frameworks/`, which `tauri_build` requires to exist at compile time.
+- The pinned `ort` version is `2.0.0-rc.12`.
+
+See [GPU and models](/developers/architecture/gpu-and-models#onnx-runtime-bundling).

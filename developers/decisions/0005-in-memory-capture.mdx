@@ -1,0 +1,36 @@
+---
+title: "0005: Capture audio in memory on every platform"
+description: Why live capture was unified into one Rust recorder with no temp WAV files
+---
+
+# 0005: Capture audio in memory on every platform
+
+**Status:** Accepted
+**Date:** July 2026 (the unified in-memory audio refactor)
+
+## Context
+
+Audio handling had diverged by platform and was duplicated:
+
+- macOS and Windows recorded through a JavaScript plugin that wrote a temporary WAV, which Rust then read and deleted.
+- Linux and WSL used a separate PulseAudio capture path.
+- Resample, downmix, normalize and WAV-read code existed three times (CLI, ONNX backend, Candle backend).
+- The backend trait had separate file and buffer methods, and model dispatch was duplicated across commands.
+- Open mic (VAD) worked only on Linux and WSL, because it was wired into the PulseAudio loop.
+
+## Decision
+
+Route all audio through one shared crate, `crates/echo-audio`:
+
+- One Rust `AudioRecorder` on every platform, using `cpal`, buffering 16 kHz mono f32 samples in memory.
+- `AudioSource { File | Memory }` as the single switch between disk and memory. Files are still first class for dropped files and explicit paths.
+- One required backend method, `transcribe_samples`, with a provided `transcribe(&AudioSource)`, and a single dispatch router, `transcription::transcribe_source`.
+- Open mic runs on every platform, driven by the same capture chunks.
+
+## Consequences
+
+- No temp WAV files in the live recording path, and no cleanup of them.
+- Audio math is never re-implemented outside `echo-audio`.
+- `cpal`'s Linux host is ALSA only, so WSL needs a runtime `parec` branch feeding the same chunker (see [Audio pipeline](/developers/architecture/audio-pipeline#wsl-capture-parec)).
+- Samples for the whole recording are held in memory until it ends.
+- macOS needs an explicit microphone-permission request before capture starts.

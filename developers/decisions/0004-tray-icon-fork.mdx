@@ -1,0 +1,26 @@
+---
+title: "0004: Patched tray-icon crate"
+description: Why the workspace patches tray-icon to give the Windows tray icon a stable GUID
+---
+
+# 0004: Patched tray-icon crate
+
+**Status:** Accepted (temporary, until upstream ships the change)
+**Date:** 2026-09-10 (when the problem was found)
+
+## Context
+
+After a Scoop update the tray icon fell back into the hidden overflow even though the user had pinned it. Windows keys the "always show" flag on the icon's identity, which without a GUID is the exe path. Scoop installs each version in its own directory, so every update looks like a new icon. A GUID identity survives path changes only when both binaries are signed by the same publisher.
+
+Tauri's `tray-icon` crate did not support a GUID identity. Details are in [Windows tray icon identity](/developers/deep-dives/windows-tray-icon).
+
+## Decision
+
+Patch `tray-icon` through `[patch.crates-io]` in the root `Cargo.toml`, pointing at a fork pinned to a commit. The fork is `tray-icon` 0.24.2 plus the upstream PR [tauri-apps/tray-icon#366](https://github.com/tauri-apps/tray-icon/pull/366), plus a process-wide `set_default_guid`, because Tauri's `TrayIconBuilder` does not pass new attributes through. The app sets a fixed GUID (`TRAY_ICON_GUID` in `src-tauri/src/setup/tray.rs`) before building the icon, and the release build (when signing is configured) signs the app exe itself so the GUID is honored across path changes.
+
+## Consequences
+
+- The build depends on a git fork rather than a crates.io release. Review the pin when upgrading Tauri.
+- The GUID must never change and must never be reused for another icon.
+- Drop the patch once the upstream PR is released and Tauri exposes `with_guid`.
+- The first update after the change still reset the pin once on Scoop installs, since the older build had no identity to carry over.

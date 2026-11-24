@@ -1,0 +1,33 @@
+---
+title: "0006: Open source, local only"
+description: The decision to release Echophrase as free, MPL-2.0 software with no server, account or telemetry
+---
+
+# 0006: Open source, local only
+
+**Status:** Accepted
+**Date:** 2026-11-23 (v1.0.0)
+
+## Context
+
+Echophrase was not open source before v1.0.0. The goal for v1.0.0 was a project anyone can read, build, fork and run with no dependency on a service the maintainers operate.
+
+## Decision
+
+From v1.0.0:
+
+- The code is released under the [Mozilla Public License 2.0](https://github.com/Imperium42/echophrase/blob/main/LICENSE). Every feature is available to everyone.
+- The app is fully local. Audio is captured in memory and transcribed on the user's device.
+- There is no server, no account and no telemetry. The app talks to no Echophrase backend.
+- The only network destinations are `huggingface.co` (model downloads) and `cdn.crabnebula.app` (update checks). Adding any other destination means updating `TELEMETRY.md`, the README privacy section and the public privacy docs in the same PR.
+- There are no forced updates. The in-app updater offers new versions and never blocks an old one.
+- The name and logo remain trademarks of Imperium42 LLC, so forks ship under another name.
+- Windows 11 and macOS on Apple Silicon get official builds. Linux is community-supported and built from source.
+
+## Consequences
+
+- Code that depended on a backend was removed rather than hidden behind flags. Do not reintroduce gates, accounts or phone-home calls.
+- CUDA was removed in the same release window to keep the project buildable by contributors ([ADR 0001](/developers/decisions/0001-no-cuda)).
+- Dependencies must be permissively licensed (Rust crates are checked against the allowlist in `src-tauri/about.toml`).
+
+See [Contributing](/developers/contributing) and the user-facing [Privacy](/privacy) page.

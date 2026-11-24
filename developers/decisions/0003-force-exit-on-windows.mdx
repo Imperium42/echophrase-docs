@@ -1,0 +1,38 @@
+---
+title: "0003: Force-exit instead of graceful shutdown"
+description: Why every exit path ends in shutdown::force_exit, which uses TerminateProcess on Windows
+---
+
+# 0003: Force-exit instead of graceful shutdown
+
+**Status:** Accepted
+**Date:** Not recorded in the sources
+
+## Context
+
+Graceful Rust and libc shutdown deadlocks in this app. The code (`src-tauri/src/shutdown.rs`) records these causes:
+
+- ONNX Runtime atexit handlers can deadlock during `dlclose()` of provider libraries (onnxruntime#21207, unresolved as of 2026-04).
+- `webkit2gtk` can block on GTK main-loop teardown when a window was never fully realised.
+- `tauri-plugin-updater` may still hold a `reqwest` request when the process tries to join the tokio runtime.
+- `process::exit` is not thread-safe with C atexit handlers (rust-lang/rust#126600).
+
+On Windows there is a further problem: `libc::_exit` goes through the C runtime, which still runs `DLL_PROCESS_DETACH` for every loaded DLL. ORT, DirectML and audio drivers can hang in their detach handlers, leaving the process alive after "Quit".
+
+## Decision
+
+Every exit path goes through one function, `shutdown::force_exit(code)`. It does a small amount of best-effort cleanup and then ends the process without running destructors:
+
+- On Linux and macOS it calls `libc::_exit`, a direct exit syscall that skips atexit handlers, C++ static destructors and Rust drops.
+- On Windows it calls `TerminateProcess` on the current process, which skips all DLL teardown.
+
+The tray's Quit item, the window command that closes the app, SIGINT and SIGTERM (exit code 130), and fatal startup errors all route through it.
+
+## Consequences
+
+- Cleanup that matters must be done explicitly inside `force_exit`, because drop order is bypassed. Today that is: unregistering global shortcuts (otherwise a second launch can fail with "HotKey already registered"), removing the single-instance lock file, removing the IPC token and state files, and on macOS reverting the dictation-key remap.
+- Stdio buffers may lose their tail. Logging is line buffered, so the last log line before exit is still observable.
+- New code that needs shutdown work must hook into `force_exit`; relying on `Drop` or on Tauri's exit events will not run.
+- Do not replace this with `std::process::exit`, `app.exit` or `RunEvent::Exit` without re-testing quit on every platform.
+
+Related: [Architecture overview](/developers/architecture/overview#system-tray-and-lifecycle), [macOS dictation key](/developers/deep-dives/macos-dictation-key).

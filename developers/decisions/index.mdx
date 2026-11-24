@@ -1,0 +1,80 @@
+---
+title: Architecture decisions
+description: What an ADR is in this project, when to write one, how they are numbered, and a template
+---
+
+# Architecture decisions (ADRs)
+
+An Architecture Decision Record (ADR) is a short page that records one decision: what the situation was, what was chosen, and what follows from it. Its job is to answer "why is it like this?" months later, so nobody removes a workaround or reopens a settled question without knowing the history.
+
+ADRs describe decisions as they were made. They are not kept in sync with the code. When a decision changes, write a new ADR that supersedes the old one instead of rewriting it.
+
+## When to write one
+
+Write an ADR when a choice:
+
+- is hard or expensive to reverse (a runtime, a dependency, a platform you will or will not support),
+- looks wrong or arbitrary in isolation and a future contributor is likely to "fix" it,
+- rules something out on purpose (for example no CUDA, no server), or
+- worked around a bug you do not own in a way that shapes the architecture.
+
+Do not write one for routine implementation detail, or for anything the code and its comments already explain well. Workarounds for upstream bugs also get an entry in `KNOWN_ISSUES.md` in the repo.
+
+If you are not sure, open an issue first. Larger changes should be discussed there before a PR (see [Contributing](/developers/contributing)).
+
+## Numbering and files
+
+- One file per decision: `developers/decisions/NNNN-short-title.mdx`.
+- Four-digit numbers, in order, starting at `0001`. Take the next free number. Never reuse or renumber one, even if the ADR is rejected or superseded.
+- Add the page to the "Decisions" group in `docs.json`.
+- Keep each ADR short: a page or less. Link to the code and to issues instead of copying them.
+- Only record reasons the sources support. If a reason is unknown, say less rather than guess.
+
+## Statuses
+
+| Status | Meaning |
+|--------|---------|
+| Proposed | Under discussion, not yet in effect |
+| Accepted | In effect |
+| Rejected | Considered and declined; kept so the question is not reopened blindly |
+| Deprecated | No longer relevant, with nothing replacing it |
+| Superseded by NNNN | Replaced by a later ADR; link to it |
+
+## Template
+
+Copy this into a new file.
+
+````mdx
+---
+title: "NNNN: Short decision title"
+description: One sentence saying what was decided
+---
+
+# NNNN: Short decision title
+
+**Status:** Proposed | Accepted | Rejected | Deprecated | Superseded by NNNN
+**Date:** YYYY-MM-DD (if known)
+
+## Context
+
+What forces were at play: the problem, constraints and what was tried. Facts only.
+
+## Decision
+
+What we chose, in one or two plain sentences.
+
+## Consequences
+
+What becomes easier, what becomes harder, what to watch for, and what would let us revisit this.
+````
+
+## Index
+
+| ADR | Decision | Status |
+|-----|----------|--------|
+| [0001](/developers/decisions/0001-no-cuda) | No CUDA | Accepted |
+| [0002](/developers/decisions/0002-ort-load-dynamic) | Load ONNX Runtime dynamically | Accepted |
+| [0003](/developers/decisions/0003-force-exit-on-windows) | Force-exit instead of graceful shutdown | Accepted |
+| [0004](/developers/decisions/0004-tray-icon-fork) | Patched tray-icon crate for a stable Windows icon identity | Accepted |
+| [0005](/developers/decisions/0005-in-memory-capture) | Capture audio in memory on every platform | Accepted |
+| [0006](/developers/decisions/0006-open-source) | Open source, local only | Accepted |
