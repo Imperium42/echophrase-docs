@@ -1,0 +1,94 @@
+---
+title: Silero VAD V5
+description: Implementation notes for the Silero VAD V5 ONNX model used by Open Mic mode
+---
+
+# Silero VAD V5
+
+Critical implementation details for the Silero VAD V5 ONNX model used in Open Mic mode. They were found by debugging in April 2026 and are not well documented upstream.
+
+## Model source
+
+- Upstream: [snakers4/silero-vad](https://github.com/snakers4/silero-vad), version V5.
+- Bundled file: `src-tauri/resources/silero_vad.onnx`, included at compile time with `include_bytes!` in `src-tauri/src/vad.rs`.
+- The implementation is self-written on top of `ort`, to avoid dependency version conflicts.
+
+## ONNX interface: V5 versus V4
+
+V5 changed the ONNX tensor names. Using the V4 names produces `Invalid input name: "h"` on every inference, and the probability comes back as 0.0.
+
+| | V4 (old) | V5 (current) |
+|---|---|---|
+| State input | `"h"` [2, 1, 64] and `"c"` [2, 1, 64] | `"state"` [2, 1, 128] |
+| State output | `"hn"` and `"cn"` | `"stateN"` |
+| Audio input | `"input"` [1, N] | `"input"` [1, N] (unchanged) |
+| Sample rate | `"sr"` [1] | `"sr"` [] (scalar) |
+| Probability output | `"output"` | `"output"` (unchanged) |
+
+Both a scalar `sr` (shape `[]`) and an array `sr` (shape `[1]`) are accepted.
+
+## Chunk size: use 256 samples
+
+<Warning>
+Feed the model **256-sample chunks** (16 ms at 16 kHz). Do not use 512.
+</Warning>
+
+The model's ONNX graph has conditional `If` nodes that branch on chunk size. With 512-sample chunks the LSTM state accumulates the wrong dimensions after the first prediction:
+
+- the LSTM expects `{1, 1, 128}` (3 dimensions)
+- after a 512-sample chunk it holds `{1, 1, 128, 2}` (4 dimensions)
+
+Later frames then fail with `Input X must have 3 dimensions only`. The failure is swallowed and the model returns a probability of about 0.0006 for every input, whatever the audio.
+
+Results for the same audio at different chunk sizes:
+
+| Chunk size | Duration | Speech probability | Status |
+|---|---|---|---|
+| 256 | 16 ms | **0.35** | Works |
+| 512 | 32 ms | 0.0006 | LSTM state corruption |
+| 768 | 48 ms | - | Crash (InvalidArgument) |
+| 1024 | 64 ms | - | Crash (InvalidArgument) |
+| 1536 | 96 ms | - | Crash (InvalidArgument) |
+
+Both the bundled model and the official model downloaded from GitHub behave the same way. A likely cause is an ORT 1.23 or newer incompatibility with the model's `If` node structure at chunk sizes other than 256. This is why `echo_audio::capture` hands the VAD state machine 256-sample chunks.
+
+## Normalizing quiet sources
+
+WSLg's `RDPSource` captures at very low levels (about -38 dB, peak around 0.01). Normal speech peaks at 0.1 to 0.5. Whisper normalizes internally, but Silero VAD expects normal amplitude.
+
+Before `vad.predict()`, the recorder scales each chunk toward a **0.5 peak**, with the gain capped at 100x so noise is not amplified without limit, and leaves chunks at the noise floor unchanged (`VAD_NORMALIZE_MIN_PEAK` in `src-tauri/src/audio/recorder.rs`). The raw, unnormalized buffer is what gets transcribed. A periodic idle reset keeps the LSTM state from drifting on amplified noise.
+
+## State management
+
+- Reset between recording sessions (`vad.reset()` zeroes the `[2, 1, 128]` state tensor).
+- Do **not** reset between chunks within a session; the state carries across chunks.
+- After a completed speech segment is emitted (`open-mic-chunk-ready`), reset for the next utterance.
+
+## Detection settings
+
+| Parameter | Default | Range | Source |
+|---|---|---|---|
+| VAD threshold | 0.5 (50 in the UI) | 0 to 1 (0 to 100 in the UI) | `voice_threshold` setting |
+| Silence timeout | 5 s | 2 to 10 s | `silence_timeout` setting |
+| Minimum speech duration | 500 ms | fixed | `MIN_SPEECH_DURATION_MS` constant |
+
+- The threshold decides speech or non-speech per chunk (`probability >= threshold`).
+- The silence timeout is how long silence must last after speech before transcription is triggered.
+- Minimum speech duration is measured in wall-clock time from speech onset; anything shorter is treated as noise and discarded.
+
+## Key files
+
+- `src-tauri/src/vad.rs` - `SileroVad`, the `VadBackend` trait, predict and reset
+- `src-tauri/src/audio/recorder.rs` - VAD recording loop, state machine, buffers
+- `src-tauri/src/commands/recording.rs` - Tauri commands and the RMS silence guard
+- `src-tauri/resources/silero_vad.onnx` - the model
+
+## Debugging
+
+`OPEN_MIC_DEBUG` in `src-tauri/src/audio/recorder.rs` is `cfg!(debug_assertions)`, so per-frame logging is on in debug builds and off in release builds:
+
+```text
+[OpenMic] frame=100 prob=0.994 rms=0.03792 peak=0.0791 speech=true state=Speaking
+```
+
+Fields: frame count, VAD probability, raw RMS, raw peak, speech classification and state-machine state.

@@ -1,0 +1,33 @@
+---
+title: Windows tray icon identity
+description: Why the tray icon has a fixed GUID and a patched tray-icon crate, so the always-show pin survives updates
+---
+
+# Windows tray icon identity
+
+## The problem
+
+After a Scoop update the tray icon dropped back into the hidden overflow even though the user had set it to "always show".
+
+Windows stores the per-icon "always show" flag under `HKCU\Control Panel\NotifyIconSettings`, keyed on the icon's identity. Without `NIF_GUID`, that identity is the **exe path** plus a per-process `uID`. Scoop installs every version into its own directory (`scoop\apps\echophrase\<version>\`), so each update looks like a brand-new icon. winget and the plain installer use a fixed path and were not affected.
+
+Microsoft's rule ([NOTIFYICONDATA troubleshooting](https://learn.microsoft.com/windows/win32/api/shellapi/ns-shellapi-notifyicondataw#troubleshooting)): an icon registered with a `guidItem` keeps its settings across a path change **only if** the old and new binaries are Authenticode-signed by the same publisher.
+
+## What the app does
+
+1. **Fixed GUID.** `src-tauri/src/setup/tray.rs` defines `TRAY_ICON_GUID` and passes it to `tray_icon::set_default_guid` before the icon is built. Never change it, and never reuse it for a second icon.
+2. **Patched `tray-icon`.** Tauri's crate does not support `guidItem`. The workspace `Cargo.toml` has a `[patch.crates-io]` entry that points `tray-icon` at a fork pinned to a commit. The fork is `tray-icon` 0.24.2 plus upstream PR [tauri-apps/tray-icon#366](https://github.com/tauri-apps/tray-icon/pull/366) plus a process-wide `set_default_guid`, which is needed because Tauri's `TrayIconBuilder` does not pass new attributes through. Drop the patch once the PR ships and Tauri exposes `with_guid`. See [ADR 0004](/developers/decisions/0004-tray-icon-fork).
+3. **Signed app exe.** When signing is configured, the release build signs `echophrase.exe` itself (through the Windows bundle's `signCommand`), not only the installer. Without that, the GUID would not help across path changes.
+
+## Checking a machine
+
+```powershell
+Get-ChildItem 'HKCU:\Control Panel\NotifyIconSettings' |
+  ForEach-Object { Get-ItemProperty $_.PSPath } |
+  Where-Object ExecutablePath -match 'echophrase' |
+  Select-Object ExecutablePath, IsPromoted
+```
+
+Two entries with different paths mean the identity drifted. Stale entries for uninstalled versions are harmless.
+
+The first update after the GUID was introduced still resets the pin once on Scoop installs: the older build had no GUID and an unsigned exe, so there was no prior identity to carry over.

@@ -1,0 +1,69 @@
+---
+title: macOS dictation key
+description: How Echophrase takes over the F5 dictation key on macOS with a session-only hidutil remap
+---
+
+# macOS dictation key (F5)
+
+On modern Apple keyboards the **F5** key is the dedicated Dictation key (microphone icon, between Spotlight and Do Not Disturb). Echophrase uses it as the record toggle on macOS **without** asking the user to turn off system Dictation, and only while the app is running.
+
+## Why you cannot just bind F5
+
+The Dictation key does not emit a normal F5 keycode. It emits a HID Consumer-page usage, `0xc000000cf` ("Voice Command"), which macOS routes straight into its Dictation service before any app sees a keystroke.
+
+- `tauri-plugin-global-shortcut` (Carbon `RegisterEventHotKey`) binds virtual keycodes and never sees the bare press.
+- A `CGEventTap` cannot reliably swallow it either; macOS handles the key above the tap layer while system Dictation is on.
+
+## The approach: remap to F13 with `hidutil`
+
+The key is remapped at the HID layer to an otherwise unused key, **F13** (`0x700000068`), using `hidutil`. The app binds **F13** as a normal global shortcut and **displays it as "F5"**, the label printed on the key.
+
+- No System Settings change, no driver, no special permission and no restart.
+- A remap takes effect on the next keypress and is cleared on reboot.
+- It is session-only and driven by the binding, so native Dictation is disabled only while the user actually has the mic key bound.
+
+While the remap is active it is system wide: the mic key will not start system Dictation in any app. That is the intended takeover.
+
+## Binding-driven lifecycle
+
+| Event | Action |
+|-------|--------|
+| Configured hotkey is F13 (including the macOS default) | Remap on; native Dictation disabled |
+| Configured hotkey is anything else | Remap reverted; native Dictation restored |
+| User is recording a new hotkey (capture UI open) | Remap on temporarily so the mic key is capturable as F13; reconciled to the final binding when capture ends or is cancelled |
+| App quits (`shutdown::force_exit`) | Remap reverted, as a safety net |
+
+If the app is hard-killed the remap lingers until the next launch reconciles it, or until a reboot. Manual recovery: `scripts/mac/dictation-key-revert.sh`.
+
+## Defaults and display
+
+- The macOS default record hotkey is `f13` (`DEFAULT_HOTKEY_MAC` in `src/lib/utils/hotkeyStorage.ts`, and the default in `src-tauri/src/settings/mod.rs`). Other platforms default to `ctrl+shift+space`. Because the default is F13, the remap is enabled on first run and the mic key works out of the box.
+- The binding is stored and registered as `f13` but rendered as "F5" by `formatKeyToken()` in `src/lib/utils/hotkeyFormatter.ts`.
+- During hotkey capture, a remapped mic-key press (`f13`) and a plain `f5` (for example `fn` + F5, or a keyboard without the mic key) are both normalized to `f13` by `handleHotkeyRecording()` in `src/lib/composables/useHotkeys.ts`.
+
+## Code map
+
+| Concern | Location |
+|---------|----------|
+| `hidutil` apply and revert, `set_dictation_key_remap` command | `src-tauri/src/macos_dictation.rs` |
+| Command registration (no-op off macOS) | `src-tauri/src/lib.rs` (`invoke_handler`) |
+| Revert on quit | `src-tauri/src/shutdown.rs` (`force_exit`) |
+| Capture normalization and remap toggling | `src/lib/composables/useHotkeys.ts` |
+| `f13` shown as "F5" | `src/lib/utils/hotkeyFormatter.ts` |
+| Default hotkey | `src/lib/utils/hotkeyStorage.ts`, `src-tauri/src/settings/mod.rs` |
+| Manual scripts | `scripts/mac/dictation-key-{remap,revert,status}.sh` |
+
+## Manual testing
+
+```bash
+scripts/mac/dictation-key-remap.sh    # remap mic key -> F13
+scripts/mac/dictation-key-status.sh   # show the current hidutil UserKeyMapping
+scripts/mac/dictation-key-revert.sh   # clear the remap, restore system Dictation
+```
+
+`dictation-key-status.sh` should show `Src 0xc000000cf -> Dst 0x700000068` while the remap is active.
+
+## Known limitations
+
+- `revert` clears the entire `hidutil` `UserKeyMapping`, so it would also remove any other manual `hidutil` remap set in the same session. A fuller version would read, merge and write the existing mapping instead.
+- The legacy "press `fn` or Globe twice" Dictation gesture is a separate timing path and is not affected by this remap.

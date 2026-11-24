@@ -1,0 +1,44 @@
+---
+title: Model load baselines
+description: Reference preload times for spotting regressions, and why warm and cold shader caches differ
+---
+
+# Model load baselines
+
+Reference wall-clock times for model preload, so regressions are easy to spot and user-facing timeouts have a basis. They measure the ONNX `from_pretrained` path in `src-tauri/src/transcription/onnx_backend.rs`; look for the `[ONNX timing]` log lines.
+
+## Measured baselines
+
+| Model | Provider | GPU | Shader cache | Preload time | Source |
+|-------|----------|-----|--------------|--------------|--------|
+| parakeet-tdt-0.6b-v3 | DirectML | RTX 5080 | warm | about 7.1 s (7071 ms) | dev run, 2026-06-01 |
+
+From the dev log:
+
+```text
+[ONNX timing] from_pretrained returned in 7070ms (7.07s)
+[ONNX timing] Parakeet TDT v3 ready (total 7071ms)
+```
+
+## Warm versus cold
+
+DirectML JIT-compiles its compute shaders the first time a model runs on a given GPU architecture, then the driver caches them persistently per machine.
+
+- **Warm reload** (shaders already cached) is fast: the roughly 7 s above.
+- **Cold first run** (new GPU architecture, fresh driver or shader cache) can be much slower, from seconds to minutes. This is what real users hit on first launch.
+
+So:
+
+- The Rust-side preload timeout is **300 s** specifically to survive cold JIT on new GPU architectures.
+- A fast preload on a development machine (warm cache) does **not** validate the cold-JIT deadlock fix, where model loading was moved outside the cache mutex and concurrent `from_pretrained` calls were serialized. Reproducing that path needs a genuinely cold cache, ideally on an unseen GPU architecture.
+- The ONNX Runtime DirectML runtime is the same pinned version (`scripts/ensure-ort.mjs`) in dev and in the bundled app, so this is a cold-versus-warm distinction, not a dev-versus-release one.
+
+Treat about 7 s as the warm regression baseline, not the worst case.
+
+## Capturing a new baseline
+
+1. Run the app (`bun run tauri:dev`) and watch the `[ONNX timing]` lines, or read the dev log file `Echophrase.log`.
+2. Note the model id, execution provider (DirectML or CoreML), the GPU, and whether the shader cache was warm (a prior run on this machine and GPU) or cold.
+3. Add a row to the table. Keep warm and cold rows separate; never average them.
+
+Memory baselines for long clips are on [GPU and models](/developers/architecture/gpu-and-models#memory-long-recordings-and-idle-unload).

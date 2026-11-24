@@ -1,0 +1,78 @@
+---
+title: Audio normalization
+description: Why Whisper needs level-normalized input, what the research found and where normalization lives in the code
+---
+
+# Audio normalization
+
+Whisper models expect PCM audio in the [-1, 1] range but are **not scale invariant**. Very quiet audio (below roughly -40 dBFS peak) causes transcription failures: the model emits language tokens or gibberish instead of text. This page records the research behind the normalization step.
+
+## The problem
+
+During the Candle Whisper integration, a test file with a -25.2 dBFS peak (`test-1-2.wav`, "Test one, two.") produced Portuguese language tokens (`<|pt|>`) repeatedly instead of English text. Investigation pointed to Whisper's sensitivity to input amplitude.
+
+## Research findings
+
+### What OpenAI Whisper does
+
+From `whisper/audio.py` in the OpenAI repository:
+
+1. PCM is converted to float32 in [-1, 1] (`int16 / 32768.0`) with **no pre-normalization or gain control**.
+2. Normalization happens afterwards, on the log-mel spectrogram:
+   ```python
+   log_spec = torch.clamp(mel_spec, min=1e-10).log10()
+   log_spec = torch.maximum(log_spec, log_spec.max() - 8.0)  # 8 dB dynamic range
+   log_spec = (log_spec + 4.0) / 4.0                          # scale to about [0, 2]
+   ```
+
+Very quiet audio still produces weak mel features after that step.
+
+### What Candle does
+
+`candle-transformers/src/models/whisper/audio.rs` implements the identical mel normalization (an 8 dB floor below the maximum, then `/ 4.0 + 1.0`). Neither implementation normalizes the raw PCM, so a preprocessing step is needed for reliable transcription of quiet input.
+
+### Whisper is not scale invariant
+
+From the discussions in [openai/whisper#428](https://github.com/openai/whisper/discussions/428) and [#2125](https://github.com/openai/whisper/discussions/2125): the model was not designed to be scale invariant, because the log-mel values were rescaled to roughly [-1, 1] during training. Inputs outside that range degrade performance.
+
+### Industry levels for speech
+
+Drawn from EBU R128, ITU-R BS.1770 and general audio-engineering practice:
+
+| Quantity | Guidance |
+|----------|----------|
+| Peak, optimal | -1 to -6 dBFS |
+| Peak, safe headroom | about -3 dBFS |
+| Peak, too quiet for ASR | below -40 dBFS |
+| RMS for speech | about -20 dBFS, with 15 to 25 dB between RMS and peak |
+
+Peak normalization is simple and fast, and is enough for Whisper. RMS and LUFS methods are more perceptually accurate but unnecessary here.
+
+## Where it lives in the code
+
+There are two peak normalizers, for two jobs:
+
+- **Candle Whisper path.** `AudioNormalizationConfig` in `src-tauri/src/types/mod.rs`, applied in `src-tauri/src/transcription/candle_whisper.rs` before the mel spectrogram. Defaults: `target_peak` 0.8 (about -1.94 dBFS) and a 16 kHz sample rate. Audio below the target peak is boosted to it; audio above 1.0 is scaled down to a 0.99 peak; audio between the two is left alone; silence is skipped.
+- **Shared audio crate.** `echo_audio::normalize_peak` (`crates/echo-audio/src/sample.rs`) scales to a target peak, with a target of 0.8 (`NORMALIZE_TARGET_PEAK`). It returns input unchanged when the peak is below `NORMALIZE_MIN_THRESHOLD` (1e-10), which in practice means digital silence only, so it never divides by zero. The CLI `transcode` command uses it, with `--no-normalize` to skip it.
+
+The research draft proposed a `min_threshold` field of 0.01 (-40 dBFS) as the trigger for boosting. The shipped Whisper config no longer has that field; it boosts anything below the target peak. The shared crate keeps a floor, but it is a divide-by-zero guard, not a boost trigger.
+
+Normalization is preprocessing only. It does not change Whisper's internal mel normalization, and it costs a single linear scan.
+
+Silero VAD has its own, separate level fix for very quiet sources; see [Silero VAD V5](/developers/deep-dives/silero-vad-v5#normalizing-quiet-sources).
+
+## Test result
+
+Before normalization, `test-1-2.wav` had a peak of -25.2 dBFS (PCM range about -0.055 to 0.043) and produced the `<|pt|>` token loop. The normalization fix applies roughly an 80x gain, bringing the peak to about -1.94 dBFS.
+
+## Ideas not pursued
+
+RMS normalization, dynamic range compression, silence detection to avoid boosting silence-only audio, and per-model adaptive thresholds were listed as future improvements.
+
+## References
+
+1. OpenAI Whisper: https://github.com/openai/whisper
+2. "Robust Speech Recognition via Large-Scale Weak Supervision" (the Whisper paper)
+3. Candle: https://github.com/huggingface/candle
+4. EBU R128 and ITU-R BS.1770 loudness standards
+5. OpenAI Cookbook: "Enhancing Whisper transcriptions: pre- & post-processing techniques"
