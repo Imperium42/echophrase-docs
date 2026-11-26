@@ -27,26 +27,26 @@ Add Echophrase to your project's `.mcp.json`:
 {
   "mcpServers": {
     "echophrase": {
-      "command": "/absolute/path/to/echophrase",
+      "command": "echophrase-cli",
       "args": ["mcp"]
     }
   }
 }
 ```
 
-Use the absolute path to the `echophrase` binary installed alongside the
-desktop app. Restart Claude Code (or reload MCP servers) after saving, and
+This works when `echophrase-cli` is on your `PATH` (see [CLI](/cli) for how to
+install it); otherwise use the absolute path to the `echophrase-cli` binary. Restart Claude Code (or reload MCP servers) after saving, and
 the tools below become available.
 
 ## Tools
 
 | Tool | Mirrors CLI command | Requirements |
 |------|---------------------|--------------|
-| `record` | `echophrase record` | None |
-| `stop` | `echophrase stop` | None |
-| `status` | `echophrase status` | None |
-| `transcode` | `echophrase transcode` | None |
-| `transcribe` | `echophrase transcribe` | Desktop app running, MCP Server toggle enabled |
+| `record` | `echophrase-cli record` | None |
+| `stop` | `echophrase-cli stop` | None |
+| `status` | `echophrase-cli status` | None |
+| `transcode` | `echophrase-cli transcode` | None |
+| `transcribe` | `echophrase-cli transcribe` | Desktop app running, MCP Server toggle enabled |
 
 Every tool shares the same session and audio logic as the CLI commands, so
 behavior never drifts between using the terminal directly and having an

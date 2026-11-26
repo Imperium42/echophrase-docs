@@ -113,7 +113,8 @@
                   "developers/decisions/0003-force-exit-on-windows",
                   "developers/decisions/0004-tray-icon-fork",
                   "developers/decisions/0005-in-memory-capture",
-                  "developers/decisions/0006-open-source"
+                  "developers/decisions/0006-open-source",
+                  "developers/decisions/0007-cli-binary-name"
                 ]
               }
             ]

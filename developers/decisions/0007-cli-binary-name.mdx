@@ -1,0 +1,31 @@
+---
+title: "0007: Name the CLI binary echophrase-cli"
+description: The CLI binary was renamed from echophrase to echophrase-cli so it can never overwrite the desktop app's binary
+---
+
+# 0007: Name the CLI binary echophrase-cli
+
+**Status:** Accepted
+**Date:** 2026-11-26
+
+## Context
+
+The repo is one cargo workspace (`src-tauri`, `cli`, `crates/echo-audio`), and `.cargo/config.toml` pins every member's build output to `src-tauri/target` so CI paths never move. The desktop app's binary is named `echophrase`, and the CLI's `[[bin]]` was also named `echophrase`.
+
+Both therefore built to the same file, `src-tauri/target/<profile>/echophrase`. Building the CLI (for example `cargo build -p echophrase-cli`) silently replaced the dev app's binary with the CLI, so the next `tauri dev` start could launch the CLI instead of the app. The CLI README also still said the crate "does not touch the Tauri build", which stopped being true when it joined the workspace.
+
+## Decision
+
+The CLI binary is now `echophrase-cli` (the crate was already called `echophrase-cli`). The desktop app keeps `echophrase`.
+
+## Consequences
+
+- **Breaking for CLI users.** Scripts that call `echophrase ...` must call `echophrase-cli ...`. MCP clients must change `"command"` in `.mcp.json` to `echophrase-cli` (or its absolute path). The MCP server key (`"echophrase"`) and its reported server name are unchanged, so tool names such as `mcp__echophrase__transcribe` stay the same.
+- **Migration:** re-run `cargo install --path cli` from the repo root (it installs `echophrase-cli`), update `.mcp.json`, and delete any old `echophrase` CLI binary in `~/.cargo/bin` so it is not confused with the app.
+- The CLI is not bundled with the desktop installers; it is built from source. The docs and the in-app MCP setup prompt said otherwise and were corrected in the same change.
+- Two binaries in one workspace must never share a name again. A new `[[bin]]` needs a name no other member uses.
+
+## Alternatives considered
+
+- **Keep `echophrase` and give the CLI its own target dir.** Rejected: it fights the workspace-wide target pin that CI relies on, and two different programs with one name stay confusing on `PATH`.
+- **Rename the app binary instead.** Rejected: the app binary name is baked into installers, the updater, winget/Homebrew/Scoop packages and OS integrations (autostart, tray identity), so renaming it breaks far more than the CLI rename does.

@@ -5,7 +5,7 @@ description: Echophrase 本机 IPC 服务器的绑定、验证、闸控与范围
 
 # MCP / IPC 安全模型
 
-本页说明支持 `transcribe` MCP 工具与 `echophrase transcribe` CLI 指令的
+本页说明支持 `transcribe` MCP 工具与 `echophrase-cli transcribe` CLI 指令的
 本机 IPC 服务器的安全设计 - 也就是 Echophrase 让 AI 代理与桌面应用程序
 沟通的部分。本页写给希望自行检验设计，而非只听我们说法的读者。以下每项
 说法都已对照目前的源代码核实，并附上文件参照，方便您自行查证。
@@ -83,7 +83,7 @@ let std_listener = std::net::TcpListener::bind(&addr)...
 
 ## 五个工具能做什么、不能做什么
 
-MCP 服务器（`echophrase mcp`）仅公开五个工具，通过 `#[tool_router]`
+MCP 服务器（`echophrase-cli mcp`）仅公开五个工具，通过 `#[tool_router]`
 定义在固定方法集合上（`cli/src/commands/mcp.rs`）：`record`、
 `stop`、`status`、`transcode`、`transcribe`。内部还有第六个子指令
 `worker`，用来运行背景录音进程，但从未注册为工具

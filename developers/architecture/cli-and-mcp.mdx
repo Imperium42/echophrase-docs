@@ -1,6 +1,6 @@
 ---
 title: CLI and MCP internals
-description: How the echophrase CLI, its MCP mode and the desktop app's localhost IPC server fit together
+description: How the CLI (`echophrase-cli`), its MCP mode and the desktop app's localhost IPC server fit together
 ---
 
 # CLI and MCP internals
@@ -9,7 +9,7 @@ This page covers how the pieces are built. For using them, see the user-facing [
 
 ## What it is
 
-`cli/` is a standalone workspace crate (`echophrase-cli`) that produces the `echophrase` binary. It captures the microphone and converts audio files to the canonical transcription format without touching the Tauri build. `echophrase mcp` runs the same logic as a minimal MCP server over stdio, so AI agents can call `record`, `stop`, `status`, `transcode` and `transcribe` as tools. A hidden `worker` subcommand is the detached capture process spawned by `record`; it is never exposed as an MCP tool.
+`cli/` is a standalone workspace crate (`echophrase-cli`) that produces the `echophrase` binary. It captures the microphone and converts audio files to the canonical transcription format without touching the Tauri build. `echophrase-cli mcp` runs the same logic as a minimal MCP server over stdio, so AI agents can call `record`, `stop`, `status`, `transcode` and `transcribe` as tools. A hidden `worker` subcommand is the detached capture process spawned by `record`; it is never exposed as an MCP tool.
 
 All output is 16 kHz, 16-bit, mono WAV, the exact format the transcription pipeline expects, so files drop straight in with no downstream resample.
 

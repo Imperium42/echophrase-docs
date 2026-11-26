@@ -5,20 +5,26 @@ description: 透過命令列存取錄音、轉碼與轉錄功能
 
 # CLI
 
-Echophrase 隨桌面應用程式一同提供一個小型命令列工具，名為 `echophrase`。
+Echophrase 提供一個小型命令列工具 `echophrase-cli`。
 它讓您無需開啟應用程式視窗即可在終端機中錄製麥克風音訊、轉換音訊格式，
 並提供 [MCP 伺服器模式](/zh-Hant/mcp)，讓 Claude Code 等 AI 代理可以直接驅動語音擷取。
 
 ## 在哪裡找到它
 
-CLI 會與桌面應用程式一起安裝，無需另外下載。在已安裝桌面應用程式的同一台機器上執行：
+CLI 目前尚未隨桌面應用程式安裝檔提供，請從 [Echophrase 原始碼](https://github.com/Imperium42/echophrase/tree/main/cli) 自行建置。
+安裝好 Rust 工具鏈後，在原始碼根目錄執行（Linux 需先安裝 `libasound2-dev`）：
 
 ```bash
-echophrase --help
+cargo install --path cli
+echophrase-cli --help
 ```
 
-如果該執行檔不在您的 `PATH` 中，請在已安裝應用程式的目錄旁尋找，
-或從 [Echophrase 原始碼](https://github.com/Imperium42/echophrase/tree/main/cli) 的 `cli/` 資料夾自行建置。
+`cargo install` 會把 `echophrase-cli` 放到 `~/.cargo/bin`，標準 Rust 安裝會將其加入 `PATH`。
+
+<Note>
+v1.0.1（含）以前此執行檔名為 `echophrase`。為了避免在同一份原始碼中建置時覆寫桌面應用程式本身的
+`echophrase` 執行檔，已更名。詳見 [ADR 0007](/developers/decisions/0007-cli-binary-name)。
+</Note>
 
 ## 指令
 
@@ -54,18 +60,18 @@ echophrase --help
 
 ```bash
 # 錄音，然後停止並完成
-echophrase record
-echophrase status
-echophrase stop
+echophrase-cli record
+echophrase-cli status
+echophrase-cli stop
 
 # 正規化現有錄音
-echophrase transcode meeting.wav
+echophrase-cli transcode meeting.wav
 
 # 轉錄（需要桌面應用程式執行中、已啟用 MCP 伺服器）
-echophrase transcribe meeting.16k.wav
+echophrase-cli transcribe meeting.16k.wav
 ```
 
-每個指令都有各自的詳細說明，例如 `echophrase record --help`。
+每個指令都有各自的詳細說明，例如 `echophrase-cli record --help`。
 
 <Card title="MCP 伺服器" icon="robot" href="/zh-Hant/mcp">
   在 Claude Code 及其他 AI 代理中使用這些相同的指令。
