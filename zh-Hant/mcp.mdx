@@ -25,25 +25,25 @@ Echophrase 的 CLI 可以以 MCP 伺服器模式執行，將錄音、狀態查�
 {
   "mcpServers": {
     "echophrase": {
-      "command": "/absolute/path/to/echophrase",
+      "command": "echophrase-cli",
       "args": ["mcp"]
     }
   }
 }
 ```
 
-請使用與桌面應用程式一同安裝的 `echophrase` 執行檔的絕對路徑。
+當 `echophrase-cli` 位於您的 `PATH` 中時即可使用（安裝方式請見 [CLI](/zh-Hant/cli)）；否則請改用 `echophrase-cli` 執行檔的絕對路徑。
 儲存後重新啟動 Claude Code（或重新載入 MCP 伺服器），下列工具即可使用。
 
 ## 工具
 
 | 工具 | 對應 CLI 指令 | 需求 |
 |------|--------------|------|
-| `record` | `echophrase record` | 無 |
-| `stop` | `echophrase stop` | 無 |
-| `status` | `echophrase status` | 無 |
-| `transcode` | `echophrase transcode` | 無 |
-| `transcribe` | `echophrase transcribe` | 桌面應用程式執行中、已啟用 MCP 伺服器開關 |
+| `record` | `echophrase-cli record` | 無 |
+| `stop` | `echophrase-cli stop` | 無 |
+| `status` | `echophrase-cli status` | 無 |
+| `transcode` | `echophrase-cli transcode` | 無 |
+| `transcribe` | `echophrase-cli transcribe` | 桌面應用程式執行中、已啟用 MCP 伺服器開關 |
 
 每個工具都與 CLI 指令共用相同的工作階段與音訊邏輯，因此無論是直接
 在終端機操作，還是由代理透過 MCP 呼叫相同動作，行為都不會有差異。

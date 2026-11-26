@@ -6,7 +6,7 @@ description: How Echophrase's local IPC server is bound, authenticated, gated, a
 # MCP / IPC Security Model
 
 This page documents the security design of the localhost IPC server that backs
-the `transcribe` MCP tool and the `echophrase transcribe` CLI command - the
+the `transcribe` MCP tool and the `echophrase-cli transcribe` CLI command - the
 part of Echophrase that lets an AI agent talk to the desktop app. It is
 written for readers who want to evaluate the design themselves, not take our
 word for it. Every claim below is checked against the current source; file
@@ -93,7 +93,7 @@ above.
 
 ## What the five tools can and cannot do
 
-The MCP server (`echophrase mcp`) exposes exactly five tools, defined with
+The MCP server (`echophrase-cli mcp`) exposes exactly five tools, defined with
 `#[tool_router]` over a fixed set of methods
 (`cli/src/commands/mcp.rs`): `record`, `stop`, `status`, `transcode`,
 `transcribe`. A sixth subcommand, `worker`, exists internally to run the

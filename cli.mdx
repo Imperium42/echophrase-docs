@@ -5,23 +5,29 @@ description: Command-line access to recording, transcoding, and transcription
 
 # CLI
 
-Echophrase ships a small command-line binary alongside the desktop app,
-named `echophrase`. It gives you terminal access to microphone recording and
+Echophrase has a small command-line tool, `echophrase-cli`. It gives you terminal access to microphone recording and
 audio transcoding without opening the app window, plus an [MCP server mode](/mcp)
 so AI agents like Claude Code can drive voice capture directly.
 
 ## Where to find it
 
-The CLI installs together with the desktop app; there is nothing separate to
-download. On the same machine as the desktop app, run:
+The CLI is not bundled with the desktop app installer yet: build it from the
+[Echophrase source](https://github.com/Imperium42/echophrase/tree/main/cli). With a Rust toolchain installed, run this in
+the repo root (on Linux, install `libasound2-dev` first):
 
 ```bash
-echophrase --help
+cargo install --path cli
+echophrase-cli --help
 ```
 
-If the binary is not on your `PATH`, look for it next to the installed app,
-or build it yourself from the `cli/` folder of the
-[Echophrase source](https://github.com/Imperium42/echophrase/tree/main/cli).
+`cargo install` puts `echophrase-cli` in `~/.cargo/bin`, which is on your `PATH`
+after a standard Rust install.
+
+<Note>
+Up to v1.0.1 the binary was named `echophrase`. It was renamed so it can never
+overwrite the desktop app's own `echophrase` binary when both are built from the
+same repo. See [ADR 0007](/developers/decisions/0007-cli-binary-name).
+</Note>
 
 ## Commands
 
@@ -59,18 +65,18 @@ or build it yourself from the `cli/` folder of the
 
 ```bash
 # Record, then stop and finalize
-echophrase record
-echophrase status
-echophrase stop
+echophrase-cli record
+echophrase-cli status
+echophrase-cli stop
 
 # Normalize an existing recording
-echophrase transcode meeting.wav
+echophrase-cli transcode meeting.wav
 
 # Transcribe (desktop app running, MCP Server enabled)
-echophrase transcribe meeting.16k.wav
+echophrase-cli transcribe meeting.16k.wav
 ```
 
-Every command has its own detailed help, for example `echophrase record --help`.
+Every command has its own detailed help, for example `echophrase-cli record --help`.
 
 <Card title="MCP Server" icon="robot" href="/mcp">
   Use these same commands as tools from Claude Code and other AI agents.
